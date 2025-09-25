@@ -142,6 +142,31 @@ inputArchivo.addEventListener("change", async (e) => {
     inputArchivo.value = "";
   }
 });
+document.addEventListener("keydown", (evento) => {
+  let valor1 = 0;
+  if (evento.key === "ArrowUp") valor1 = 0.1;
+  if (evento.key === "ArrowDown") valor1 = -0.1;
+  if (valor1 === 0) return;
+
+  const seleccionados = lista.querySelectorAll("input.selector:checked");
+  if (seleccionados.length === 0) return;
+
+  seleccionados.forEach(checkbox => {
+    const card = checkbox.closest(".persona");
+    const nombre = card.dataset.nombre;
+    if (!estado.has(nombre)) return;
+    let valor = estado.get(nombre) ?? 10;
+    valor += valor1;
+    if (valor < 0) valor = 0;
+    if (valor > 10) valor = 10;
+    estado.set(nombre, valor);
+    const span = card.querySelector(".contador");
+    span.dataset.valor = String(valor);
+    span.textContent = parseFloat(valor).toFixed(1);
+    bump(span);
+  });
+  evento.preventDefault();
+});
 
 // --------- Bootstrap ---------
 // Opción A (recomendada en local con live server): intenta cargar nombres.txt
