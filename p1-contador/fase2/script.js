@@ -106,6 +106,7 @@ lista.addEventListener("click", (ev) => {
 
   if (btn.classList.contains("btn-mas")) valor += 0.1;
   if (btn.classList.contains("btn-menos")) valor -= 0.1;
+  if (btn.classList.contains("btn-cero")) valor = 0.0;
   if(valor < 0) valor = 0;
   if(valor > 10) valor = 10;
 
