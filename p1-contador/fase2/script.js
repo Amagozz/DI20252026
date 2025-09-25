@@ -104,12 +104,32 @@ lista.addEventListener("click", (ev) => {
   const span = card.querySelector(".contador");
   let valor = Number(span.dataset.valor || "10");
 
-  if (btn.classList.contains("btn-mas")) valor += 1;
-  if (btn.classList.contains("btn-menos")) valor -= 1;
+  if (btn.classList.contains("btn-mas")) {
+    if (valor < 10) {
+      valor += 0.1;
+      valor = Math.min(valor, 10);
+      setEstado("");
+    } else {
+      setEstado("No puedes poner más nota.");
+      return;
+    }
+  }
+
+  if (btn.classList.contains("btn-menos")) {
+    if (valor > 0) {
+      valor -= 0.1;
+      valor = Math.max(valor, 0);
+      setEstado("");
+    } else {
+      setEstado("Ya no puedes quitarle más nota.");
+      return;
+    }
+  }
+
 
   estado.set(nombre, valor);
   span.dataset.valor = String(valor);
-  span.textContent = valor;
+  span.textContent = Number.isInteger(valor) ? valor : valor.toFixed(1);;
   bump(span);
 });
 
