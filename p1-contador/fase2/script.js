@@ -91,8 +91,76 @@ async function cargarDesdeArchivoLocal(file) {
 }
 
 // --------- Interacción ---------
+// Variables para funcionalidad de mantener presionado
+let intervalId = null;
+let timeoutId = null;
+
+// Función para actualizar contador con efectos visuales
+function actualizarContador(card, nuevoValor, tipoAccion) {
+  const nombre = card.dataset.nombre;
+  const span = card.querySelector(".contador");
+  const valorAnterior = Number(span.dataset.valor || "10");
+  
+  estado.set(nombre, nuevoValor);
+  span.dataset.valor = String(nuevoValor);
+  span.textContent = nuevoValor;
+  bump(span);
+  
+  // Efecto de color según la acción
+  if (tipoAccion === 'increment' && nuevoValor > valorAnterior) {
+    card.classList.add("increment-flash");
+    setTimeout(() => card.classList.remove("increment-flash"), 300);
+  } else if (tipoAccion === 'decrement' && nuevoValor < valorAnterior) {
+    card.classList.add("decrement-flash");
+    setTimeout(() => card.classList.remove("decrement-flash"), 300);
+  }
+}
+
+// Función para incrementar/decrementar valor
+function cambiarValor(card, incremento) {
+  const span = card.querySelector(".contador");
+  let valor = Number(span.dataset.valor || "10");
+  
+  valor += incremento;
+  
+  // Aplicar límites
+  if (valor > 10) valor = 10;
+  if (valor < 0) valor = 0;
+  
+  // Redondear para evitar problemas de precisión de punto flotante
+  valor = Math.round(valor * 10) / 10;
+  
+  const tipoAccion = incremento > 0 ? 'increment' : 'decrement';
+  actualizarContador(card, valor, tipoAccion);
+}
+
+// Función para iniciar cambio continuo
+function iniciarCambioContinuo(card, incremento) {
+  // Primer cambio inmediato
+  cambiarValor(card, incremento);
+  
+  // Delay inicial antes de empezar el cambio continuo
+  timeoutId = setTimeout(() => {
+    intervalId = setInterval(() => {
+      cambiarValor(card, incremento);
+    }, 100); // Cambio cada 100ms
+  }, 500); // Esperar 500ms antes de empezar el cambio continuo
+}
+
+// Función para detener cambio continuo
+function detenerCambioContinuo() {
+  if (intervalId) {
+    clearInterval(intervalId);
+    intervalId = null;
+  }
+  if (timeoutId) {
+    clearTimeout(timeoutId);
+    timeoutId = null;
+  }
+}
+
 // Delegación: un solo listener para todos los botones
-lista.addEventListener("click", (ev) => {
+lista.addEventListener("mousedown", (ev) => {
   const btn = ev.target.closest("button");
   if (!btn) return;
   const card = btn.closest(".persona");
@@ -101,17 +169,41 @@ lista.addEventListener("click", (ev) => {
   const nombre = card.dataset.nombre;
   if (!estado.has(nombre)) return;
 
-  const span = card.querySelector(".contador");
-  let valor = Number(span.dataset.valor || "10");
-
-  if (btn.classList.contains("btn-mas")) valor += 0.1;
-  if (btn.classList.contains("btn-menos")) valor -= 0.1;
-
-  estado.set(nombre, valor);
-  span.dataset.valor = String(valor);
-  span.textContent = valor;
-  bump(span);
+  if (btn.classList.contains("btn-mas")) {
+    iniciarCambioContinuo(card, 0.1);
+  } else if (btn.classList.contains("btn-menos")) {
+    iniciarCambioContinuo(card, -0.1);
+  } else if (btn.classList.contains("btn-reset-individual")) {
+    // Reset individual a 0
+    actualizarContador(card, 0, 'decrement');
+  }
 });
+
+// Detener cambio continuo al soltar el botón
+lista.addEventListener("mouseup", detenerCambioContinuo);
+lista.addEventListener("mouseleave", detenerCambioContinuo);
+
+// También manejar eventos touch para dispositivos móviles
+lista.addEventListener("touchstart", (ev) => {
+  const btn = ev.target.closest("button");
+  if (!btn) return;
+  const card = btn.closest(".persona");
+  if (!card) return;
+
+  const nombre = card.dataset.nombre;
+  if (!estado.has(nombre)) return;
+
+  if (btn.classList.contains("btn-mas")) {
+    iniciarCambioContinuo(card, 0.1);
+  } else if (btn.classList.contains("btn-menos")) {
+    iniciarCambioContinuo(card, -0.1);
+  } else if (btn.classList.contains("btn-reset-individual")) {
+    actualizarContador(card, 0, 'decrement');
+  }
+});
+
+lista.addEventListener("touchend", detenerCambioContinuo);
+lista.addEventListener("touchcancel", detenerCambioContinuo);
 
 btnReset.addEventListener("click", () => {
   for (const n of estado.keys()) estado.set(n, 10);
