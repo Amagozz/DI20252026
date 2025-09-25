@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <title>Contadores por Persona</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
 </head>
 <body>
   <header class="topbar">
@@ -26,6 +27,8 @@
   <template id="tpl-persona">
     <article class="card persona" data-nombre="">
       <header class="card-head">
+        <input type="checkbox" class="selector-persona" aria-label="Seleccionar persona" />
+        <button class="muerte" aria-label="Eliminar persona"><i class="fa-solid fa-skull-crossbones"></i></button>
         <h2 class="nombre"></h2>
       </header>
       <div class="contador-wrap">

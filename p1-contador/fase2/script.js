@@ -27,7 +27,9 @@ function bump(el) {
   setTimeout(() => el.classList.remove("bump"), 160);
 }
 
-// Render completo desde estado
+// --- Selección múltiple con checkbox ---
+let seleccionados = new Set();
+
 function renderLista() {
   lista.innerHTML = "";
   const nombres = Array.from(estado.keys()).sort((a, b) =>
@@ -35,7 +37,32 @@ function renderLista() {
   );
   for (const n of nombres) {
     const v = estado.get(n) ?? 10;
-    lista.appendChild(renderPersona(n, v));
+    const card = renderPersona(n, v);
+    // Marcar el checkbox si está seleccionado
+    const checkbox = card.querySelector('.selector-persona');
+    if (checkbox) {
+      checkbox.checked = seleccionados.has(n);
+      checkbox.addEventListener('change', (ev) => {
+        if (ev.target.checked) {
+          seleccionados.add(n);
+        } else {
+          seleccionados.delete(n);
+        }
+        // Resalta visualmente
+        if (ev.target.checked) {
+          card.classList.add('selected');
+        } else {
+          card.classList.remove('selected');
+        }
+      });
+      // Resalta visualmente
+      if (seleccionados.has(n)) {
+        card.classList.add('selected');
+      } else {
+        card.classList.remove('selected');
+      }
+    }
+    lista.appendChild(card);
   }
 }
 
@@ -91,36 +118,59 @@ async function cargarDesdeArchivoLocal(file) {
 }
 
 // --------- Interacción ---------
-// Delegación: un solo listener para todos los botones
+
+// Botones + y -
 lista.addEventListener("click", (ev) => {
   const btn = ev.target.closest("button");
   if (!btn) return;
-  const card = btn.closest(".persona");
-  if (!card) return;
-
-  const nombre = card.dataset.nombre;
-  if (!estado.has(nombre)) return;
-
-  const span = card.querySelector(".contador");
+  const cardBtn = btn.closest(".persona");
+  if (!cardBtn) return;
+  const nombreBtn = cardBtn.dataset.nombre;
+  if (!estado.has(nombreBtn)) return;
+  const span = cardBtn.querySelector(".contador");
   let valor = Number(span.dataset.valor || "10");
-  
-  if (btn.classList.contains("btn-mas")) valor += 0.1;
-  if (btn.classList.contains("btn-menos")) valor -= 0.1;
-  
+  if (btn.classList.contains("btn-mas")) valor = Math.round((valor + 0.1) * 10) / 10;
+  if (btn.classList.contains("btn-menos")) valor = Math.round((valor - 0.1) * 10) / 10;
+  if (btn.classList.contains("muerte")) valor = 0;
   if (valor <= 0) {
     valor = 0;
   } else if(valor >= 10) {
-    valor = 10
+    valor = 10;
   }
-
-  estado.set(nombre, valor);
+  estado.set(nombreBtn, valor);
   span.dataset.valor = String(valor);
-  span.textContent = parseFloat(valor).toFixed(1);
+  span.textContent = valor.toFixed(1);
   bump(span);
+});
+
+// Teclas de flecha para subir/bajar valores de seleccionados
+document.addEventListener("keydown", (ev) => {
+  if (seleccionados.size === 0) return;
+  let delta = 0;
+  if (ev.key === "ArrowUp") delta = 0.1;
+  if (ev.key === "ArrowDown") delta = -0.1;
+  if (delta === 0) return;
+  let cambio = false;
+  for (const nombre of seleccionados) {
+    let valor = estado.get(nombre) ?? 10;
+    valor = Math.round((valor + delta) * 10) / 10;
+    if (valor < 0) valor = 0;
+    if (valor > 10) valor = 10;
+    estado.set(nombre, valor);
+    cambio = true;
+  }
+  if (cambio) {
+    renderLista();
+    // Animar los contadores seleccionados
+    for (const card of lista.querySelectorAll(".persona.selected .contador")) {
+      bump(card);
+    }
+  }
 });
 
 btnReset.addEventListener("click", () => {
   for (const n of estado.keys()) estado.set(n, 10);
+  seleccionados.clear();
   renderLista();
   setEstado("Todos los contadores han sido reiniciados a 10.");
 });
