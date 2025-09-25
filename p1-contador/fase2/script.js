@@ -6,6 +6,9 @@ const btnCargar = document.getElementById("btn-cargar-nombres");
 const btnReset = document.getElementById("btn-reset");
 const inputArchivo = document.getElementById("input-archivo");
 const tpl = document.getElementById("tpl-persona");
+const btnSubirSeleccionados = document.getElementById("btn-subir-seleccionados");
+const btnBajarSeleccionados = document.getElementById("btn-bajar-seleccionados");
+
 
 // --------- Utilidades ---------
 function normalizaNombre(s) {
@@ -118,20 +121,58 @@ lista.addEventListener("click", (ev) => {
   if (btn.classList.contains("btn-menos")) {
     if (valor > 0) {
       valor -= 0.1;
-      valor = Math.max(valor, 0);
+      valor = Math.max(0, valor);
       setEstado("");
     } else {
       setEstado("Ya no puedes quitarle más nota.");
       return;
     }
   }
-
-
+  if (btn.classList.contains("btn-reset-individual")) {
+    valor = 0;
+    setEstado(`La nota de ${nombre} se ha puesto en 0.`);
+  }
   estado.set(nombre, valor);
   span.dataset.valor = String(valor);
-  span.textContent = Number.isInteger(valor) ? valor : valor.toFixed(1);;
+  span.textContent = Number.isInteger(valor) ? valor : valor.toFixed(1);
   bump(span);
 });
+
+
+
+
+function modificarSeleccionados(delta) {
+  const seleccionados = lista.querySelectorAll(".persona .seleccion:checked");
+  if (seleccionados.length === 0) {
+    setEstado("No hay alumnos seleccionados.");
+    return;
+  }
+
+  let cambios = 0;
+
+  seleccionados.forEach(checkbox => {
+    const card = checkbox.closest(".persona");
+    const nombre = card.dataset.nombre;
+    const span = card.querySelector(".contador");
+    let valor = Number(span.dataset.valor || "10");
+
+    valor += delta;
+    valor = Math.max(0, Math.min(10, valor));
+
+    estado.set(nombre, valor);
+    span.dataset.valor = String(valor);
+    span.textContent = Number.isInteger(valor) ? valor : valor.toFixed(1);;
+    bump(span);
+    cambios++;
+  });
+
+  setEstado(`Se modificó la nota de ${cambios} alumno(s).`);
+}
+
+btnSubirSeleccionados.addEventListener("click", () => modificarSeleccionados(0.1));
+btnBajarSeleccionados.addEventListener("click", () => modificarSeleccionados(-0.1));
+
+
 
 btnReset.addEventListener("click", () => {
   for (const n of estado.keys()) estado.set(n, 10);
