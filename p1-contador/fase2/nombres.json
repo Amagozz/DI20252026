@@ -1,0 +1,36 @@
+{
+    "alumnos": [
+        {
+            "nombre": "Ana",
+            "nota": 10
+        },
+        {
+            "nombre": "Pedro",
+            "nota": 10
+        },
+        {
+            "nombre": "Lucía",
+            "nota": 10
+        },
+        {
+            "nombre": "María",
+            "nota": 10
+        },
+        {
+            "nombre": "Juan",
+            "nota": 10
+        },
+        {
+            "nombre": "Fatima",
+            "nota": 10
+        },
+        {
+            "nombre": "Héctor",
+            "nota": 10
+        },
+        {
+            "nombre": "Jose",
+            "nota": 10
+        }
+    ]
+}

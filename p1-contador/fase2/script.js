@@ -4,6 +4,7 @@ const lista = document.getElementById("lista");
 const estadoUI = document.getElementById("estado");
 const btnCargar = document.getElementById("btn-cargar-nombres");
 const btnReset = document.getElementById("btn-reset");
+const btnResetCero = document.getElementById("btn-reset-cero");
 const inputArchivo = document.getElementById("input-archivo");
 const tpl = document.getElementById("tpl-persona");
 
@@ -343,6 +344,12 @@ btnReset.addEventListener("click", () => {
   renderLista();
   setEstado("Todos los contadores han sido reiniciados a 10.");
 });
+btnResetCero.addEventListener("click", () => {
+  for (const n of estado.keys()) estado.set(n, 0);
+  renderLista();
+  setEstado("Todos los contadores han sido reiniciados a 0.");
+});
+
 
 btnCargar.addEventListener("click", async () => {
   try {
