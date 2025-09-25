@@ -4,12 +4,14 @@ const lista = document.getElementById("lista");
 const estadoUI = document.getElementById("estado");
 const btnCargar = document.getElementById("btn-cargar-nombres");
 const btnReset = document.getElementById("btn-reset");
+const btnMuerteTotal = document.getElementById("btn-muerte-total");
 const inputArchivo = document.getElementById("input-archivo");
 const tpl = document.getElementById("tpl-persona");
 let valorBoton = 1;
 const btnMenos = document.querySelector(".btn-menos");
 const btnMas = document.querySelector(".btn-mas");
 const botonesCambio = document.querySelectorAll(".btnCambio");
+const btnMuerte = document.querySelector(".btn-muerte");
 
 // --------- Utilidades ---------
 function normalizaNombre(s) {
@@ -108,8 +110,13 @@ lista.addEventListener("click", (ev) => {
   const span = card.querySelector(".contador");
   let valor = Number(span.dataset.valor || "10");
 
-  if (btn.classList.contains("btn-mas")) valor = Math.min(valor + valorBoton, 10);
-  if (btn.classList.contains("btn-menos")) valor = Math.max(valor - valorBoton, 0);
+  if (btn.classList.contains("btn-mas")) {
+    valor = Math.min(valor + valorBoton, 10);
+  } else if (btn.classList.contains("btn-menos")) {
+    valor = Math.max(valor - valorBoton, 0);
+  } else if (btn.classList.contains("btn-muerte")) {
+    valor = 0;
+  }
 
   // multiplica por 10, redondea y divide entre 10 el valor para conseguir solo un decimal
   valor = Math.round(valor * 10) / 10;
@@ -136,6 +143,12 @@ btnReset.addEventListener("click", () => {
   for (const n of estado.keys()) estado.set(n, 10);
   renderLista();
   setEstado("Todos los contadores han sido reiniciados a 10.");
+});
+
+btnMuerteTotal.addEventListener("click", () => {
+  for (const n of estado.keys()) estado.set(n, 0);
+  renderLista();
+  setEstado("Todos los contadores han sido colocados en 0");
 });
 
 btnCargar.addEventListener("click", async () => {
