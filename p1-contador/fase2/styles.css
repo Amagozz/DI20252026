@@ -41,7 +41,7 @@ main{ padding:1rem; max-width:1100px; margin:0 auto; }
 }
 
 .card{
-  background:var(--card); border:1px solid var(--border); border-radius:1rem;
+  background:var(--card); border:5px solid green; border-radius:1rem;
   box-shadow: 0 1px 2px rgba(0,0,0,.03);
   padding:1rem;
 }

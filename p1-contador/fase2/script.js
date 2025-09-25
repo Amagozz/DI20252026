@@ -43,6 +43,7 @@ function renderLista() {
     const v = estado.get(n) ?? 10;
     lista.appendChild(renderPersona(n, v));
   }
+  actualizarColores();
 }
 
 // Mensaje de estado accesible
@@ -125,7 +126,24 @@ lista.addEventListener("click", (ev) => {
   span.dataset.valor = String(valor);
   span.textContent = valor;
   bump(span);
+
+  actualizarColores();
 });
+
+function actualizarColores() {
+  document.querySelectorAll(".persona").forEach(card => {
+    const valor = Number(card.querySelector(".contador").dataset.valor || "10");
+    card.style.border = `5px solid ${colorCambio(valor)}`;
+  });
+}
+
+function colorCambio(valor) {
+  if (valor >= 8) return "green";
+  if (valor >= 5) return "yellow";
+  if (valor >= 3) return "orange";
+  if (valor >= 1) return "red";
+  return "black";
+}
 
 botonesCambio.forEach(btnCambio => {
   btnCambio.addEventListener("click", () => {
