@@ -61,8 +61,25 @@ main{ padding:1rem; max-width:1100px; margin:0 auto; }
   color: var(--accent);
 }
 
+
 .btn.redondeado{ border-radius:999px; }
 .btn-mas{ border-color:#cfe; }
 .btn-menos{ border-color:#fec; }
 
 .persona{ user-select:none; }
+.contador.naranja {
+  color: orange;
+}
+
+.contador.rojo {
+  color: red;
+}
+.contador.verde {
+  color: green;
+}
+.btn-suspender {
+  border-color: crimson;
+  background: #140202;
+  color: rgb(196, 4, 43);
+}
+

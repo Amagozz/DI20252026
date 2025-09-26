@@ -7,6 +7,7 @@ const btnReset = document.getElementById("btn-reset");
 const inputArchivo = document.getElementById("input-archivo");
 const tpl = document.getElementById("tpl-persona");
 
+
 // --------- Utilidades ---------
 function normalizaNombre(s) {
   return s.normalize("NFD").replace(/\p{Diacritic}/gu, "").trim();
@@ -92,6 +93,7 @@ async function cargarDesdeArchivoLocal(file) {
 
 // --------- Interacción ---------
 // Delegación: un solo listener para todos los botones
+
 lista.addEventListener("click", (ev) => {
   const btn = ev.target.closest("button");
   if (!btn) return;
@@ -104,17 +106,33 @@ lista.addEventListener("click", (ev) => {
   const span = card.querySelector(".contador");
   let valor = Number(span.dataset.valor || "10");
 
-  if (btn.classList.contains("btn-mas")) {
-    valor = Math.min(10, valor + 0.1);
-  }
-  if (btn.classList.contains("btn-menos")) {
-    valor = valor - 0.1;
-  }
-  // Redondea a un decimal
-  valor = Number(valor.toFixed(1));
+  if (btn.classList.contains("btn-mas") && valor<=9.9)  valor += 0.10;
+  if (btn.classList.contains("btn-menos")&& valor>=0.1) valor -= 0.10;
+  if (btn.classList.contains("btn-suspender")) { valor=0;
+
+  span.classList.remove("rojo", "naranja", "verde");
+  span.classList.add("rojo");
+
+  bump(span);
+  setEstado(`${nombre} ha sido suspendido. Nota puesta: 0.`);
+}
+
+
+// Limpia clases anteriores
+span.classList.remove("naranja", "rojo","verde");
+
+// Aplica color según el valor
+if (valor < 5) {
+  span.classList.add("rojo");
+} else if (valor >= 5 && valor < 6) {
+  span.classList.add("naranja");
+} else if (valor >=6) {
+  span.classList.add("verde");
+}
+
   estado.set(nombre, valor);
   span.dataset.valor = String(valor);
-  span.textContent = valor;
+  span.textContent = valor.toFixed(1);
   bump(span);
 });
 
@@ -145,10 +163,98 @@ inputArchivo.addEventListener("change", async (e) => {
     inputArchivo.value = "";
   }
 });
+function actualizarSeleccionados(delta) {
+  const seleccionados = lista.querySelectorAll(".selector:checked");
+  for (const checkbox of seleccionados) {
+    const card = checkbox.closest(".persona");
+    const nombre = card.dataset.nombre;
+    const span = card.querySelector(".contador");
+    let valor = Number(span.dataset.valor || "10");
+
+    valor += delta;
+    valor = Math.min(10, Math.max(0, Number(valor.toFixed(1))));
+
+    estado.set(nombre, valor);
+    span.dataset.valor = valor.toFixed(1);
+    span.textContent = valor.toFixed(1);
+
+    span.classList.remove("rojo", "naranja", "verde");
+    if (valor < 5) span.classList.add("rojo");
+    else if (valor >= 5 && valor < 6) span.classList.add("naranja");
+    else if (valor >= 6) span.classList.add("verde");
+
+    bump(span);
+  }
+}
+
+document.getElementById("btn-subir-seleccion").addEventListener("click", () => {
+  actualizarSeleccionados(0.10);
+});
+
+document.getElementById("btn-bajar-seleccion").addEventListener("click", () => {
+  actualizarSeleccionados(-0.10);
+});
+document.getElementById("btn-aleatorio").addEventListener("click", () => {
+  const personas = Array.from(lista.querySelectorAll(".persona"));
+  if (personas.length === 0) return;
+
+  // Selecciona una al azar
+  const aleatoria = personas[Math.floor(Math.random() * personas.length)];
+  const nombre = aleatoria.dataset.nombre;
+  const span = aleatoria.querySelector(".contador");
+
+  let valor = Number(span.dataset.valor || "10");
+
+  // Decide si subir o bajar
+  const delta = Math.random() < 0.5 ? -0.5 : 0.5;
+  valor += delta;
+  valor = Math.min(10, Math.max(0, Number(valor.toFixed(1))));
+
+  estado.set(nombre, valor);
+  span.dataset.valor = valor.toFixed(1);
+  span.textContent = valor.toFixed(1);
+
+  // Actualiza color
+  span.classList.remove("rojo", "naranja", "verde");
+  if (valor < 5) span.classList.add("rojo");
+  else if (valor >= 5 && valor < 6) span.classList.add("naranja");
+  else if (valor >= 6) span.classList.add("verde");
+
+  bump(span);
+  setEstado(`Se ha modificado la nota de ${nombre} en ${delta > 0 ? '+' : ''}${delta}`);
+});
 
 // --------- Bootstrap ---------
 // Opción A (recomendada en local con live server): intenta cargar nombres.txt
 // Opción B: si falla, el usuario puede usar “Cargar archivo local”
 cargarNombresDesdeTxt("nombres.txt").catch(() => {
   setEstado("Consejo: coloca un nombres.txt junto a esta página o usa 'Cargar archivo local'.");
+});
+lista.addEventListener("keydown", (ev) => {
+  const span = ev.target.closest(".contador");
+  if (!span) return;
+
+  const card = span.closest(".persona");
+  const nombre = card?.dataset.nombre;
+  if (!estado.has(nombre)) return;
+
+  let valor = Number(span.dataset.valor || "10");
+
+  if (ev.key === "ArrowRight" && valor <= 9.9) valor += 0.1;
+  if (ev.key === "ArrowLeft" && valor >= 0.1) valor -= 0.1;
+
+  valor = Number(valor.toFixed(1));
+  estado.set(nombre, valor);
+  span.dataset.valor = valor.toFixed(1);
+  span.textContent = valor.toFixed(1);
+
+  // Limpia clases de color
+  span.classList.remove("rojo", "naranja", "verde");
+
+  // Aplica color según el valor
+  if (valor < 5) span.classList.add("rojo");
+  else if (valor >= 5 && valor < 6) span.classList.add("naranja");
+  else if (valor >= 6) span.classList.add("verde");
+
+  bump(span);
 });

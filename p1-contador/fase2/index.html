@@ -9,12 +9,17 @@
   <header class="topbar">
     <h1>Contadores de Clase</h1>
     <div class="acciones">
+      <button id="btn-aleatorio">Cambiar nota aleatoria ±0.5 👍 👎</button>
+
       <button id="btn-cargar-nombres">Cargar nombres (nombres.txt)</button>
       <label class="file-label">
         <input type="file" id="input-archivo" accept=".txt,.json" />
         Cargar archivo local
       </label>
       <button id="btn-reset">Reiniciar todos a 10</button>
+      <button id="btn-subir-seleccion">Subir seleccionados</button>
+<button id="btn-bajar-seleccion">Bajar seleccionados</button>
+
     </div>
   </header>
 
@@ -25,13 +30,20 @@
 
   <template id="tpl-persona">
     <article class="card persona" data-nombre="">
-      <header class="card-head">
-        <h2 class="nombre"></h2>
-      </header>
+     <header class="card-head">
+      <h2 class="nombre"></h2>
+      <input type="checkbox" class="selector" aria-label="Seleccionar persona" />
+    </header>
       <div class="contador-wrap">
+        
         <button class="btn redondeado btn-menos" aria-label="Restar uno">−1</button>
-        <span class="contador" data-valor="10" aria-live="polite">10</span>
+        
+       <span class="contador" tabindex="0" data-valor="10" aria-live="polite">10</span>
+
         <button class="btn redondeado btn-mas" aria-label="Sumar uno">+1</button>
+        <button class="btn btn-suspender" aria-label="Suspender alumno">💀</button>
+
+        
       </div>
     </article>
   </template>
