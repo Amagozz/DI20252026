@@ -1,3 +1,29 @@
+// Guardar todos los comentarios en un solo archivo txt
+document.getElementById('guardar-todos-comentarios')?.addEventListener('click', () => {
+  const cards = lista.querySelectorAll('.persona');
+  let contenido = '';
+  cards.forEach(card => {
+    const nombre = card.dataset.nombre || 'Alumno';
+    const comentario = card.querySelector('.comentario')?.value.trim();
+    if (comentario) {
+      contenido += `${nombre}: ${comentario}\n`;
+    }
+  });
+  if (!contenido) {
+    alert('No hay comentarios para guardar.');
+    return;
+  }
+  const blob = new Blob([contenido], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'comentarios_alumnos.txt';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => {
+    document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+  }, 100);
+});
 // Estado simple en memoria: { nombre: valor }
 const estado = new Map();
 const lista = document.getElementById("lista");
@@ -21,6 +47,8 @@ function renderPersona(nombre, valor = 10) {
   span.textContent = valor;
   span.dataset.valor = String(valor);
   efectoColorDelContador(span, valor);
+  // Hacer la tarjeta accesible por teclado
+  node.tabIndex = 0;
   return node;
 }
 
@@ -39,6 +67,59 @@ function renderLista() {
     const v = estado.get(n) ?? 10;
     lista.appendChild(renderPersona(n, v));
   }
+  // Foco en la primera caja al renderizar
+  const firstCard = lista.querySelector('.persona');
+  if (firstCard) firstCard.focus();
+
+// Accesibilidad con flechas y selección múltiple
+lista.addEventListener("keydown", (ev) => {
+  const card = ev.target.closest('.persona');
+  if (!card) return;
+  const cards = Array.from(lista.querySelectorAll('.persona'));
+  const idx = cards.indexOf(card);
+  // Selección múltiple
+  const seleccionados = Array.from(lista.querySelectorAll('.seleccion-persona:checked'));
+  if (seleccionados.length > 1) {
+    // Si hay varios seleccionados, solo flechas arriba/abajo afectan a todos
+    if (ev.key === 'ArrowUp' || ev.key === 'ArrowDown') {
+      const delta = ev.key === 'ArrowUp' ? 0.1 : -0.1;
+      seleccionados.forEach(checkbox => {
+        const persona = checkbox.closest('.persona');
+        const nombre = persona.dataset.nombre;
+        let valor = Number(persona.querySelector('.contador').dataset.valor || "10");
+        valor += delta;
+        if (valor > 10) valor = 10;
+        if (valor < 0) valor = 0;
+        valor = Math.round(valor * 10) / 10;
+        estado.set(nombre, valor);
+        const span = persona.querySelector('.contador');
+        span.dataset.valor = String(valor);
+        span.textContent = valor;
+        bump(span);
+        efectoColorDelContador(span, valor);
+      });
+      ev.preventDefault();
+    } else if (ev.key === 'ArrowLeft' || ev.key === 'ArrowRight') {
+      // Bloquear navegación lateral
+      ev.preventDefault();
+    }
+    return;
+  }
+  // Comportamiento normal si no hay selección múltiple
+  if (ev.key === 'ArrowRight') {
+    const next = cards[(idx + 1) % cards.length];
+    next.focus();
+    ev.preventDefault();
+  } else if (ev.key === 'ArrowLeft') {
+    const prev = cards[(idx - 1 + cards.length) % cards.length];
+    prev.focus();
+    ev.preventDefault();
+  } else if (ev.key === 'ArrowUp' || ev.key === 'ArrowDown') {
+    const btn = card.querySelector(ev.key === 'ArrowUp' ? '.btn-mas' : '.btn-menos');
+    if (btn) btn.click();
+    ev.preventDefault();
+  }
+});
 }
 
 // Mensaje de estado accesible

@@ -1,3 +1,15 @@
+
+
+@media (max-width: 600px) {
+  .topbar {
+    flex-direction: column;
+  }
+  *{
+    width: 100%;
+    text-align: center;
+  }
+  
+}
 :root{
   --bg:#f7f7fa;
   --card:#ffffff;
@@ -66,3 +78,4 @@ main{ padding:1rem; max-width:1100px; margin:0 auto; }
 .btn-menos{ border-color:#fec; }
 
 .persona{ user-select:none; }
+

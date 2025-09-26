@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <title>Contadores por Persona</title>
   <link rel="stylesheet" href="styles.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 <body>
   <header class="topbar">
@@ -19,13 +20,14 @@
   </header>
 
   <main>
-    <section id="estado" aria-live="polite"></section>
-    <section id="lista" class="grid"></section>
+  <section id="estado" aria-live="polite"></section>
+  <section id="lista" class="grid"></section>
   </main>
 
   <template id="tpl-persona">
     <article class="card persona" data-nombre="">
       <header class="card-head">
+        <input type="checkbox" class="seleccion-persona" aria-label="Seleccionar alumno" />
         <h2 class="nombre"></h2>
       </header>
       <div class="contador-wrap">
