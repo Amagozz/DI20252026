@@ -17,11 +17,41 @@ function renderPersona(nombre, valor = 10) {
   node.dataset.nombre = nombre;
   node.querySelector(".nombre").textContent = nombre;
   const span = node.querySelector(".contador");
-  span.textContent = valor.toFixed(1);
+  // Si el valor es exactamente 10, mostrar solo 10
+  span.textContent = valor === 10 ? "10" : valor.toFixed(1);
   span.dataset.valor = String(valor);
-  setColor(span, valor); // <-- Añadido
+  setColor(span, valor);
+  // Hacer el span focusable
+  span.tabIndex = 0;
   return node;
 }
+// Permitir subir/bajar nota con flechas cuando el span .contador tiene el foco
+lista.addEventListener("keydown", (ev) => {
+  const span = ev.target.closest(".contador");
+  if (!span) return;
+  const card = span.closest(".persona");
+  if (!card) return;
+  const nombre = card.dataset.nombre;
+  if (!estado.has(nombre)) return;
+  let valor = Number(span.dataset.valor || "10");
+  let cambiado = false;
+  if (ev.key === "ArrowUp") {
+    valor = +(valor + 0.1).toFixed(1);
+    if (valor > 10) valor = 10;
+    cambiado = true;
+  } else if (ev.key === "ArrowDown") {
+    valor = Math.max(0, +(valor - 0.1).toFixed(1));
+    cambiado = true;
+  }
+  if (cambiado) {
+    estado.set(nombre, valor);
+    span.dataset.valor = String(valor);
+    span.textContent = valor === 10 ? "10" : valor.toFixed(1);
+    setColor(span, valor);
+    bump(span);
+    ev.preventDefault();
+  }
+});
 
 // Añade esta función para los colores
 function setColor(span, valor) {
@@ -117,13 +147,16 @@ lista.addEventListener("click", (ev) => {
   const span = card.querySelector(".contador");
   let valor = Number(span.dataset.valor || "10");
 
-  if (btn.classList.contains("btn-mas")) valor = Math.min(10, +(valor + 0.1).toFixed(1));
+  if (btn.classList.contains("btn-mas")) {
+    valor = +(valor + 0.1).toFixed(1);
+    if (valor > 10) valor = 10;
+  }
   if (btn.classList.contains("btn-menos")) valor = Math.max(0, +(valor - 0.1).toFixed(1));
   if (btn.classList.contains("btn-muerte")) valor = 4; // Botón de la muerte
 
   estado.set(nombre, valor);
   span.dataset.valor = String(valor);
-  span.textContent = valor.toFixed(1);
+  span.textContent = valor === 10 ? "10" : valor.toFixed(1);
   setColor(span, valor);
   bump(span);
 });
