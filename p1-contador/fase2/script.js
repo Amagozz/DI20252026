@@ -104,11 +104,14 @@ lista.addEventListener("click", (ev) => {
   const span = card.querySelector(".contador");
   let valor = Number(span.dataset.valor || "10");
 
-  if (btn.classList.contains("btn-mas")) valor += 0.1;
+  if (btn.classList.contains("btn-mas")) valor += 0.10;
   if (btn.classList.contains("btn-menos")) valor -= 0.1;
 
-// Limitar el valor máximo a 10
+// Limitar el valor máximo a 10 y limitar el valor minimo a 0
   if (valor > 10) valor = 10;
+  if (valor < 0) valor = 0;  
+
+  valor = Number(valor.toFixed(1));
 
   estado.set(nombre, valor);
   span.dataset.valor = String(valor);
