@@ -1,4 +1,5 @@
 // Estado simple en memoria: { nombre: valor }
+const spanContador = document.getElementById("contador");
 const estado = new Map();
 const lista = document.getElementById("lista");
 const estadoUI = document.getElementById("estado");
@@ -8,6 +9,15 @@ const inputArchivo = document.getElementById("input-archivo");
 const tpl = document.getElementById("tpl-persona");
 
 // --------- Utilidades ---------
+function efectoColor(span) {
+  const valor = parseFloat(span.textContent);
+  if (valor > 8) span.style.color = "green";
+  else if (valor > 5) span.style.color = "orange";
+  else if (valor > 0) span.style.color = "red";
+  else span.style.color = "black";
+}
+
+
 function normalizaNombre(s) {
   return s.normalize("NFD").replace(/\p{Diacritic}/gu, "").trim();
 }
@@ -33,9 +43,12 @@ function renderLista() {
   const nombres = Array.from(estado.keys()).sort((a, b) =>
     normalizaNombre(a).localeCompare(normalizaNombre(b))
   );
+
   for (const n of nombres) {
     const v = estado.get(n) ?? 10;
-    lista.appendChild(renderPersona(n, v));
+    const nodo = renderPersona(n, v);                    
+    efectoColor(nodo.querySelector(".contador"));        
+    lista.appendChild(nodo);                             
   }
 }
 
@@ -104,17 +117,18 @@ lista.addEventListener("click", (ev) => {
   const span = card.querySelector(".contador");
   let valor = Number(span.dataset.valor || "10");
 
-  if (btn.classList.contains("btn-mas")) {
-    valor = Math.min(10, valor + 0.1);
-  }
-  if (btn.classList.contains("btn-menos")) {
-    valor = valor - 0.1;
-  }
-  // Redondea a un decimal
-  valor = Number(valor.toFixed(1));
+if (btn.classList.contains("btn-mas")) {
+  valor = Math.min(10, valor + 0.1);
+}
+if (btn.classList.contains("btn-menos")) {
+  valor = Math.max(0, valor - 0.1);
+}
+// Redondea a un decimal
+valor = Number(valor.toFixed(1));
   estado.set(nombre, valor);
   span.dataset.valor = String(valor);
-  span.textContent = valor;
+  span.textContent = valor.toFixed(1);
+  efectoColor(span);
   bump(span);
 });
 
