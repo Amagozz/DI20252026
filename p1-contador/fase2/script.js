@@ -186,13 +186,21 @@ function actualizarContador(card, accion) {
   const span = card.querySelector(".contador");
   let valor = Number(span.dataset.valor || "10");
 
-
-  if (btn.classList.contains("btn-mas")) {
-    valor = Math.min(10, valor + 0.1);
+  switch(accion) {
+    case 'mas':
+      valor = Math.min(10, valor + 0.1);
+      break;
+    case 'menos':
+      valor = Math.max(0, valor - 0.1);
+      break;
+    case 'cero':
+      valor = 0;
+      break;
+    case 'reset':
+      valor = 10;
+      break;
   }
-  if (btn.classList.contains("btn-menos")) {
-    valor = valor - 0.1;
-  }
+  
   // Redondea a un decimal
   valor = Number(valor.toFixed(1));
 
@@ -276,6 +284,23 @@ function detenerAccionContinuaSeleccionados() {
 }
 
 // --------- Interacción ---------
+// Delegación: click para acción simple
+lista.addEventListener("click", (ev) => {
+  const btn = ev.target.closest("button");
+  if (!btn) return;
+  const card = btn.closest(".persona");
+  if (!card) return;
+
+  let accion = null;
+  if (btn.classList.contains("btn-mas")) accion = "mas";
+  if (btn.classList.contains("btn-menos")) accion = "menos";
+  if (btn.classList.contains("btn-cero")) accion = "cero";
+  
+  if (accion) {
+    actualizarContador(card, accion);
+  }
+});
+
 // Delegación: mousedown para iniciar acción continua
 lista.addEventListener("mousedown", (ev) => {
   const btn = ev.target.closest("button");
@@ -400,7 +425,7 @@ btnSeleccionadosReset.addEventListener("mousedown", (ev) => {
 });
 
 // Prevenir menú contextual en botones de selección
-[btnSeleccionadosCero, btnSeleccionadosMas, btnSeleccionadosMenos, btnSeleccionadosReset].forEach(btn => {
+[btnSeleccionarTodos, btnSeleccionadosCero, btnSeleccionadosMas, btnSeleccionadosMenos, btnSeleccionadosReset, btnDeseleccionar].forEach(btn => {
   btn.addEventListener("contextmenu", (ev) => ev.preventDefault());
 });
 
