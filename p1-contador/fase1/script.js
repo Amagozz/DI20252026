@@ -12,27 +12,14 @@ function actualizarContador() {
   efectoColorDelContador();
 }
 function efectoColorDelContador() {
-  if(contador > 8) {
+  if (contador > 8) {
     spanContador.style.color = "green";
-  } else if(contador > 5) {
+  } else if (contador > 5) {
     spanContador.style.color = "orange";
-  } else if(contador > 3) {
+  } else if (contador > 3) {
     spanContador.style.color = "red";
   }
-
 }
-
-btnMas.addEventListener("click", () => {
-  if(contador > 9.9) return;
-  contador += 0.1;
-  actualizarContador();
-});
-
-btnMenos.addEventListener("click", () => {
-  if(contador < 0.1) return;
-  contador -= 0.1;
-  actualizarContador();
-});
 
 // Inicialización
 actualizarContador();
