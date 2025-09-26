@@ -107,6 +107,9 @@ lista.addEventListener("click", (ev) => {
   if (btn.classList.contains("btn-mas")) valor += 0.1;
   if (btn.classList.contains("btn-menos")) valor -= 0.1;
 
+// Limitar el valor máximo a 10
+  if (valor > 10) valor = 10;
+
   estado.set(nombre, valor);
   span.dataset.valor = String(valor);
   span.textContent = valor;
