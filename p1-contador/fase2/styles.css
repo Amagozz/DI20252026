@@ -89,69 +89,67 @@ main{ padding:1rem; max-width:1100px; margin:0 auto; }
 
 /* Efectos de color para incremento/decremento */
 .persona.increment-flash{
-  background-color: #d4edda !important;
+  background-color: #c3e6cb !important;
   border-color: #28a745 !important;
-  box-shadow: 0 0 10px rgba(40, 167, 69, 0.3);
+  box-shadow: 0 0 15px rgba(40, 167, 69, 0.6);
 }
 
 .persona.decrement-flash{
-  background-color: #f8d7da !important;
+  background-color: #f5c6cb !important;
   border-color: #dc3545 !important;
-  box-shadow: 0 0 10px rgba(220, 53, 69, 0.3);
+  box-shadow: 0 0 15px rgba(220, 53, 69, 0.6);
 }
 
-/* Checkbox personalizado */
-.checkbox-wrapper {
+/* Indicador visual de selección */
+.persona::before {
+  content: '';
   position: absolute;
-  top: 0.75rem;
-  left: 0.75rem;
+  top: 0.5rem;
+  left: 0.5rem;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: var(--accent);
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.3s ease;
   z-index: 10;
 }
 
-.checkbox-persona {
-  width: 20px;
-  height: 20px;
-  opacity: 0;
-  cursor: pointer;
-  position: absolute;
-  top: 0;
-  left: 0;
+.persona.seleccionada::before {
+  opacity: 1;
+  transform: scale(1);
 }
 
-.checkbox-label {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  background-color: rgba(255, 255, 255, 0.9);
-  border: 2px solid var(--border);
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  position: relative;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.checkbox-persona:checked + .checkbox-label {
-  background-color: var(--accent);
-  border-color: var(--accent);
-  transform: scale(1.1);
-}
-
-.checkbox-persona:checked + .checkbox-label::after {
+.persona.seleccionada::after {
   content: '✓';
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 0.5rem;
+  left: 0.5rem;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: white;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: bold;
+  z-index: 11;
 }
 
-.checkbox-label:hover {
-  border-color: var(--accent);
-  background-color: rgba(47, 111, 237, 0.1);
-  transform: scale(1.05);
+/* Cursor pointer para indicar que es clickeable */
+.persona {
+  cursor: pointer;
+}
+
+/* Los botones e inputs mantienen su cursor normal */
+.persona button,
+.persona input {
+  cursor: pointer;
+}
+
+.persona input[type="number"] {
+  cursor: text;
 }
 
 /* Tarjeta seleccionada */
@@ -196,6 +194,55 @@ main{ padding:1rem; max-width:1100px; margin:0 auto; }
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.controles-manual {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 1rem;
+  border-left: 2px solid var(--border);
+  border-right: 2px solid var(--border);
+}
+
+.label-manual {
+  font-weight: bold;
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.input-valor-manual {
+  padding: 0.75rem;
+  border: 2px solid var(--border);
+  border-radius: 25px;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: bold;
+  width: 100px;
+  transition: border-color 0.2s ease;
+}
+
+.input-valor-manual:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.btn-aplicar-manual {
+  padding: 0.75rem 1.25rem;
+  border: 2px solid var(--accent);
+  border-radius: 25px;
+  background: var(--accent);
+  color: white;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-aplicar-manual:hover {
+  background: white;
+  color: var(--accent);
+  transform: translateY(-1px);
 }
 
 .btn-global {
@@ -269,11 +316,11 @@ main{ padding:1rem; max-width:1100px; margin:0 auto; }
 
 /* Efectos de página completa */
 body.page-increment-flash {
-  background-color: rgba(212, 237, 218, 0.3) !important;
+  background-color: rgba(212, 237, 218, 0.7) !important;
   transition: background-color 0.5s ease;
 }
 
 body.page-decrement-flash {
-  background-color: rgba(248, 215, 218, 0.3) !important;
+  background-color: rgba(248, 215, 218, 0.7) !important;
   transition: background-color 0.5s ease;
 }

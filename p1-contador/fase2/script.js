@@ -13,6 +13,8 @@ const contadorSeleccionados = document.getElementById("contador-seleccionados");
 const btnGlobalMas = document.getElementById("btn-global-mas");
 const btnGlobalMenos = document.getElementById("btn-global-menos");
 const inputGlobal = document.getElementById("input-global");
+const inputValorManual = document.getElementById("input-valor-manual");
+const btnAplicarManual = document.getElementById("btn-aplicar-manual");
 const btnGlobalCerrar = document.getElementById("btn-global-cerrar");
 
 // --------- Utilidades ---------
@@ -23,17 +25,11 @@ function normalizaNombre(s) {
 function renderPersona(nombre, valor = 10) {
   const node = tpl.content.firstElementChild.cloneNode(true);
   node.dataset.nombre = nombre;
+  node.dataset.seleccionada = "false";
   node.querySelector(".nombre").textContent = nombre;
   const input = node.querySelector(".contador");
   input.value = valor;
   input.dataset.valor = String(valor);
-  
-  // Configurar checkbox con ID único
-  const checkboxId = `checkbox-${nombre.replace(/\s+/g, '-').toLowerCase()}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-  const checkbox = node.querySelector(".checkbox-persona");
-  const label = node.querySelector(".checkbox-label");
-  checkbox.id = checkboxId;
-  label.setAttribute('for', checkboxId);
   
   return node;
 }
@@ -47,11 +43,8 @@ function bump(el) {
 function renderLista() {
   // Guardar estado de selección antes de limpiar
   const seleccionados = new Set();
-  document.querySelectorAll(".checkbox-persona:checked").forEach(checkbox => {
-    const card = checkbox.closest(".persona");
-    if (card) {
-      seleccionados.add(card.dataset.nombre);
-    }
+  document.querySelectorAll(".persona.seleccionada").forEach(card => {
+    seleccionados.add(card.dataset.nombre);
   });
 
   lista.innerHTML = "";
@@ -65,10 +58,8 @@ function renderLista() {
     
     // Restaurar estado de selección
     if (seleccionados.has(n)) {
-      const checkbox = node.querySelector(".checkbox-persona");
-      if (checkbox) {
-        checkbox.checked = true;
-      }
+      node.classList.add("seleccionada");
+      node.dataset.seleccionada = "true";
     }
   }
   
@@ -206,39 +197,26 @@ function detenerCambioContinuo() {
 
 // --------- Selección múltiple ---------
 function actualizarControlesGlobales() {
-  const checkboxes = document.querySelectorAll(".checkbox-persona:checked");
-  const cantidad = checkboxes.length;
+  const seleccionadas = document.querySelectorAll(".persona.seleccionada");
+  const cantidad = seleccionadas.length;
   
   contadorSeleccionados.textContent = `${cantidad} seleccionado${cantidad !== 1 ? 's' : ''}`;
   
   if (cantidad > 0) {
     controlesGlobales.classList.remove("hidden");
-    // Agregar clase a las tarjetas seleccionadas
-    document.querySelectorAll(".persona").forEach(card => {
-      const checkbox = card.querySelector(".checkbox-persona");
-      if (checkbox.checked) {
-        card.classList.add("seleccionada");
-      } else {
-        card.classList.remove("seleccionada");
-      }
-    });
   } else {
     controlesGlobales.classList.add("hidden");
-    document.querySelectorAll(".persona").forEach(card => {
-      card.classList.remove("seleccionada");
-    });
   }
 }
 
 function aplicarCambioGlobal(incremento) {
-  const checkboxes = document.querySelectorAll(".checkbox-persona:checked");
-  if (checkboxes.length === 0) return;
+  const seleccionadas = document.querySelectorAll(".persona.seleccionada");
+  if (seleccionadas.length === 0) return;
   
   let hayIncremento = false;
   let hayDecremento = false;
   
-  checkboxes.forEach(checkbox => {
-    const card = checkbox.closest(".persona");
+  seleccionadas.forEach(card => {
     const input = card.querySelector(".contador");
     let valor = Number(input.dataset.valor || "10");
     const valorAnterior = valor;
@@ -268,6 +246,51 @@ function aplicarCambioGlobal(incremento) {
     document.body.classList.add("page-decrement-flash");
     setTimeout(() => document.body.classList.remove("page-decrement-flash"), 800);
   }
+}
+
+function aplicarValorManual() {
+  const seleccionadas = document.querySelectorAll(".persona.seleccionada");
+  if (seleccionadas.length === 0) return;
+  
+  let nuevoValor = parseFloat(inputValorManual.value);
+  if (isNaN(nuevoValor)) {
+    alert("Por favor, ingresa un valor válido");
+    return;
+  }
+  
+  // Aplicar límites
+  if (nuevoValor > 10) nuevoValor = 10;
+  if (nuevoValor < 0) nuevoValor = 0;
+  
+  // Redondear a 1 decimal
+  nuevoValor = Math.round(nuevoValor * 10) / 10;
+  
+  let hayIncremento = false;
+  let hayDecremento = false;
+  
+  seleccionadas.forEach(card => {
+    const input = card.querySelector(".contador");
+    const valorAnterior = Number(input.dataset.valor || "10");
+    
+    // Actualizar solo si cambió
+    if (nuevoValor !== valorAnterior) {
+      actualizarContador(card, nuevoValor, 'none'); // Sin efecto individual
+      if (nuevoValor > valorAnterior) hayIncremento = true;
+      if (nuevoValor < valorAnterior) hayDecremento = true;
+    }
+  });
+  
+  // Efecto de página completa
+  if (hayIncremento && !hayDecremento) {
+    document.body.classList.add("page-increment-flash");
+    setTimeout(() => document.body.classList.remove("page-increment-flash"), 800);
+  } else if (hayDecremento && !hayIncremento) {
+    document.body.classList.add("page-decrement-flash");
+    setTimeout(() => document.body.classList.remove("page-decrement-flash"), 800);
+  }
+  
+  // Limpiar el input después de aplicar
+  inputValorManual.value = "";
 }
 
 // Delegación: un solo listener para todos los botones
@@ -359,26 +382,27 @@ lista.addEventListener("blur", (ev) => {
   input.value = valorAlmacenado;
 }, true);
 
-// Event listeners para checkboxes (selección múltiple)
-lista.addEventListener("change", (ev) => {
-  if (ev.target.classList.contains("checkbox-persona")) {
-    console.log("Checkbox changed:", ev.target.checked); // Debug
-    actualizarControlesGlobales();
-  }
-});
-
-// También escuchar clics en los labels para mayor compatibilidad
+// Event listener para selección por clic en la tarjeta
 lista.addEventListener("click", (ev) => {
-  if (ev.target.classList.contains("checkbox-label")) {
-    const checkbox = ev.target.previousElementSibling;
-    if (checkbox && checkbox.classList.contains("checkbox-persona")) {
-      // Cambio manual si es necesario (aunque debería funcionar automáticamente)
-      setTimeout(() => {
-        console.log("Label clicked, checkbox state:", checkbox.checked); // Debug
-        actualizarControlesGlobales();
-      }, 10);
-    }
+  const card = ev.target.closest(".persona");
+  if (!card) return;
+  
+  // No hacer nada si se hizo clic en un botón o input
+  if (ev.target.tagName === 'BUTTON' || ev.target.tagName === 'INPUT') {
+    return;
   }
+  
+  // Alternar selección
+  const isSelected = card.classList.contains("seleccionada");
+  if (isSelected) {
+    card.classList.remove("seleccionada");
+    card.dataset.seleccionada = "false";
+  } else {
+    card.classList.add("seleccionada");
+    card.dataset.seleccionada = "true";
+  }
+  
+  actualizarControlesGlobales();
 });
 
 // Event listeners para controles globales
@@ -392,10 +416,22 @@ btnGlobalMenos.addEventListener("click", () => {
   aplicarCambioGlobal(-incremento);
 });
 
+btnAplicarManual.addEventListener("click", () => {
+  aplicarValorManual();
+});
+
+// También permitir aplicar con Enter en el input manual
+inputValorManual.addEventListener("keypress", (ev) => {
+  if (ev.key === "Enter") {
+    aplicarValorManual();
+  }
+});
+
 btnGlobalCerrar.addEventListener("click", () => {
-  // Deseleccionar todos los checkboxes
-  document.querySelectorAll(".checkbox-persona:checked").forEach(checkbox => {
-    checkbox.checked = false;
+  // Deseleccionar todas las tarjetas
+  document.querySelectorAll(".persona.seleccionada").forEach(card => {
+    card.classList.remove("seleccionada");
+    card.dataset.seleccionada = "false";
   });
   actualizarControlesGlobales();
 });

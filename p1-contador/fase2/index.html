@@ -29,19 +29,20 @@
       <span id="contador-seleccionados" class="contador-seleccionados">0 seleccionados</span>
       <div class="controles-botones">
         <button id="btn-global-menos" class="btn-global btn-global-menos" aria-label="Restar a seleccionados">−</button>
-        <input type="number" id="input-global" class="input-global" value="0.1" min="0.1" max="10" step="0.1" placeholder="0.1" />
+        <input type="number" id="input-global" class="input-global" value="0.1" min="0.1" max="10" step="0.1" placeholder="Incremento" />
         <button id="btn-global-mas" class="btn-global btn-global-mas" aria-label="Sumar a seleccionados">+</button>
+      </div>
+      <div class="controles-manual">
+        <label for="input-valor-manual" class="label-manual">Valor:</label>
+        <input type="number" id="input-valor-manual" class="input-valor-manual" min="0" max="10" step="0.1" placeholder="Ej: 5.5" />
+        <button id="btn-aplicar-manual" class="btn-aplicar-manual" aria-label="Aplicar valor manual">Aplicar</button>
       </div>
       <button id="btn-global-cerrar" class="btn-global-cerrar" aria-label="Cerrar controles globales">✕</button>
     </div>
   </div>
 
   <template id="tpl-persona">
-    <article class="card persona" data-nombre="">
-      <div class="checkbox-wrapper">
-        <input type="checkbox" class="checkbox-persona" id="" />
-        <label class="checkbox-label" for=""></label>
-      </div>
+    <article class="card persona" data-nombre="" data-seleccionada="false">
       <header class="card-head">
         <h2 class="nombre"></h2>
         <button class="btn btn-reset-individual" aria-label="Resetear a 0">0</button>
