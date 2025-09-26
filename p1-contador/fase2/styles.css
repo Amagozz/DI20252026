@@ -66,3 +66,38 @@ main{ padding:1rem; max-width:1100px; margin:0 auto; }
 .btn-menos{ border-color:#fec; }
 
 .persona{ user-select:none; }
+.persona.seleccionada {
+  outline: 2.5px solid #000;
+  outline-offset: 0px;
+  background: #e6f0fa;
+}
+.persona.suspenso {
+  background: #ffd6d6 !important;
+}
+
+#tabla-ranking {
+  margin: 2rem auto 1rem auto;
+  border-collapse: collapse;
+  min-width: 320px;
+  font-size: 1.1rem;
+  background: #fff;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+#tabla-ranking th, #tabla-ranking td {
+  padding: .6em 1.1em;
+  text-align: center;
+  border-bottom: 1px solid #e6e6ef;
+}
+#tabla-ranking th {
+  background: #f3f6ff;
+  font-weight: 600;
+  color: #2f6fed;
+}
+#tabla-ranking tr:last-child td {
+  border-bottom: none;
+}
+#tabla-ranking tr.oro    { background: linear-gradient(90deg, #ffe066 60%, #fffbe6 100%); font-weight: bold; }
+#tabla-ranking tr.plata  { background: linear-gradient(90deg, #e9ecef 60%, #f8f9fa 100%); font-weight: bold; }
+#tabla-ranking tr.bronce { background: linear-gradient(90deg, #f3c07b 60%, #fff3e6 100%); font-weight: bold; }
