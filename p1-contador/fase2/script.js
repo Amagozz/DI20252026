@@ -117,10 +117,14 @@ lista.addEventListener("click", (ev) => {
   const span = card.querySelector(".contador");
   let valor = Number(span.dataset.valor || "10");
 
-  if (btn.classList.contains("btn-mas")) valor += 0.1;
-  if (btn.classList.contains("btn-menos")) valor -= 0.1;
-  valor = Math.min(Math.max(valor, 0), 10);
-
+if (btn.classList.contains("btn-mas")) {
+  valor = Math.min(10, valor + 0.1);
+}
+if (btn.classList.contains("btn-menos")) {
+  valor = Math.max(0, valor - 0.1);
+}
+// Redondea a un decimal
+valor = Number(valor.toFixed(1));
   estado.set(nombre, valor);
   span.dataset.valor = String(valor);
   span.textContent = valor.toFixed(1);
