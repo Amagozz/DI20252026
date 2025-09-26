@@ -1,29 +1,4 @@
-// Guardar todos los comentarios en un solo archivo txt
-document.getElementById('guardar-todos-comentarios')?.addEventListener('click', () => {
-  const cards = lista.querySelectorAll('.persona');
-  let contenido = '';
-  cards.forEach(card => {
-    const nombre = card.dataset.nombre || 'Alumno';
-    const comentario = card.querySelector('.comentario')?.value.trim();
-    if (comentario) {
-      contenido += `${nombre}: ${comentario}\n`;
-    }
-  });
-  if (!contenido) {
-    alert('No hay comentarios para guardar.');
-    return;
-  }
-  const blob = new Blob([contenido], { type: 'text/plain' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'comentarios_alumnos.txt';
-  document.body.appendChild(a);
-  a.click();
-  setTimeout(() => {
-    document.body.removeChild(a);
-    URL.revokeObjectURL(a.href);
-  }, 100);
-});
+
 // Estado simple en memoria: { nombre: valor }
 const estado = new Map();
 const lista = document.getElementById("lista");
@@ -45,13 +20,102 @@ function renderPersona(nombre, valor = 10) {
   node.querySelector(".nombre").textContent = nombre;
   const span = node.querySelector(".contador");
   span.textContent = valor;
+  // Eliminar el botón de buscar de la barra de búsqueda
+  // Solo se añade el input de búsqueda
+  if (!document.getElementById("barra-busqueda")) {
+    const nav = document.createElement("nav");
+    nav.style.marginBottom = "1em";
+    nav.innerHTML = `
+      <input id="barra-busqueda" type="text" placeholder="Buscar alumno..." style="padding:0.5em; font-size:1em; width:200px;">
+    `;
+    // Insertar antes de la lista
+    lista.parentNode.insertBefore(nav, lista);
+    // Evento de búsqueda al pulsar Enter
+    nav.querySelector("#barra-busqueda").addEventListener("keydown", (ev) => {
+      if (ev.key === "Enter") {
+        const nombreBuscado = nav.querySelector("#barra-busqueda").value.trim().toLowerCase();
+        if (!nombreBuscado) return;
+        const cards = lista.querySelectorAll(".persona");
+        let encontrado = false;
+        cards.forEach(card => {
+          const nombre = (card.dataset.nombre || "").toLowerCase();
+          if (nombre === nombreBuscado) {
+            card.focus();
+            card.scrollIntoView({ behavior: "smooth", block: "center" });
+            encontrado = true;
+          }
+        });
+        if (!encontrado) {
+          setEstado("Alumno no encontrado.");
+        } else {
+          setEstado("");
+        }
+      }
+    });
+  }
+  node.addEventListener("keydown", (ev) => {
+    if (ev.key === "ArrowRight" || ev.key === "ArrowLeft") {
+      const cards = Array.from(lista.querySelectorAll('.persona'));
+      const idx = cards.indexOf(node);
+      if (ev.key === "ArrowRight") {
+        const next = cards[(idx + 1) % cards.length];
+        if (next) {
+          next.focus();
+          next.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+        ev.preventDefault();
+      } else if (ev.key === "ArrowLeft") {
+        const prev = cards[(idx - 1 + cards.length) % cards.length];
+        if (prev) {
+          prev.focus();
+          prev.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+        ev.preventDefault();
+      }
+    }
+  });
+  // --- Barra de navegación/búsqueda por nombre ---
+  // Solo se añade una vez al DOM
+  if (!document.getElementById("barra-busqueda")) {
+    const nav = document.createElement("nav");
+    nav.style.marginBottom = "1em";
+    nav.innerHTML = `
+      <input id="barra-busqueda" type="text" placeholder="Buscar alumno..." style="padding:0.5em; font-size:1em; width:200px;">
+      <button id="btn-buscar-alumno" type="button">Buscar</button>
+    `;
+    // Insertar antes de la lista
+    lista.parentNode.insertBefore(nav, lista);
+    // Evento de búsqueda
+    nav.querySelector("#btn-buscar-alumno").addEventListener("click", () => {
+      const nombreBuscado = nav.querySelector("#barra-busqueda").value.trim().toLowerCase();
+      if (!nombreBuscado) return;
+      const cards = lista.querySelectorAll(".persona");
+      let encontrado = false;
+      cards.forEach(card => {
+        const nombre = (card.dataset.nombre || "").toLowerCase();
+        if (nombre === nombreBuscado) {
+          card.focus();
+          card.scrollIntoView({ behavior: "smooth", block: "center" });
+          encontrado = true;
+        }
+      });
+      if (!encontrado) {
+        setEstado("Alumno no encontrado.");
+      } else {
+        setEstado("");
+      }
+    });
+    // Enter en input también busca
+    nav.querySelector("#barra-busqueda").addEventListener("keydown", (ev) => {
+      if (ev.key === "Enter") nav.querySelector("#btn-buscar-alumno").click();
+    });
+  }
   span.dataset.valor = String(valor);
   efectoColorDelContador(span, valor);
   // Hacer la tarjeta accesible por teclado
   node.tabIndex = 0;
   return node;
 }
-
 function bump(el) {
   el.classList.add("bump");
   setTimeout(() => el.classList.remove("bump"), 160);
@@ -73,9 +137,22 @@ function renderLista() {
 
 // Accesibilidad con flechas y selección múltiple
 lista.addEventListener("keydown", (ev) => {
-  const card = ev.target.closest('.persona');
-  if (!card) return;
   const cards = Array.from(lista.querySelectorAll('.persona'));
+  let card = ev.target.closest('.persona');
+  // Si no hay ninguna caja con foco y se pulsa flecha, enfocar la primera o última
+  if (!card && (ev.key === 'ArrowRight' || ev.key === 'ArrowLeft')) {
+    if (cards.length === 0) return;
+    if (ev.key === 'ArrowRight') {
+      cards[0].focus();
+      cards[0].scrollIntoView({ behavior: "smooth", block: "center" });
+    } else {
+      cards[cards.length - 1].focus();
+      cards[cards.length - 1].scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+    ev.preventDefault();
+    return;
+  }
+  if (!card) return;
   const idx = cards.indexOf(card);
   // Selección múltiple
   const seleccionados = Array.from(lista.querySelectorAll('.seleccion-persona:checked'));
@@ -242,11 +319,31 @@ inputArchivo.addEventListener("change", async (e) => {
   }
 });
 
+
 // --------- Bootstrap ---------
 // Opción A (recomendada en local con live server): intenta cargar nombres.txt
 // Opción B: si falla, el usuario puede usar “Cargar archivo local”
 cargarNombresDesdeTxt("nombres.txt").catch(() => {
   setEstado("Consejo: coloca un nombres.txt junto a esta página o usa 'Cargar archivo local'.");
+});
+
+// Listener global para flechas derecha/izquierda si no hay ninguna caja con foco
+window.addEventListener("keydown", (ev) => {
+  if (ev.key !== "ArrowRight" && ev.key !== "ArrowLeft") return;
+  const active = document.activeElement;
+  // Si el foco no está en una persona
+  if (!active || !active.classList || !active.classList.contains("persona")) {
+    const cards = Array.from(document.querySelectorAll(".persona"));
+    if (cards.length === 0) return;
+    if (ev.key === "ArrowRight") {
+      cards[0].focus();
+      cards[0].scrollIntoView({ behavior: "smooth", block: "center" });
+    } else {
+      cards[cards.length - 1].focus();
+      cards[cards.length - 1].scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+    ev.preventDefault();
+  }
 });
 
 
