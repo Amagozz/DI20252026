@@ -20,6 +20,12 @@ function renderPersona(nombre, valor = 10) {
   const span = node.querySelector(".contador");
   span.textContent = valor;
   span.dataset.valor = String(valor);
+  span.classList.remove("rojo", "naranja", "verde");
+  if (valor < 5) span.classList.add("rojo");
+  else if (valor >= 5 && valor < 6) span.classList.add("naranja");
+  else if (valor >= 6) span.classList.add("verde");
+    span.dataset.valor = valor.toFixed(1);
+  span.textContent = valor.toFixed(1);
   return node;
 }
 
@@ -31,9 +37,12 @@ function bump(el) {
 // Render completo desde estado
 function renderLista() {
   lista.innerHTML = "";
-  const nombres = Array.from(estado.keys()).sort((a, b) =>
-    normalizaNombre(a).localeCompare(normalizaNombre(b))
-  );
+const nombres = Array.from(estado.keys()).sort((a, b) => {
+  const notaA = estado.get(a)?.valor ?? estado.get(a);
+  const notaB = estado.get(b)?.valor ?? estado.get(b);
+  return notaB - notaA; // orden descendente (mayor nota primero)
+});
+
   for (const n of nombres) {
     const v = estado.get(n) ?? 10;
     lista.appendChild(renderPersona(n, v));
@@ -95,6 +104,7 @@ async function cargarDesdeArchivoLocal(file) {
 // Delegación: un solo listener para todos los botones
 
 lista.addEventListener("click", (ev) => {
+  
   const btn = ev.target.closest("button");
   if (!btn) return;
   const card = btn.closest(".persona");
@@ -134,6 +144,8 @@ if (valor < 5) {
   span.dataset.valor = String(valor);
   span.textContent = valor.toFixed(1);
   bump(span);
+ 
+ renderLista();
 });
 
 btnReset.addEventListener("click", () => {
@@ -194,6 +206,7 @@ document.getElementById("btn-subir-seleccion").addEventListener("click", () => {
 document.getElementById("btn-bajar-seleccion").addEventListener("click", () => {
   actualizarSeleccionados(-0.10);
 });
+
 document.getElementById("btn-aleatorio").addEventListener("click", () => {
   const personas = Array.from(lista.querySelectorAll(".persona"));
   if (personas.length === 0) return;
