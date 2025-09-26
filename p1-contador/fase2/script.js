@@ -12,16 +12,40 @@ function normalizaNombre(s) {
   return s.normalize("NFD").replace(/\p{Diacritic}/gu, "").trim();
 }
 
+// Renderiza la tarjeta de una persona
 function renderPersona(nombre, valor = 10) {
   const node = tpl.content.firstElementChild.cloneNode(true);
   node.dataset.nombre = nombre;
   node.querySelector(".nombre").textContent = nombre;
   const span = node.querySelector(".contador");
-  span.textContent = valor;
+  span.textContent = valor.toFixed(1);
   span.dataset.valor = String(valor);
+
+  // Añadir barra deslizante (slider)
+  const slider = document.createElement("input");
+  slider.type = "range";
+  slider.className = "barra-nota";
+  slider.min = "0";
+  slider.max = "10";
+  slider.step = "0.1";
+  slider.value = valor;
+  slider.setAttribute("aria-label", "Ajustar nota");
+
+  slider.addEventListener("input", () => {
+    let nuevoValor = Number(slider.value);
+    nuevoValor = Math.max(0, Math.min(10, nuevoValor));
+    estado.set(nombre, nuevoValor);
+    span.dataset.valor = String(nuevoValor);
+    span.textContent = nuevoValor.toFixed(1);
+    bump(span);
+  });
+
+  // Insertar slider debajo del contador
+  node.querySelector(".contador-wrap").after(slider);
   return node;
 }
 
+// Animación bump
 function bump(el) {
   el.classList.add("bump");
   setTimeout(() => el.classList.remove("bump"), 160);
@@ -91,7 +115,6 @@ async function cargarDesdeArchivoLocal(file) {
 }
 
 // --------- Interacción ---------
-// Delegación: un solo listener para todos los botones
 lista.addEventListener("click", (ev) => {
   const btn = ev.target.closest("button");
   if (!btn) return;
@@ -104,12 +127,22 @@ lista.addEventListener("click", (ev) => {
   const span = card.querySelector(".contador");
   let valor = Number(span.dataset.valor || "10");
 
+  // Botón + / -
   if (btn.classList.contains("btn-mas")) valor += 0.1;
   if (btn.classList.contains("btn-menos")) valor -= 0.1;
 
+  // Limitar valor entre 0 y 10
+  valor = Math.max(0, Math.min(10, valor));
+  valor = Math.round(valor * 10) / 10;
+
   estado.set(nombre, valor);
   span.dataset.valor = String(valor);
-  span.textContent = valor;
+  span.textContent = valor.toFixed(1);
+
+  // Sincroniza el slider con el nuevo valor
+  const slider = card.parentNode.querySelector(".barra-nota");
+  if (slider) slider.value = valor;
+
   bump(span);
 });
 
@@ -142,8 +175,6 @@ inputArchivo.addEventListener("change", async (e) => {
 });
 
 // --------- Bootstrap ---------
-// Opción A (recomendada en local con live server): intenta cargar nombres.txt
-// Opción B: si falla, el usuario puede usar “Cargar archivo local”
 cargarNombresDesdeTxt("nombres.txt").catch(() => {
   setEstado("Consejo: coloca un nombres.txt junto a esta página o usa 'Cargar archivo local'.");
 });

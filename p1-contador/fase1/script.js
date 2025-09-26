@@ -1,4 +1,4 @@
-let contador = 10;
+let contador = 5;
 const spanContador = document.getElementById("contador");
 const btnMas = document.getElementById("btn-mas");
 const btnMenos = document.getElementById("btn-menos");
@@ -17,7 +17,7 @@ function efectoColorDelContador() {
   } else if(contador > 5) {
     spanContador.style.color = "orange";
   } else if(contador > 3) {
-    spanContador.style.color = "red";
+    spanContador.style.color = "red"; spanContador        
   }
 
 }
