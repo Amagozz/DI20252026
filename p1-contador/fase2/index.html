@@ -19,18 +19,6 @@
     </div>
   </header>
 
-  <div class="controles-seleccion" id="controles-seleccion" style="display: none;">
-    <span id="contador-seleccionados">0 alumnos seleccionados</span>
-    <div class="acciones-seleccion">
-      <button id="btn-seleccionar-todos">Seleccionar todos</button>
-      <button id="btn-seleccionados-cero">Poner en 0</button>
-      <button id="btn-seleccionados-mas">+0.1 a todos</button>
-      <button id="btn-seleccionados-menos">-0.1 a todos</button>
-      <button id="btn-seleccionados-reset">Resetear a 10</button>
-      <button id="btn-deseleccionar">Deseleccionar todos</button>
-    </div>
-  </div>
-
   <main>
     <section id="estado" aria-live="polite"></section>
     <section id="lista" class="grid"></section>
@@ -39,14 +27,12 @@
   <template id="tpl-persona">
     <article class="card persona" data-nombre="">
       <header class="card-head">
-        <input type="checkbox" class="selector-alumno" aria-label="Seleccionar alumno">
         <h2 class="nombre"></h2>
       </header>
       <div class="contador-wrap">
-        <button class="btn redondeado btn-menos" aria-label="Restar 0.1">−0.1</button>
+        <button class="btn redondeado btn-menos" aria-label="Restar uno">−1</button>
         <span class="contador" data-valor="10" aria-live="polite">10</span>
-        <button class="btn redondeado btn-mas" aria-label="Sumar 0.1">+0.1</button>
-        <button class="btn redondeado btn-cero" aria-label="Poner en 0">0</button>
+        <button class="btn redondeado btn-mas" aria-label="Sumar uno">+1</button>
       </div>
     </article>
   </template>
