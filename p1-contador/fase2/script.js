@@ -174,57 +174,22 @@ function manejarInteraccion(ev) {
     const nombre = card.dataset.nombre;
     if (!estado.has(nombre)) return;
 
-    const span = card.querySelector(".contador");
-    let valor = Number(span.dataset.valor || "10");
-    let nuevoValor = valor;
-    
-    // Lógica para botones (+1 / -1)
-    if (ev.type === "click") {
-        const btn = ev.target.closest("button");
-        if (!btn) return;
-        
-        if (btn.classList.contains("btn-mas")) {
-            nuevoValor = Math.min(10, valor + 0.1);
-        } else if (btn.classList.contains("btn-menos")) {
-            nuevoValor = valor - 0.1;
-        }
-        
-        // Redondea a un decimal
-        nuevoValor = Number(nuevoValor.toFixed(1));
-    
-    // Lógica para el slider (input / change)
-    } else if (ev.type === "input" || ev.type === "change") {
-        const slider = ev.target.closest(".contador-slider");
-        if (!slider) return;
+  const span = card.querySelector(".contador");
+  let valor = Number(span.dataset.valor || "10");
 
-        nuevoValor = Number(slider.value);
-    } else {
-        return;
-    }
-
-    if (nuevoValor === valor) return;
-    
-    // Aplicar el nuevo valor
-    estado.set(nombre, nuevoValor);
-    span.dataset.valor = String(nuevoValor);
-    span.textContent = nuevoValor;
-    bump(span);
-    
-    // Sincronizar el slider si el cambio vino de un botón
-    const slider = card.querySelector(".contador-slider");
-    if (slider) {
-        slider.value = nuevoValor;
-    }
-    
-    guardarEstado(); // Persistir el cambio
-    renderRanking(); // Actualizar el ranking en tiempo real
-}
-
-// Delegación: un solo listener para todos los botones Y el slider
-lista.addEventListener("click", manejarInteraccion);
-lista.addEventListener("input", manejarInteraccion); // Para movimiento continuo del slider
-lista.addEventListener("change", manejarInteraccion); // Para valor final del slider
-
+  if (btn.classList.contains("btn-mas")) {
+    valor = Math.min(10, valor + 0.1);
+  }
+  if (btn.classList.contains("btn-menos")) {
+    valor = valor - 0.1;
+  }
+  // Redondea a un decimal
+  valor = Number(valor.toFixed(1));
+  estado.set(nombre, valor);
+  span.dataset.valor = String(valor);
+  span.textContent = valor;
+  bump(span);
+};
 
 btnReset.addEventListener("click", () => {
   for (const n of estado.keys()) estado.set(n, 10);
