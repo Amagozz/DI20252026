@@ -116,37 +116,58 @@ lista.addEventListener("click", (ev) => {
   const nombre = card.dataset.nombre;
   if (!estado.has(nombre)) return;
 
-  const span = card.querySelector(".contador");
-  let valor = Number(span.dataset.valor || "10");
+    // detectamos todos los seleccionados
+  const seleccionados = lista.querySelectorAll(".check-seleccion:checked");
 
-  if (btn.classList.contains("btn-mas")) valor += 1;
-  if (btn.classList.contains("btn-menos")) valor -= 1;
-  if(btn.classList.contains("btn-decimal-menos")) valor-=0.1;
-  if(btn.classList.contains("btn-decimal-mas")) valor +=0.1;
-  if(btn.classList.contains("btn-muerte")) valor =0;
-  if(btn.classList.contains("btn-reset")) valor =10;
-
-if (btn.classList.contains("btn-sorpresa")) {
-  // 🔒 condición: solo si el valor actual < 5
-  if (valor < 5) {
-    const accion = accionesSorpresa[Math.floor(Math.random() * accionesSorpresa.length)];
-    valor = accion.efecto(valor);
-    setEstado(`${nombre}: ${accion.texto}`);
+  // si hay más de uno, trabajamos con todos; si no, solo con la tarjeta clicada
+  let cardsObjetivo;
+  if (seleccionados.length > 1) {
+    cardsObjetivo = [];
+    for (let i = 0; i < seleccionados.length; i++) {
+      cardsObjetivo.push(seleccionados[i].closest(".persona"));
+    }
   } else {
-    setEstado(`${nombre}: Solo puedes usar la caja sorpresa si tienes menos de 5 puntos`);
+    cardsObjetivo = [card];
   }
-}
 
-  estado.set(nombre, valor);
+  // recorrer cada tarjeta objetivo
+  for (let i = 0; i < cardsObjetivo.length; i++) {
+    const c = cardsObjetivo[i];
+    const nombre = c.dataset.nombre;
+    if (!estado.has(nombre)) continue;
 
-  //controla que el numero no pueda ser mas alto que 10 ni mas bajo que 0
-  if (valor > 10) valor = 10;
-  if (valor < 0) valor = 0;
-  span.dataset.valor = String(valor);
-  span.textContent = valor.toFixed(1);
-  bump(span);
+    let valor = estado.get(nombre) ?? 10;
+
+    // acciones de botones
+    if (btn.classList.contains("btn-mas")) valor += 1;
+    if (btn.classList.contains("btn-menos")) valor -= 1;
+    if (btn.classList.contains("btn-decimal-menos")) valor -= 0.1;
+    if (btn.classList.contains("btn-decimal-mas")) valor += 0.1;
+    if (btn.classList.contains("btn-muerte")) valor = 0;
+    if (btn.classList.contains("btn-reset")) valor = 10;
+
+    if (btn.classList.contains("btn-sorpresa")) {
+      if (valor < 5) {
+        const accion = accionesSorpresa[Math.floor(Math.random() * accionesSorpresa.length)];
+        valor = accion.efecto(valor);
+        setEstado(`${nombre}: ${accion.texto}`);
+      } else {
+        setEstado(`${nombre}: Solo puedes usar la caja sorpresa si tienes menos de 5 puntos`);
+      }
+    }
+
+    // límites
+    if (valor > 10) valor = 10;
+    if (valor < 0) valor = 0;
+
+    // actualizar estado y UI
+    estado.set(nombre, valor);
+    const span = c.querySelector(".contador");
+    span.dataset.valor = String(valor);
+    span.textContent = valor.toFixed(1);
+    bump(span);
+  }
 });
-
 //boton reset
 btnReset.addEventListener("click", () => {
   for (const n of estado.keys()) estado.set(n, 10);
@@ -175,6 +196,20 @@ inputArchivo.addEventListener("change", async (e) => {
   } finally {
     inputArchivo.value = "";
   }
+});
+
+// Seleccionar todos
+document.getElementById("btn-seleccionar-todos").addEventListener("click", () => {
+  const checkboxes = lista.querySelectorAll(".check-seleccion");
+  checkboxes.forEach(chk => chk.checked = true);
+  setEstado(`Se han seleccionado ${checkboxes.length} personas`);
+});
+
+// Deseleccionar todos
+document.getElementById("btn-deseleccionar-todos").addEventListener("click", () => {
+  const checkboxes = lista.querySelectorAll(".check-seleccion");
+  checkboxes.forEach(chk => chk.checked = false);
+  setEstado("Se han deseleccionado todas las personas");
 });
 
 // --------- Bootstrap ---------
