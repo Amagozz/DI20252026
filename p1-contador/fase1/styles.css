@@ -1,0 +1,227 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+#cajas-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.caja {
+    background: #d3d3d3;
+    border-radius: 15px;
+    padding: 20px;
+    width: 150px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.caja.seleccionada {
+    border: 3px solid #333;
+    background: #b0b0b0;
+}
+
+
+.caja:hover {
+    transform: scale(1.05);
+    background: #c0c0c0;
+}
+
+.nombre {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.contador {
+    display: block;
+    font-size: 24px;
+    font-weight: bold;
+    transition: color 0.2s;
+}
+
+.botones {
+    margin-top: 20px;
+}
+
+/*EFECTOS VISUALES*/
+.changed {
+    color: red;
+    font-size: 20px;
+    transition: all 0.1s;
+}
+
+.changed-suma {
+    color: springgreen;
+}
+
+.changed-resta {
+    color: red;
+}
+
+.changed-reset {
+    color: white;
+}
+
+/* Animación de texto en modo fiesta */
+@keyframes textoFiesta {
+    0% {
+        color: red;
+    }
+
+    20% {
+        color: orange;
+    }
+
+    40% {
+        color: yellow;
+    }
+
+    60% {
+        color: green;
+    }
+
+    80% {
+        color: blue;
+    }
+
+    100% {
+        color: purple;
+    }
+}
+
+.span-fiesta {
+    animation: textoFiesta 1s linear infinite;
+}
+
+body {
+    transition: transform 0.1s;
+}
+
+.caja {
+    transition: transform 0.1s, background-color 0.1s;
+}
+
+.contador {
+    font-weight: bold;
+    transition: color 0.1s;
+}
+
+#contador-container {
+    position: relative;
+    /* para que los botones se muevan dentro */
+    width: 300px;
+    /* ancho fijo o mínimo */
+    height: 150px;
+    /* alto fijo o mínimo */
+    margin: auto;
+    overflow: visible;
+    /* permitir que los botones puedan moverse libremente */
+}
+
+#contador-container button {
+    position: absolute;
+    /* para que top/left funcionen */
+    z-index: 10;
+    /* asegurarse de que los botones estén por encima de otros elementos */
+    transition: top 0.2s, left 0.2s;
+    /* suavizar el movimiento */
+}
+
+@keyframes moverInput {
+    0% {
+        transform: translateX(0);
+        color: red;
+    }
+
+    25% {
+        transform: translateX(100px);
+        color: orange;
+    }
+
+    50% {
+        transform: translateX(-100px);
+        color: yellow;
+    }
+
+    75% {
+        transform: translateX(50px);
+        color: green;
+    }
+
+    100% {
+        transform: translateX(0);
+        color: blue;
+    }
+}
+
+.input-fiesta {
+    animation: moverInput 2s linear infinite;
+}
+
+
+@keyframes balanceo {
+    0% {
+        transform: rotate(-10deg);
+    }
+
+    50% {
+        transform: rotate(10deg);
+    }
+
+    100% {
+        transform: rotate(-10deg);
+    }
+}
+
+@keyframes colorFiestaH1 {
+    0% {
+        color: red;
+    }
+
+    20% {
+        color: orange;
+    }
+
+    40% {
+        color: yellow;
+    }
+
+    60% {
+        color: green;
+    }
+
+    80% {
+        color: blue;
+    }
+
+    100% {
+        color: purple;
+    }
+}
+
+.h1-fiesta {
+    animation: balanceo 0.5s ease-in-out infinite, colorFiestaH1 1s linear infinite;
+}
+
+#video-fondo {
+    position: fixed;
+    /* para que quede fijo en la pantalla */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    /* detrás de todo el contenido */
+    overflow: hidden;
+}
+
+#video-fondo iframe {
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    /* para que los clicks pasen al contenido */
+}

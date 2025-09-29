@@ -1,25 +1,284 @@
-let contador = 10;
-const spanContador = document.getElementById("contador");
+let contadores = [10, 10, 10, 10];
+let holdInterval;
+let seleccionadas = [];
+
+let modoFiesta = false;
+let fiestaInterval;
+let velocidad = 1;
+let colorHue = 0;
+let shakeStep = 0;
+let contadoresBackup = [];
+
+const cajas = [
+  document.getElementById("caja0"),
+  document.getElementById("caja1"),
+  document.getElementById("caja2"),
+  document.getElementById("caja3")
+];
+
+const spansContador = [
+  document.getElementById("contador0"),
+  document.getElementById("contador1"),
+  document.getElementById("contador2"),
+  document.getElementById("contador3")
+];
+
 const btnMas = document.getElementById("btn-mas");
 const btnMenos = document.getElementById("btn-menos");
+const btn0 = document.getElementById("btn-0");
+const inputPasos = document.getElementById("pasos");
+const botones = [btnMas, btnMenos, btn0];
+const labelPasos = document.querySelector("label[for='pasos']");
+const audioFiesta = document.getElementById("audio-fiesta");
 
-function actualizarContador() {
-  spanContador.textContent = contador;
+// --- Selección multi-alumno ---
+cajas.forEach((caja, index) => {
+  caja.addEventListener("click", () => {
+    if (seleccionadas.includes(index)) {
+      seleccionadas = seleccionadas.filter(i => i !== index);
+      caja.classList.remove("seleccionada");
+    } else {
+      seleccionadas.push(index);
+      caja.classList.add("seleccionada");
+    }
+  });
+});
 
-  // Efecto visual para marcar el cambio
-  spanContador.classList.add("changed");
-  setTimeout(() => spanContador.classList.remove("changed"), 200);
+// --- Actualizar contadores con color según acción ---
+function actualizarContadores(tipo) {
+  seleccionadas.forEach(i => {
+    contadores[i] = Math.round(contadores[i] * 10) / 10;
+    const span = spansContador[i];
+    span.textContent = contadores[i];
+
+    // Quitar clases anteriores
+    span.classList.remove("changed-suma", "changed-resta", "changed-reset");
+
+    // Agregar clase según tipo
+    if (tipo === "suma") span.classList.add("changed-suma");
+    else if (tipo === "resta") span.classList.add("changed-resta");
+    else if (tipo === "reset") span.classList.add("changed-reset");
+  });
 }
 
-btnMas.addEventListener("click", () => {
-  contador++;
-  actualizarContador();
+// --- Quitar efecto visual ---
+function quitarEfecto() {
+  seleccionadas.forEach(i => {
+    const span = spansContador[i];
+    span.classList.remove("changed-suma", "changed-resta", "changed-reset");
+  });
+}
+
+//FLECHAS
+document.addEventListener("keydown", (event) => {
+  if (seleccionadas.length === 0) return; // No hacer nada si no hay cajas seleccionadas
+
+  switch (event.key) {
+    case "ArrowUp":
+      // Subir contador
+      seleccionadas.forEach(i => {
+        contadores[i] += getPasos();
+        if (contadores[i] > 10) contadores[i] = 10;
+      });
+      actualizarContadores("suma");
+      break;
+
+    case "ArrowDown":
+      // Bajar contador
+      seleccionadas.forEach(i => {
+        contadores[i] -= getPasos();
+        if (contadores[i] < 0) contadores[i] = 0;
+      });
+      actualizarContadores("resta");
+      break;
+
+    case "x":
+      seleccionadas.forEach(i => contadores[i] = 0);
+      actualizarContadores("reset");
+      break;
+
+    case "f":
+
+      break;
+  }
 });
 
-btnMenos.addEventListener("click", () => {
-  contador--;
-  actualizarContador();
+// --- Botón MAS ---
+btnMas.addEventListener("mousedown", () => {
+  doActionBtnMas();
+  holdInterval = setInterval(doActionBtnMas, 200);
 });
+btnMas.addEventListener("mouseup", quitarIntervalo);
+btnMas.addEventListener("mouseleave", quitarIntervalo);
+
+function doActionBtnMas() {
+  seleccionadas.forEach(i => {
+    contadores[i] += getPasos();
+    if (contadores[i] > 10) contadores[i] = 10;
+  });
+  actualizarContadores("suma");
+}
+
+// --- Botón MENOS ---
+btnMenos.addEventListener("mousedown", () => {
+  doActionBtnMenos();
+  holdInterval = setInterval(doActionBtnMenos, 200);
+});
+btnMenos.addEventListener("mouseup", quitarIntervalo);
+btnMenos.addEventListener("mouseleave", quitarIntervalo);
+
+function doActionBtnMenos() {
+  seleccionadas.forEach(i => {
+    contadores[i] -= getPasos();
+    if (contadores[i] < 0) contadores[i] = 0;
+  });
+  actualizarContadores("resta");
+}
+
+// --- Botón RESET ---
+btn0.addEventListener("click", () => {
+  seleccionadas.forEach(i => contadores[i] = 0);
+  actualizarContadores("reset");
+});
+
+// --- Función de finalización de hold ---
+function quitarIntervalo() {
+  clearInterval(holdInterval);
+  quitarEfecto();
+}
+
+
+
+
+// --- Obtener paso ---
+function getPasos() {
+  return parseFloat(inputPasos.value) || 0.1;
+}
 
 // Inicialización
-actualizarContador();
+actualizarContadores("reset");
+
+
+
+
+
+
+
+
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "f" || event.key === "F") {
+    if (!modoFiesta) {
+      activarModoFiesta();
+    } else {
+      desactivarModoFiesta();
+    }
+  }
+});
+
+
+
+function activarModoFiesta() {
+  modoFiesta = true;
+  velocidad = 1;
+  shakeStep = 0;
+  contadoresBackup = [...contadores];
+
+  audioFiesta.play();
+
+  const h1 = document.querySelector("h1");
+  h1.classList.add("h1-fiesta");
+
+  document.body.style.backgroundImage = "url('ditto.gif')";
+  document.body.style.backgroundSize = "cover";
+  document.body.style.backgroundRepeat = "no-repeat";
+
+  spansContador.forEach(span => span.classList.add("span-fiesta"));
+
+  labelPasos.style.display = "none";        // ocultar el label
+  inputPasos.classList.add("input-fiesta"); // animación de movimiento y color
+
+  botones.forEach(btn => {
+    btn.style.display = "none"; // oculta los botones
+  });
+
+  fiestaInterval = setInterval(() => {
+    velocidad += 0.02;
+
+    // Subir contadores
+    for (let i = 0; i < contadores.length; i++) {
+      contadores[i] += getPasos() * velocidad;
+      spansContador[i].textContent = Math.round(contadores[i] * 10) / 10;
+    }
+
+    // Animación de cajas
+    cajas.forEach((caja, i) => {
+      const scale = 1 + Math.sin(Date.now() / 200 + i) * 0.5;
+      caja.style.transform = `scale(${scale})`;
+      const hue = (Math.random() * 360) % 360;
+      caja.style.backgroundColor = `hsl(${hue}, 80%, 70%)`;
+    });
+
+    // Shake de pantalla
+    const shakeX = Math.sin(shakeStep) * 10;
+    const shakeY = Math.cos(shakeStep) * 10;
+    document.body.style.transform = `translate(${shakeX}px, ${shakeY}px)`;
+    shakeStep += 0.3;
+
+    // Mover botones aleatoriamente dentro del contenedor
+    botones.forEach(btn => {
+      const contenedor = document.getElementById("contador-container");
+      const maxX = contenedor.clientWidth - btn.offsetWidth;
+      const maxY = contenedor.clientHeight - btn.offsetHeight;
+      btn.style.left = Math.random() * maxX + "px";
+      btn.style.top = Math.random() * maxY + "px";
+    });
+
+  }, 100);
+}
+
+function desactivarModoFiesta() {
+  modoFiesta = false;
+  clearInterval(fiestaInterval);
+
+  audioFiesta.pause();
+
+  // Restaurar contadores a los valores previos
+  contadores = [...contadoresBackup];
+  spansContador.forEach((span, i) => {
+    span.textContent = Math.round(contadores[i] * 10) / 10;
+    span.classList.remove("span-fiesta");
+    span.style.color = ""; // permitir animaciones de hold
+  });
+
+  // Restaurar cajas
+  cajas.forEach(caja => {
+    caja.style.transform = "";
+    caja.style.backgroundColor = "#d3d3d3";
+  });
+
+  labelPasos.style.display = "";           // mostrar el label de nuevo
+  inputPasos.classList.remove("input-fiesta"); // quitar animación
+  inputPasos.style.color = "";             // restaurar color original
+  inputPasos.style.transform = "";         // restaurar posición original
+
+  // Restaurar H1
+  const h1 = document.querySelector("h1");
+  h1.classList.remove("h1-fiesta");
+
+  // Restaurar botones
+  botones.forEach(btn => {
+    btn.style.display = ""; // volver a mostrar
+    btn.style.position = "";
+    btn.style.top = "";
+    btn.style.left = "";
+    btn.style.zIndex = "";
+  });
+
+  // Restaurar fondo y transform del body
+  document.body.style.backgroundImage = "";
+  document.body.style.transform = "";
+
+  // Restaurar cualquier otro estilo que se sobrescribió
+  // De esta manera los eventos y animaciones originales siguen funcionando
+}
