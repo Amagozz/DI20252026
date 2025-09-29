@@ -175,3 +175,15 @@ document.addEventListener("keydown", (evento) => {
 cargarNombresDesdeTxt("nombres.txt").catch(() => {
   setEstado("Consejo: coloca un nombres.txt junto a esta página o usa 'Cargar archivo local'.");
 });
+
+// Añade esto después de renderLista()
+lista.addEventListener("change", (ev) => {
+  if (ev.target.matches("input.selector")) {
+    const card = ev.target.closest(".persona");
+    if (ev.target.checked) {
+      card.classList.add("seleccionada");
+    } else {
+      card.classList.remove("seleccionada");
+    }
+  }
+});
