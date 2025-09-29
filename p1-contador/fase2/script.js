@@ -14,7 +14,8 @@ const accionesSorpresa = [
   { texto: "Tus puntos se duplican", efecto: (valor) => valor * 2 },
   { texto: "Pierdes 3 puntos", efecto: (valor) => valor - 3 },
   { texto: "Ganas 5 puntos", efecto: (valor) => valor + 5 },
-  { texto: "Vuelves a 10", efecto: () => 10 }
+  { texto: "Pierdes la mitad", efecto: (v) => Math.floor(v / 2) },
+  { texto: "¡Estás a salvo! No pasa nada, menudo FAIL", efecto: (v) => v } // no cambia nada
 ];
 
 
@@ -125,16 +126,16 @@ lista.addEventListener("click", (ev) => {
   if(btn.classList.contains("btn-muerte")) valor =0;
   if(btn.classList.contains("btn-reset")) valor =10;
 
-  if (btn.classList.contains("btn-sorpresa")) {
-  // escoger acción al azar
-  const accion = accionesSorpresa[Math.floor(Math.random() * accionesSorpresa.length)];
-
-  // aplicar el efecto
-  valor = accion.efecto(valor);
-
-  // mensaje para el usuario
-  setEstado(`${nombre}: ${accion.texto}`);
-  } 
+if (btn.classList.contains("btn-sorpresa")) {
+  // 🔒 condición: solo si el valor actual < 5
+  if (valor < 5) {
+    const accion = accionesSorpresa[Math.floor(Math.random() * accionesSorpresa.length)];
+    valor = accion.efecto(valor);
+    setEstado(`${nombre}: ${accion.texto}`);
+  } else {
+    setEstado(`${nombre}: Solo puedes usar la caja sorpresa si tienes menos de 5 puntos`);
+  }
+}
 
   estado.set(nombre, valor);
 
