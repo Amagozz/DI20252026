@@ -37,6 +37,8 @@ function renderLista() {
     const v = estado.get(n) ?? 10;
     lista.appendChild(renderPersona(n, v));
   }
+  // para que los colores se muestren al cargar la lista
+  cambioColores();
 }
 
 // Mensaje de estado accesible
@@ -104,7 +106,7 @@ lista.addEventListener("click", (ev) => {
   const span = card.querySelector(".contador");
   let valor = Number(span.dataset.valor || "10");
 
-  if (btn.classList.contains("btn-mas") && valor < 10) valor += 0.1;  
+  if (btn.classList.contains("btn-mas") && valor < 10) valor += 0.1;
   if (btn.classList.contains("btn-menos") && valor > 0) valor -= 0.1;
 
   if (btn.classList.contains("btn-muerte")) valor = 0;
@@ -115,7 +117,22 @@ lista.addEventListener("click", (ev) => {
   span.dataset.valor = String(valor);
   span.textContent = valor;
   bump(span);
+
+  cambioColores();
 });
+
+function cambioColores() {
+  document.querySelectorAll(".persona").forEach(span => {
+    const valor = Number(span.querySelector(".contador").dataset.valor || "10");
+    if (valor >= 7) {
+      span.style.backgroundColor = "#d4edda";
+    } else if (valor >= 4.5) {
+      span.style.backgroundColor = "#fff3cd";
+    } else {
+      span.style.backgroundColor = "#f8d7da";
+    }
+  });
+}
 
 btnReset.addEventListener("click", () => {
   for (const n of estado.keys()) estado.set(n, 10);
