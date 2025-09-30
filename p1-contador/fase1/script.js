@@ -44,7 +44,7 @@ cajas.forEach((caja, index) => {
   });
 });
 
-// --- Actualizar contadores con color según acción ---
+// Actualizar contadores con color
 function actualizarContadores(tipo) {
   seleccionadas.forEach(i => {
     contadores[i] = Math.round(contadores[i] * 10) / 10;
@@ -61,7 +61,7 @@ function actualizarContadores(tipo) {
   });
 }
 
-// --- Quitar efecto visual ---
+// Quitar efecto color
 function quitarEfecto() {
   seleccionadas.forEach(i => {
     const span = spansContador[i];
@@ -103,7 +103,7 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-// --- Botón MAS ---
+// Boton MAS
 btnMas.addEventListener("mousedown", () => {
   doActionBtnMas();
   holdInterval = setInterval(doActionBtnMas, 200);
