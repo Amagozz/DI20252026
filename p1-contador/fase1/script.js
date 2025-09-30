@@ -8,6 +8,9 @@ const inputStep = document.getElementById("input-step");
 const imgBoom = document.getElementById("img-boom");
 const audioBoom = new Audio("explosion.ogg");
 
+const imgCoins = document.getElementById("img-coins");
+const audioCoins = new Audio("coins.ogg");
+
 let numeroAlumnos = 3; //Change depending on how many alumnos you have
 
 const alumnos = [];
@@ -133,6 +136,7 @@ btnBoom.addEventListener("click", () => {
   actualizarContador();
 });
 
+// Deselect button
 btnDeselect.addEventListener("click", () =>
 {
   contadores.forEach((contador, index) =>
@@ -142,15 +146,33 @@ btnDeselect.addEventListener("click", () =>
   });
 });
 
+// Random button
 btnRandom.addEventListener("click", () =>
 {
+  let hasChanged = false;
   contadores.forEach(contador =>
   {
     if (contador.selected)
     {
       contador.contador = Math.random() * (10 - 0.1) + 0.1;
       contador.contador = Math.round(contador.contador * 10) / 10; // round to 1 decimal
+      hasChanged = true;
     }
+
+    if (hasChanged) {
+    imgCoins.src = "1-million-coins.gif";
+    imgCoins.style.zIndex = 9999;
+    imgCoins.style.opacity = 1;
+    audioCoins.play();
+    disableButtons(true);
+
+    setTimeout(() => {
+      imgCoins.style.zIndex = "-9999";
+      imgCoins.src = "";
+      imgCoins.style.opacity = 0;
+      disableButtons(false);
+    }, 2000);
+  }
   });
   actualizarContador();
 });
@@ -161,6 +183,15 @@ function getSteps()
   step = Math.max(0.1, Math.min(step, 10));
   inputStep.value = step;
   return step;
+}
+
+function disableButtons(disabled)
+{
+  btnMas.disabled = disabled;
+  btnMenos.disabled = disabled;
+  btnBoom.disabled = disabled;
+  btnDeselect.disabled = disabled;
+  btnRandom.disabled = disabled;
 }
 
 // Update

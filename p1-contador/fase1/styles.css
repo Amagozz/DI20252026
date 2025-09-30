@@ -52,3 +52,13 @@
     z-index: -9999;
     opacity: 0;
 }
+
+#img-coins   
+{
+    position: fixed;
+    top: 0;
+    left: 25vw;
+    object-fit: cover;
+    z-index: -9999;
+    opacity: 0;
+}
