@@ -22,7 +22,7 @@ h1
   width: 200px;
   height: 200px;
   background-color: lightgray;
-  border: 2px solid transparent;
+  border: 3px solid transparent;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
