@@ -25,11 +25,11 @@ h1
   border: 2px solid transparent;
   border-radius: 10px;
   display: flex;
-  flex-direction: column;   /* stack name on top of counter */
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   user-select: none;
-  transition: border 0.2s ease;
+  transition: border 0.15s ease;
 }
 
 .alumno-card h2
