@@ -31,7 +31,7 @@ const botones = [btnMas, btnMenos, btn0];
 const labelPasos = document.querySelector("label[for='pasos']");
 const audioFiesta = document.getElementById("audio-fiesta");
 
-// --- Selección multi-alumno ---
+// --- Seleccion multi-alumno ---
 cajas.forEach((caja, index) => {
   caja.addEventListener("click", () => {
     if (seleccionadas.includes(index)) {
@@ -54,7 +54,7 @@ function actualizarContadores(tipo) {
     // Quitar clases anteriores
     span.classList.remove("changed-suma", "changed-resta", "changed-reset");
 
-    // Agregar clase según tipo
+    // Agregar clase segun tipo
     if (tipo === "suma") span.classList.add("changed-suma");
     else if (tipo === "resta") span.classList.add("changed-resta");
     else if (tipo === "reset") span.classList.add("changed-reset");
@@ -71,7 +71,7 @@ function quitarEfecto() {
 
 //FLECHAS
 document.addEventListener("keydown", (event) => {
-  if (seleccionadas.length === 0) return; // No hacer nada si no hay cajas seleccionadas
+  if (seleccionadas.length === 0) return;
 
   switch (event.key) {
     case "ArrowUp":
@@ -135,20 +135,17 @@ function doActionBtnMenos() {
   actualizarContadores("resta");
 }
 
-// --- Botón RESET ---
+// --- Boton RESET ---
 btn0.addEventListener("click", () => {
   seleccionadas.forEach(i => contadores[i] = 0);
   actualizarContadores("reset");
 });
 
-// --- Función de finalización de hold ---
+// --- Funcion de finalizacion de hold ---
 function quitarIntervalo() {
   clearInterval(holdInterval);
   quitarEfecto();
 }
-
-
-
 
 // --- Obtener paso ---
 function getPasos() {
@@ -157,6 +154,9 @@ function getPasos() {
 
 // Inicialización
 actualizarContadores("reset");
+
+
+
 
 
 
@@ -176,8 +176,6 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-
-
 function activarModoFiesta() {
   modoFiesta = true;
   velocidad = 1;
@@ -195,23 +193,21 @@ function activarModoFiesta() {
 
   spansContador.forEach(span => span.classList.add("span-fiesta"));
 
-  labelPasos.style.display = "none";        // ocultar el label
-  inputPasos.classList.add("input-fiesta"); // animación de movimiento y color
+  labelPasos.style.display = "none";
+  inputPasos.classList.add("input-fiesta");
 
   botones.forEach(btn => {
-    btn.style.display = "none"; // oculta los botones
+    btn.style.display = "none";
   });
 
   fiestaInterval = setInterval(() => {
     velocidad += 0.02;
 
-    // Subir contadores
     for (let i = 0; i < contadores.length; i++) {
       contadores[i] += getPasos() * velocidad;
       spansContador[i].textContent = Math.round(contadores[i] * 10) / 10;
     }
 
-    // Animación de cajas
     cajas.forEach((caja, i) => {
       const scale = 1 + Math.sin(Date.now() / 200 + i) * 0.5;
       caja.style.transform = `scale(${scale})`;
@@ -219,13 +215,6 @@ function activarModoFiesta() {
       caja.style.backgroundColor = `hsl(${hue}, 80%, 70%)`;
     });
 
-    // Shake de pantalla
-    const shakeX = Math.sin(shakeStep) * 10;
-    const shakeY = Math.cos(shakeStep) * 10;
-    document.body.style.transform = `translate(${shakeX}px, ${shakeY}px)`;
-    shakeStep += 0.3;
-
-    // Mover botones aleatoriamente dentro del contenedor
     botones.forEach(btn => {
       const contenedor = document.getElementById("contador-container");
       const maxX = contenedor.clientWidth - btn.offsetWidth;
@@ -243,42 +232,36 @@ function desactivarModoFiesta() {
 
   audioFiesta.pause();
 
-  // Restaurar contadores a los valores previos
   contadores = [...contadoresBackup];
   spansContador.forEach((span, i) => {
     span.textContent = Math.round(contadores[i] * 10) / 10;
     span.classList.remove("span-fiesta");
-    span.style.color = ""; // permitir animaciones de hold
+    span.style.color = "";
   });
 
-  // Restaurar cajas
   cajas.forEach(caja => {
     caja.style.transform = "";
     caja.style.backgroundColor = "#d3d3d3";
   });
 
-  labelPasos.style.display = "";           // mostrar el label de nuevo
-  inputPasos.classList.remove("input-fiesta"); // quitar animación
-  inputPasos.style.color = "";             // restaurar color original
-  inputPasos.style.transform = "";         // restaurar posición original
+  labelPasos.style.display = "";
+  inputPasos.classList.remove("input-fiesta");
+  inputPasos.style.color = "";
+  inputPasos.style.transform = "";
 
-  // Restaurar H1
   const h1 = document.querySelector("h1");
   h1.classList.remove("h1-fiesta");
 
-  // Restaurar botones
   botones.forEach(btn => {
-    btn.style.display = ""; // volver a mostrar
+    btn.style.display = "";
     btn.style.position = "";
     btn.style.top = "";
     btn.style.left = "";
     btn.style.zIndex = "";
   });
 
-  // Restaurar fondo y transform del body
   document.body.style.backgroundImage = "";
   document.body.style.transform = "";
 
-  // Restaurar cualquier otro estilo que se sobrescribió
-  // De esta manera los eventos y animaciones originales siguen funcionando
+
 }
