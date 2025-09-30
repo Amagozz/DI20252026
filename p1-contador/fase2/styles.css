@@ -62,7 +62,15 @@ main{ padding:1rem; max-width:1100px; margin:0 auto; }
 }
 
 .btn.redondeado{ border-radius:999px; }
-.btn-mas{ border-color:#cfe; }
-.btn-menos{ border-color:#fec; }
+.btn-mas{ background-color:chartreuse; }
+.btn-menos{ background-color:crimson; }
+.btn-muerte{ background-color:#1b1b1f; }
 
 .persona{ user-select:none; }
+
+
+.persona.seleccionada {
+  outline: 3px solid dodgerblue;
+  border-radius: 10px;
+}
+

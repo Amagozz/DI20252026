@@ -4,7 +4,7 @@ const btnMas = document.getElementById("btn-mas");
 const btnMenos = document.getElementById("btn-menos");
 
 function actualizarContador() {
-  spanContador.textContent = contador;
+  spanContador.textContent = contador.toFixed(2);
 
   // Efecto visual para marcar el cambio
   spanContador.classList.add("changed");
@@ -12,14 +12,17 @@ function actualizarContador() {
 }
 
 btnMas.addEventListener("click", () => {
-  contador++;
-  actualizarContador();
+  if (contador < 10) {
+    contador = Math.min(10, contador + 0.10);
+    actualizarContador();
+  }
 });
 
 btnMenos.addEventListener("click", () => {
-  contador--;
+  contador = Math.max(0, contador - 0.10);
   actualizarContador();
 });
 
 // Inicialización
 actualizarContador();
+

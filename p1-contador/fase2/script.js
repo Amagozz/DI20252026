@@ -104,12 +104,14 @@ lista.addEventListener("click", (ev) => {
   const span = card.querySelector(".contador");
   let valor = Number(span.dataset.valor || "10");
 
-  if (btn.classList.contains("btn-mas")) valor += 1;
-  if (btn.classList.contains("btn-menos")) valor -= 1;
+// boton muerte
+  if (btn.classList.contains("btn-muerte")) valor -= 5;
+
+  valor = Math.max(0, Math.min(10, valor));
 
   estado.set(nombre, valor);
   span.dataset.valor = String(valor);
-  span.textContent = valor;
+  span.textContent = valor.toFixed(1);
   bump(span);
 });
 
@@ -140,6 +142,68 @@ inputArchivo.addEventListener("change", async (e) => {
     inputArchivo.value = "";
   }
 });
+
+// teclas del ordenador //
+const tarjetasSeleccionadas = new Set();
+
+// --- Actualizar valor con límites ---
+function actualizarContador(card, delta) {
+  const nombre = card.dataset.nombre;
+  if (!estado.has(nombre)) return;
+
+  const span = card.querySelector(".contador");
+  let valor = Number(span.dataset.valor || "10");
+
+  valor += delta;
+  valor = Math.max(0, Math.min(10, valor)); // límite [0,10]
+
+  estado.set(nombre, valor);
+  span.dataset.valor = String(valor);
+  span.textContent = valor.toFixed(1);
+  bump(span);
+}
+
+lista.addEventListener("click", (ev) => {
+  const card = ev.target.closest(".persona");
+  if (!card) return;
+
+  // Selección con botón
+  if (ev.target.classList.contains("btn-select")) {
+    if (tarjetasSeleccionadas.has(card)) {
+      tarjetasSeleccionadas.delete(card);
+      card.classList.remove("seleccionada");
+    } else {
+      tarjetasSeleccionadas.add(card);
+      card.classList.add("seleccionada");
+    }
+    return;
+  }
+
+  //  Botones de sumar/restar
+  if (ev.target.classList.contains("btn-mas")) {
+    actualizarContador(card, +0.1);
+  }
+  if (ev.target.classList.contains("btn-menos")) {
+    actualizarContador(card, -0.1);
+  }
+});
+
+// Teclado
+document.addEventListener("keydown", (e) => {
+  if (tarjetasSeleccionadas.size === 0) return;
+
+  if (e.key === "ArrowUp") {
+    e.preventDefault();
+    tarjetasSeleccionadas.forEach(card => actualizarContador(card, +0.1));
+  }
+  if (e.key === "ArrowDown") {
+    e.preventDefault();
+    tarjetasSeleccionadas.forEach(card => actualizarContador(card, -0.1));
+  }
+});
+
+
+
 
 // --------- Bootstrap ---------
 // Opción A (recomendada en local con live server): intenta cargar nombres.txt
