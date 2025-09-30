@@ -1,282 +1,64 @@
-:root{
-  --bg:#f7f7fa;
-  --card:#ffffff;
-  --text:#1b1b1f;
-  --muted:#666;
-  --border:#e6e6ef;
-  --accent:#2f6fed;
-  --accent-weak:#e8efff;
-}
-
-*{ box-sizing: border-box; }
-html,body{ height:100%; }
-body{
-  margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  color:var(--text); background: var(--bg);
-}
-
-.topbar{
-  display:flex; gap:1rem; align-items:center; justify-content:space-between;
-  padding:1rem 1.25rem; border-bottom:1px solid var(--border); background:#fff;
-}
-.topbar h1{ margin:0; font-size:1.25rem; }
-.acciones{ display:flex; flex-wrap:wrap; gap:.5rem; align-items:center; }
-
-button, .file-label{
-  border:1px solid var(--border); background:#fff; color:var(--text);
-  padding:.5rem .75rem; border-radius:.65rem; cursor:pointer;
-  transition: transform .06s ease, background .2s ease, box-shadow .2s ease;
-}
-button:hover, .file-label:hover{ background:var(--accent-weak); }
-button:active, .file-label:active{ transform: translateY(1px); }
-.file-label{ display:inline-flex; align-items:center; gap:.5rem; }
-.file-label input{ display:none; }
-
-main{ padding:1rem; max-width:1100px; margin:0 auto; }
-#estado{ margin:.5rem 0 1rem; color:var(--muted); min-height:1.25rem; }
-
-.grid{
-  display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap:1rem;
-}
-
-.card{
-  background:var(--card); border:1px solid var(--border); border-radius:1rem;
-  box-shadow: 0 1px 2px rgba(0,0,0,.03);
-  padding:1rem;
-}
-.card-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:.75rem; }
-.nombre{ font-size:1.1rem; margin:0; }
-
-.contador-wrap{
-  display:flex; align-items:center; justify-content:space-between; gap:.75rem;
-}
-.contador{
-  font-size:2.25rem; font-variant-numeric: tabular-nums;
-  min-width:3ch; text-align:center;
-  transition: transform .15s ease, color .15s ease;
-}
-.contador.bump{
-  transform: scale(1.08);
-  color: var(--accent);
-}
-
-.btn.redondeado{ border-radius:999px; }
-.btn-mas{ border-color:#cfe; }
-.btn-menos{ border-color:#fec; }
-
-.persona{ user-select:none; }
-
-/* ------------------------------------------- */
-/* --- Estilos para el Control Deslizable (Slider) --- */
-/* ------------------------------------------- */
-
-.slider-wrap {
-    margin-top: 1rem; /* Espacio entre el contador y el slider */
-    padding: 0 0.5rem; /* Pequeño padding para no pegar en los bordes */
-}
-
-.contador-slider {
-    -webkit-appearance: none; /* Quitar estilos nativos de WebKit */
-    appearance: none;
-    width: 100%;
-    height: 6px; /* Altura de la barra */
-    background: var(--border);
-    outline: none;
-    opacity: 0.7;
-    transition: opacity .2s;
-    border-radius: 3px;
-}
-
-.contador-slider:hover {
-    opacity: 1;
-}
-
-/* Estilo del "pulgar" (thumb) en Chrome/Safari */
-.contador-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 18px; /* Tamaño del punto */
-    height: 18px;
-    border-radius: 50%; /* Forma circular */
-    background: var(--accent); /* Color principal */
-    cursor: pointer;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-}
-
-/* Estilo del "pulgar" (thumb) en Firefox */
-.contador-slider::-moz-range-thumb {
-    width: 18px;
-    height: 18px;
-    border: none;
-    border-radius: 50%;
-    background: var(--accent);
-    cursor: pointer;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-}
-
-/* ------------------------------------------- */
-/* --- Estilos para indicar contadores altos/bajos (Color Dinámico) --- */
-/* ------------------------------------------- */
-
-/* Estilos de los contadores bajos (menos de 6) */
-.contador[data-valor^="0"], 
-.contador[data-valor^="1"], 
-.contador[data-valor^="2"], 
-.contador[data-valor^="3"], 
-.contador[data-valor^="4"], 
-.contador[data-valor^="5"] {
-    color: #cc3300; /* Rojo/Naranja para bajo */
-    font-weight: bold;
-}
-
-/* Estilos de los contadores altos (9 o más) */
-.contador[data-valor^="9"], 
-.contador[data-valor^="10"] {
-    color: #1c7430; /* Verde oscuro para alto */
-    font-weight: bold;
-}
-
-/* ------------------------------------------- */
-/* --- Estilos para el Control Deslizable (Slider) --- */
-/* ------------------------------------------- */
-
-.slider-wrap {
-    margin-top: 1rem; /* Espacio entre el contador y el slider */
-    padding: 0 0.5rem; /* Pequeño padding para no pegar en los bordes */
-}
-
-.contador-slider {
-    -webkit-appearance: none; /* Quitar estilos nativos de WebKit */
-    appearance: none;
-    width: 100%;
-    height: 6px; /* Altura de la barra */
-    background: var(--border);
-    outline: none;
-    opacity: 0.7;
-    transition: opacity .2s;
-    border-radius: 3px;
-}
-
-.contador-slider:hover {
-    opacity: 1;
-}
-
-/* Estilo del "pulgar" (thumb) en Chrome/Safari */
-.contador-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 18px; /* Tamaño del punto */
-    height: 18px;
-    border-radius: 50%; /* Forma circular */
-    background: var(--accent); /* Color principal */
-    cursor: pointer;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-}
-
-/* Estilo del "pulgar" (thumb) en Firefox */
-.contador-slider::-moz-range-thumb {
-    width: 18px;
-    height: 18px;
-    border: none;
-    border-radius: 50%;
-    background: var(--accent);
-    cursor: pointer;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-}
-
-/* ------------------------------------------- */
-/* --- Estilos para el Control Deslizable (Slider) --- */
-/* ------------------------------------------- */
-
-.slider-wrap {
-    margin-top: 1rem; /* Espacio entre el contador y el slider */
-    padding: 0 0.5rem; /* Pequeño padding para no pegar en los bordes */
-}
-
-.contador-slider {
-    -webkit-appearance: none; /* Quitar estilos nativos de WebKit */
-    appearance: none;
-    width: 100%;
-    height: 6px; /* Altura de la barra */
-    background: var(--border);
-    outline: none;
-    opacity: 0.7;
-    transition: opacity .2s;
-    border-radius: 3px;
-}
-
-.contador-slider:hover {
-    opacity: 1;
-}
-
-/* Estilo del "pulgar" (thumb) en Chrome/Safari */
-.contador-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 18px; /* Tamaño del punto */
-    height: 18px;
-    border-radius: 50%; /* Forma circular */
-    background: var(--accent); /* Color principal */
-    cursor: pointer;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-}
-
-/* Estilo del "pulgar" (thumb) en Firefox */
-.contador-slider::-moz-range-thumb {
-    width: 18px;
-    height: 18px;
-    border: none;
-    border-radius: 50%;
-    background: var(--accent);
-    cursor: pointer;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-}
-
-/* ------------------------------------------- */
-/* --- Estilos para la Lista de Clasificación --- */
-/* ------------------------------------------- */
-
-.ranking-section {
-    margin-top: 2rem;
-    padding-top: 1rem;
-    border-top: 1px dashed var(--border);
-}
-
-.ranking-section h2 {
-    font-size: 1.2rem;
-    color: var(--text);
-    margin-bottom: 0.75rem;
-}
-
-#ranking-lista {
-    list-style: none;
-    padding: 0;
+#alumno-container
+{
     display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+    gap: 10px;
 }
 
-#ranking-lista li {
+#alumno-container h2
+{
+    width: 100px;
+    height: 100px;
+    background-color: lightgray;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 0.5rem 0.75rem;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 0.5rem;
-    font-weight: 500;
+    justify-content: center;
+    border: 2px solid transparent;
+    user-select: none; /* Make it so the user can't select the text, so when you double click, it wont highlight it */
 }
 
-#ranking-lista li span.ranking-valor {
-    font-weight: bold;
-    color: var(--accent);
-    font-variant-numeric: tabular-nums;
+#alumno-container span
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
 }
 
-/* Destacar el primer lugar (opcional) */
-#ranking-lista li:first-child {
-    background: var(--accent-weak);
-    border-color: var(--accent);
-    font-size: 1.1rem;
+#boton-container
+{
+    padding-top: 20px;
+}
+
+#botones
+{
+    user-select: none;
+}
+
+#input-container
+{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#img-boom   
+{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    z-index: -9999;
+    opacity: 0;
+}
+
+#img-coins   
+{
+    position: fixed;
+    top: 0;
+    left: 25vw;
+    object-fit: cover;
+    z-index: -9999;
+    opacity: 0;
 }

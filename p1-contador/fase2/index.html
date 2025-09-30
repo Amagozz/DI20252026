@@ -1,59 +1,42 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>Contadores por Persona</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <title>Contador de Clase</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
-<section id="estado" aria-live="polite"></section>
-    <section id="lista" class="grid"></section>
-    
-    <section class="ranking-section">
-        <h2>Clasificación (Puntuación Máxima)</h2>
-        <ol id="ranking-lista"></ol>
 <body>
-  
-  <header class="topbar">
-    <h1>Contadores de Clase</h1>
-    <div class="acciones">
-      <button id="btn-cargar-nombres">Cargar nombres (nombres.txt)</button>
-      <label class="file-label">
-        <input type="file" id="input-archivo" accept=".txt,.json" />
-        Cargar archivo local
-      </label>
-      <button id="btn-reset">Reiniciar todos a 10</button>
-    </div>
-  </header>
+  <h1>Contador de Clase</h1>
+  <div id="alumno-container">
+    <div id="alumno1-container">
+      <h2 id="alumno1">Julián</h2>
+      <span id="contador-alumno1">10</span>
+    </div>
+    <div id="alumno2-container">
+      <h2 id="alumno2">Manuel</h2>
+      <span id="contador-alumno2">10</span>
+    </div>
+    <div id="alumno3-container">
+      <h2 id="alumno3">hola</h2>
+      <span id="contador-alumno3">10</span>
+    </div>
+  </div>
+  <div id="boton-container">
+    <div class="botones">
+      <button id="btn-menos">-</button>
+      <button id="btn-mas">+</button>
+      <button id="btn-boom">Public execution</button>
+      <button id="btn-deselect">Deselect All</button>
+      <button id="btn-random">🎁</button>
+    </div>
+  </div>
+  <div id="input-container">
+    <p>Step</p>
+    <input type="number" id="input-step" value="1" step="0.1" min="0.1" max="10">
+  </div>
+  <img src="" id="img-boom">
+  <img src="" id="img-coins">
 
-  <main>
-    <section id="estado" aria-live="polite"></section>
-    <section id="lista" class="grid"></section>
-  </main>
-
-  <template id="tpl-persona">
-    <article class="card persona" data-nombre="">
-      <header class="card-head">
-        <h2 class="nombre"></h2>
-      </header>
-      <div class="contador-wrap">
-        <button class="btn redondeado btn-menos" aria-label="Restar uno">−1</button>
-        <span class="contador" data-valor="10" aria-live="polite">10</span>
-        <button class="btn redondeado btn-mas" aria-label="Sumar uno">+1</button>
-      </div>
-        <div class="slider-wrap">
-            <input 
-                type="range" 
-                min="0" 
-                max="10" 
-                step="0.1" 
-                value="10" 
-                class="contador-slider" 
-                aria-label="Ajuste fino del contador"
-            />
-        </div>
-            </article>
-  </template>
-
-  <script src="script.js" type="module"></script>
+  <script src="script.js"></script>
 </body>
 </html>
