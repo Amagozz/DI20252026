@@ -3,6 +3,7 @@ h1
   margin: auto;
   width: 100%;
   text-align: center;
+  font-family: sans-serif;
 }
 
 #alumno-container
@@ -13,6 +14,7 @@ h1
   justify-content: center;
   gap: 30px;
   max-width: 1200px;
+  font-family: sans-serif;
 }
 
 .alumno-card
