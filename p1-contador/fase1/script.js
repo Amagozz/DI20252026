@@ -1,7 +1,7 @@
+// Variables
 let contadores = [10, 10, 10, 10];
 let holdInterval;
 let seleccionadas = [];
-
 let modoFiesta = false;
 let fiestaInterval;
 let velocidad = 1;
@@ -24,14 +24,16 @@ const spansContador = [
 ];
 
 const btnMas = document.getElementById("btn-mas");
+const btnSorpresillacuriosillagraciosilla = document.getElementById("btn-sorpresillacuriosillagraciosilla");
 const btnMenos = document.getElementById("btn-menos");
 const btn0 = document.getElementById("btn-0");
 const inputPasos = document.getElementById("pasos");
-const botones = [btnMas, btnMenos, btn0];
+const botones = [btnMas, btnMenos, btn0, btnSorpresillacuriosillagraciosilla];
 const labelPasos = document.querySelector("label[for='pasos']");
 const audioFiesta = document.getElementById("audio-fiesta");
 
-// --- Seleccion multi-alumno ---
+
+// Seleccion alumnos
 cajas.forEach((caja, index) => {
   caja.addEventListener("click", () => {
     if (seleccionadas.includes(index)) {
@@ -96,12 +98,11 @@ document.addEventListener("keydown", (event) => {
       seleccionadas.forEach(i => contadores[i] = 0);
       actualizarContadores("reset");
       break;
-
-    case "f":
-
-      break;
   }
 });
+
+// Boton sorpresillacuriosillagraciosilla
+btnSorpresillacuriosillagraciosilla.addEventListener("click", sorpresillacuriosillagraciosilla);
 
 // Boton MAS
 btnMas.addEventListener("mousedown", () => {
@@ -119,7 +120,7 @@ function doActionBtnMas() {
   actualizarContadores("suma");
 }
 
-// --- Botón MENOS ---
+// Boton MENOS
 btnMenos.addEventListener("mousedown", () => {
   doActionBtnMenos();
   holdInterval = setInterval(doActionBtnMenos, 200);
@@ -135,25 +136,111 @@ function doActionBtnMenos() {
   actualizarContadores("resta");
 }
 
-// --- Boton RESET ---
+// Boton RESET
 btn0.addEventListener("click", () => {
   seleccionadas.forEach(i => contadores[i] = 0);
   actualizarContadores("reset");
 });
 
-// --- Funcion de finalizacion de hold ---
+// Funcion de finalizacion de hold
 function quitarIntervalo() {
   clearInterval(holdInterval);
   quitarEfecto();
 }
 
-// --- Obtener paso ---
+// Funcion sorpresillacuriosillagraciosilla
+function sorpresillacuriosillagraciosilla() {
+  if (seleccionadas.length === 0) return;
+
+  let repeticiones = 10;
+  let intervalo = 200;
+  let contadorCambios = 0;
+
+  // Guardar fondo original
+  const fondoOriginal = document.body.style.backgroundImage;
+
+  // Cambiar fondo al empezar
+  document.body.style.backgroundSize = "auto";
+  document.body.style.backgroundRepeat = "repeat";
+  document.body.style.backgroundImage = "url('cambio.gif')";
+
+  // Ocultar botones y Titulo
+  document.getElementById("titulo").style.display = "none";
+  botones.forEach(btn => {
+    btn.style.display = "none";
+  });
+
+  const intervaloAnimacion = setInterval(() => {
+    seleccionadas.forEach(i => {
+      // Generar número aleatorio del 0 al 10
+      const numeroRandom = Math.floor(Math.random() * 11);
+      contadores[i] = numeroRandom;
+      spansContador[i].textContent = numeroRandom;
+
+      // Cambiar color aleatorio
+      const hue = Math.floor(Math.random() * 360);
+      spansContador[i].style.color = `hsl(${hue}, 80%, 50%)`;
+    });
+
+    contadorCambios++;
+
+    if (contadorCambios >= repeticiones) {
+      clearInterval(intervaloAnimacion);
+
+      // Restaurar fondo
+      document.body.style.backgroundImage = fondoOriginal;
+
+      // Restaurar color del texto
+      seleccionadas.forEach(i => {
+        spansContador[i].style.color = "";
+      });
+
+      // Volver a mostrar botones y Titulo
+      document.getElementById("titulo").style.display = "inline-block";
+      botones.forEach(btn => {
+        btn.style.display = "inline-block";
+      });
+    }
+  }, intervalo);
+}
+
+
+// Obtener paso
 function getPasos() {
   return parseFloat(inputPasos.value) || 0.1;
 }
 
 // Inicialización
 actualizarContadores("reset");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -187,7 +274,7 @@ function activarModoFiesta() {
   const h1 = document.querySelector("h1");
   h1.classList.add("h1-fiesta");
 
-  document.body.style.backgroundImage = "url('ditto.gif')";
+  document.body.style.backgroundImage = "url('aprobado.gif')";
   document.body.style.backgroundSize = "cover";
   document.body.style.backgroundRepeat = "no-repeat";
 
