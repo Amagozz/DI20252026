@@ -3,6 +3,8 @@ let contdec=0.1;
 //AÑADIR COLORES AL BAJAR Y SUBIR NOTA (VERDE Y ROJO)
 const spanContador = document.getElementById("contador");
 const spanDecimal= document.getElementById("dec-valor");
+const btnRandom = document.getElementById("random");
+const btnRedondeo = document.getElementById("redondeo");
 const btnMas = document.getElementById("btn-mas");
 const btnMenos = document.getElementById("btn-menos");
 const btn01Mas = document.getElementById("btn-01mas");
@@ -40,9 +42,6 @@ function actualizarContador() {
   btn01Mas.textContent = `+${contdec}`;
    btn01Menos.textContent = `-${contdec}`;
   cambiarColorTexto();
-  // Calcula el color según el valor del contador (de 0 a 10)
-  // const hue = Math.round((contador / 10) * 360); // 0 = rojo, 10 = rojo (ciclo completo)
-  // spanContador.style.color = `hsl(${hue}, 80%, 50%)`;
 
 
   
@@ -94,6 +93,26 @@ document.addEventListener("keydown", (event) => {
     }
   }
 });
+
+btnRandom.addEventListener("click", () => {
+  contador = Math.random() * 10;
+  contador=Number(contador.toFixed(1));
+  actualizarContador();
+});
+
+btnRedondeo.addEventListener("click", () => {
+
+  let num= Math.trunc(contador);
+  let random= Math.random();
+  contador = Math.trunc(contador);
+  if (random < 0.5) {
+    contador = num;
+  } else {
+    contador = num + 1;
+  }
+  actualizarContador();
+});
+
 btnMas.addEventListener("click", () => {
   contador++;
   actualizarContador();

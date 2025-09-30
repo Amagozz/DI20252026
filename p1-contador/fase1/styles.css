@@ -26,7 +26,7 @@ h1{
             inset -20px -20px 60px #ede7fa;
     
 }
-.tarjetas h2,.tarjetas div,.tarjetas span{
+.tarjetas h2,.tarjetas div,.tarjetas span,.extras button p{
     background-color: transparent;
 }
 .tarjetas span{
@@ -97,4 +97,7 @@ h1{
     background: #d6d2e0;
     box-shadow:  10px 10px 20px #afabb8,
              -10px -10px 20px #ede7fa;
+}
+.extras button{
+    width: 150px;
 }
