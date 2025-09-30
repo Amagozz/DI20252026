@@ -4,6 +4,8 @@ const btnBoom = document.getElementById("btn-boom");
 const btnDeselect = document.getElementById("btn-deselect");
 const btnRandom = document.getElementById("btn-random");
 const inputStep = document.getElementById("input-step");
+const btnUpload = document.getElementById("btn-upload");
+const fileInput = document.getElementById("file-input");
 
 const imgBoom = document.getElementById("img-boom");
 const audioBoom = new Audio("explosion.ogg");
@@ -11,7 +13,9 @@ const audioBoom = new Audio("explosion.ogg");
 const imgCoins = document.getElementById("img-coins");
 const audioCoins = new Audio("coins.ogg");
 
-let numeroAlumnos = 3; //Change depending on how many alumnos you have
+const alumnoContainer = document.getElementById("alumno-container");
+const alumnoCards = alumnoContainer.querySelectorAll(".alumno-card");
+let numeroAlumnos = alumnoCards.length;
 
 const alumnos = [];
 const contadores = [];
@@ -39,26 +43,21 @@ for (let i = 1; i <= numeroAlumnos; i++)
 
 function actualizarContador() {
   contadores.forEach(contador => {
-    contador.span.textContent = contador.contador;
+    contador.span.textContent = contador.contador.toFixed(1);
+
     contador.span.classList.add("changed");
     setTimeout(() => contador.span.classList.remove("changed"), 200);
+
+    if(contador.contador > 7) {
+      contador.span.style.color = "green";
+    } else if(contador.contador > 5) {
+      contador.span.style.color = "orange";
+    } else if(contador.contador > 3) {
+      contador.span.style.color = "red";
+    } else {
+      contador.span.style.color = "black";
+    }
   });
-  spanContador.textContent = parseFloat(contador).toFixed(1);
-
-  // Efecto visual para marcar el cambio
-  spanContador.classList.add("changed");
-  setTimeout(() => spanContador.classList.remove("changed"), 350);
-  efectoColorDelContador();
-}
-function efectoColorDelContador() {
-  if(contador > 8) {
-    spanContador.style.color = "green";
-  } else if(contador > 5) {
-    spanContador.style.color = "orange";
-  } else if(contador > 3) {
-    spanContador.style.color = "red";
-  }
-
 }
 
 // + button
@@ -72,6 +71,67 @@ function plusButton()
   });
   actualizarContador();
 }
+
+btnUpload.addEventListener("click", () =>
+{
+  fileInput.click();
+});
+
+fileInput.addEventListener("change", (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const text = e.target.result;
+    const names = text.split("\n").map(name => name.trim()).filter(name => name);
+
+    // Clear previous alumnos
+    const alumnoContainer = document.getElementById("alumno-container");
+    alumnoContainer.innerHTML = "";
+
+    alumnos.length = 0;
+    contadores.length = 0;
+    
+    names.forEach((name, index) => {
+      // Create the card
+      const card = document.createElement("div");
+      card.classList.add("alumno-card");
+      card.id = `alumno${index + 1}-container`;
+
+      const h2 = document.createElement("h2");
+      h2.textContent = name;
+      h2.id = `alumno${index + 1}`;
+
+      const span = document.createElement("span");
+      span.classList.add("contador");
+      span.id = `contador-alumno${index + 1}`;
+      span.textContent = "10"; // initial counter
+
+      card.appendChild(h2);
+      card.appendChild(span);
+      alumnoContainer.appendChild(card);
+
+      // Add to arrays
+      alumnos.push(card);
+      contadores.push({
+        contador: 10,
+        selected: false,
+        span: span
+      });
+
+      // Add click listener
+      card.addEventListener("click", () => {
+        const data = contadores[index];
+        data.selected = !data.selected;
+        card.style.border = data.selected ? "2px solid black" : "2px solid transparent";
+      });
+    });
+
+    actualizarContador();
+  };
+  reader.readAsText(file);
+});
 
 btnMas.addEventListener("click", () => {
   plusButton();

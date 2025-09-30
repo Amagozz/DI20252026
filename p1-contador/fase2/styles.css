@@ -95,3 +95,11 @@ h1
     z-index: -9999;
     opacity: 0;
 }
+
+#txt-file-container
+{
+  margin: auto;
+  width: 100%;
+  text-align: center;
+  padding-top: 20px;
+}
