@@ -39,14 +39,33 @@ function actualizarContador() {
   spanDecimal.textContent = contdec;
   btn01Mas.textContent = `+${contdec}`;
    btn01Menos.textContent = `-${contdec}`;
-
+  cambiarColorTexto();
   // Calcula el color según el valor del contador (de 0 a 10)
   // const hue = Math.round((contador / 10) * 360); // 0 = rojo, 10 = rojo (ciclo completo)
   // spanContador.style.color = `hsl(${hue}, 80%, 50%)`;
+
+
   
   // Efecto visual para marcar el cambio
   spanContador.classList.add("changed");
   setTimeout(() => spanContador.classList.remove("changed"), 200);
+}
+
+function cambiarColorTexto() {
+  if(contador==5){
+    spanContador.style.color="#e27833";
+  }else if(contador>5 && contador<=7){
+    spanContador.style.color="#82aa36ff";
+  }else if(contador>7 && contador<=10){
+    spanContador.style.color="#53d35dff";
+  }else if(contador<5 && contador>=3){
+    spanContador.style.color="#b79d1aff";
+  }else if(contador<3 && contador>0){ 
+    spanContador.style.color="#e27833";
+  }else if(contador==0){
+    spanContador.style.color="#d63447ff";
+  }
+
 }
 
 document.addEventListener("keydown", (event) => {
