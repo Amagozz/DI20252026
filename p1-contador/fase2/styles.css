@@ -48,6 +48,8 @@ main{ padding:1rem; max-width:1100px; margin:0 auto; }
 .card-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:.75rem; }
 .nombre{ font-size:1.1rem; margin:0; }
 
+.card-foot { margin-top: 0.75rem; }
+
 .contador-wrap{
   display:flex; align-items:center; justify-content:space-between; gap:.75rem;
 }

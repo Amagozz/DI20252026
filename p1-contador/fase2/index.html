@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <title>Contadores por Persona</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
+
 <body>
   <header class="topbar">
     <h1>Contadores de Clase</h1>
@@ -15,6 +17,11 @@
         Cargar archivo local
       </label>
       <button id="btn-reset">Reiniciar todos a 10</button>
+      <div class="acciones-seleccionados">
+        <h1>Seleccionados</h1>
+        <button class="btn redondeado btn-menos-checked" aria-label="Restar uno">−0.1</button>
+        <button class="btn redondeado btn-mas-checked" aria-label="Sumar uno">+0.1</button>
+      </div>
     </div>
   </header>
 
@@ -34,9 +41,16 @@
         <span class="contador" data-valor="10" aria-live="polite">10</span>
         <button class="btn redondeado btn-mas" aria-label="Sumar uno">+0.1</button>
       </div>
+      <footer class="card-foot">
+        <label>
+          <input type="checkbox" class="select-persona">
+          Seleccionar
+        </label>
+      </footer>
     </article>
   </template>
 
   <script src="script.js" type="module"></script>
 </body>
+
 </html>
