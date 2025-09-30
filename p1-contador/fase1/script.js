@@ -82,19 +82,12 @@ if (contador <= 3) {
 }
   }
 
-
-  const btnEliminar = document.createElement("button");
-  btnEliminar.textContent = "x";
-  btnEliminar.className = "btn-eliminar";
-
-  card.appendChild(btnEliminar);
-
-  btnEliminar.addEventListener("click", () => {
-  card.remove(); // Elimina del DOM
-  // Elimina del array de estudiantes
-  students = students.filter(c => c !== card);
-});
-
+  // Modo selecion de botones
+  card.addEventListener("click", function() {
+  if (window.modoSeleccionTarjeta) {
+    card.classList.toggle("seleccionada");
+  }
+  });
 
   // Eventos de los botones para modificar el contador
   btnMas.addEventListener("click", () => {
@@ -135,6 +128,29 @@ addStudentForm.addEventListener("submit", function(e) {
     students.push(card); // La guarda en el array
     studentNameInput.value = ""; // Limpia el input
   }
+});
+
+// Modo selección de tarjetas
+window.modoSeleccionTarjeta = false;
+const btnEliminarTarjeta = document.getElementById("btn-eliminar-tarjeta");
+const btnConfirmarEliminar = document.getElementById("btn-confirmar-eliminar");
+
+btnEliminarTarjeta.addEventListener("click", function() {
+  window.modoSeleccionTarjeta = true;
+  btnConfirmarEliminar.style.display = "inline-block";
+  btnEliminarTarjeta.disabled = true;
+});
+
+btnConfirmarEliminar.addEventListener("click", function() {
+  // Elimina las tarjetas seleccionadas
+  const seleccionadas = Array.from(document.querySelectorAll('.student-card.seleccionada'));
+  seleccionadas.forEach(card => {
+    card.remove();
+    students = students.filter(c => c !== card);
+  });
+  window.modoSeleccionTarjeta = false;
+  btnConfirmarEliminar.style.display = "none";
+  btnEliminarTarjeta.disabled = false;
 });
 
 // Evento para reiniciar todos los contadores

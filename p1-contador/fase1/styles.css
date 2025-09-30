@@ -71,8 +71,12 @@
 	font-size: 1.2em;
 }
 
-
-
+/* Color del modo seleccion */
+.student-card.seleccionada {
+  border: 2.5px solid #e74c3c;
+  box-shadow: 0 0 12px #e74c3c55;
+  opacity: 0.85;
+}
 
 
 /* Botones de la tarjeta */
