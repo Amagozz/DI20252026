@@ -6,7 +6,7 @@ const btnCargar = document.getElementById("btn-cargar-nombres");
 const btnReset = document.getElementById("btn-reset");
 const inputArchivo = document.getElementById("input-archivo");
 const tpl = document.getElementById("tpl-persona");
-
+let seleccionada = null; // Elemento actualmente seleccionado
 // --------- Utilidades ---------
 function normalizaNombre(s) {
   return s.normalize("NFD").replace(/\p{Diacritic}/gu, "").trim();
@@ -91,6 +91,7 @@ async function cargarDesdeArchivoLocal(file) {
 }
 
 // --------- Interacción ---------
+
 // Delegación: un solo listener para todos los botones
 lista.addEventListener("click", (ev) => {
   const btn = ev.target.closest("button");
@@ -104,14 +105,69 @@ lista.addEventListener("click", (ev) => {
   const span = card.querySelector(".contador");
   let valor = Number(span.dataset.valor || "10");
 
-  if (btn.classList.contains("btn-mas")) valor += 0.1;
-  if (btn.classList.contains("btn-menos")) valor -= 0.1;
+  if (btn.classList.contains("btn-mas") && valor < 10) {
+  valor = Math.min(10, valor + 1);
+}
+if (btn.classList.contains("btn-menos") && valor > 0) {
+  valor = Math.max(0, valor - 1);
+}
+lista.addEventListener("click", (ev) => {
+  const card = ev.target.closest(".persona");
+  if (!card) return;
+
+  // Marcar como seleccionada
+  if (seleccionada) seleccionada.classList.remove("seleccionada");
+  seleccionada = card;
+  seleccionada.classList.add("seleccionada");
+});
 
   estado.set(nombre, valor);
   span.dataset.valor = String(valor);
   span.textContent = valor;
   bump(span);
+
+  
+  if (btn.classList.contains("btn-reset-individual")) {
+  estado.set(nombre, 0);
+  span.dataset.valor = "0";
+  span.textContent = "0";
+  bump(span);
+  setEstado(`Contador de ${nombre} reiniciado a 0.`);
+  return;
+}
+
 });
+
+
+
+
+
+/// funcionamineto subida marcador flechas
+document.addEventListener("keydown", (ev) => {
+  if (!seleccionada) return;
+
+  const nombre = seleccionada.dataset.nombre;
+  const span = seleccionada.querySelector(".contador");
+  let valor = Number(span.dataset.valor || "10");
+
+  if (ev.key === "ArrowUp" && valor < 10) {
+    valor = Math.min(10, valor + .1);
+  }
+  if (ev.key === "ArrowDown" && valor > 0) {
+    valor = Math.max(0, valor - .1);
+  }
+
+  estado.set(nombre, valor);
+  span.dataset.valor = String(valor);
+  span.textContent = valor.toFixed(1);
+  bump(span);
+});
+
+
+
+
+
+
 
 btnReset.addEventListener("click", () => {
   for (const n of estado.keys()) estado.set(n, 10);
@@ -140,6 +196,7 @@ inputArchivo.addEventListener("change", async (e) => {
     inputArchivo.value = "";
   }
 });
+
 
 // --------- Bootstrap ---------
 // Opción A (recomendada en local con live server): intenta cargar nombres.txt
