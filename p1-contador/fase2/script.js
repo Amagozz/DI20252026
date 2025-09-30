@@ -18,25 +18,23 @@ const contadores = [];
 
 for (let i = 1; i <= numeroAlumnos; i++)
 {
-  const alumnoElem = document.getElementById(`alumno${i}`);
+  const alumnoCard = document.getElementById(`alumno${i}-container`);
   const contadorElem = document.getElementById(`contador-alumno${i}`);
 
-  if (alumnoElem && contadorElem) // to avoid nulls
-  {
-    alumnos.push(alumnoElem);
-    contadores.push({
-      contador: parseInt(contadorElem.textContent), // value of the contador
-      selected: false,
-      span: contadorElem // span contador
-    });
+  if (alumnoCard && contadorElem) {
+  alumnos.push(alumnoCard);
+  contadores.push({
+    contador: parseInt(contadorElem.textContent),
+    selected: false,
+    span: contadorElem
+  });
 
-    alumnoElem.addEventListener("click", () => // selects or de selects
-    {
-      const alumnoData = contadores[i - 1];
-      alumnoData.selected = !alumnoData.selected;
-      alumnoElem.style.border = alumnoData.selected ? "2px solid black" : "2px solid transparent";
-    });
-  }
+  alumnoCard.addEventListener("click", () => {
+    const alumnoData = contadores[i - 1];
+    alumnoData.selected = !alumnoData.selected;
+    alumnoCard.style.border = alumnoData.selected ? "2px solid black" : "2px solid transparent";
+  });
+}
 }
 
 function actualizarContador() {

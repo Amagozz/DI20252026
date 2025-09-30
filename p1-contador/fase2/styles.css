@@ -1,19 +1,46 @@
-#alumno-container
+h1
 {
-    display: flex;
-    gap: 10px;
+  margin: auto;
+  width: 100%;
+  text-align: center;
 }
 
-#alumno-container h2
+#alumno-container
 {
-    width: 100px;
-    height: 100px;
-    background-color: lightgray;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid transparent;
-    user-select: none; /* Make it so the user can't select the text, so when you double click, it wont highlight it */
+  margin: auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  max-width: 1200px;
+}
+
+.alumno-card
+{
+  width: 200px;
+  height: 200px;
+  background-color: lightgray;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;   /* stack name on top of counter */
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  transition: border 0.2s ease;
+}
+
+.alumno-card h2
+{
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.alumno-card .contador
+{
+  margin-top: 10px;
+  font-size: 1.5rem;
+  font-weight: bold;
 }
 
 #alumno-container span
@@ -27,6 +54,9 @@
 #boton-container
 {
     padding-top: 20px;
+    margin: auto;
+    width: 90%;
+    text-align: center;
 }
 
 #botones
@@ -38,7 +68,10 @@
 {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
+  width: 90%;
+  margin: auto;
 }
 
 #img-boom   
