@@ -1,12 +1,19 @@
 // Estado simple en memoria: { nombre: valor }
-//estado es donde guardamos la informacion de casa persona, nombre y nota
+//estado es donde guardamos la informacion de cada persona, nombre y nota.
+//para añadir nuevos nombres usariamos set y para obtener el valor get
+//map es similar a un objeto pero permite claves de cualquier tipo y tiene metodos utiles.
+//se puede recorrer con for.. y comprobar si existe un nombre con has
+//mas medotos: .delete(nombre) y .clear() para borrar todo, .size para saber cuantos hay.
 const estado = new Map();
+//refencias a elementos del DOM html
 const lista = document.getElementById("lista");
 const estadoUI = document.getElementById("estado");
 const btnCargar = document.getElementById("btn-cargar-nombres");
 const btnReset = document.getElementById("btn-reset");
 const inputArchivo = document.getElementById("input-archivo");
-//plantilla HTML que sirve para crear la tarjeta de cada persona.
+
+//significa: “busca en el HTML el elemento que tiene id="tpl-persona" y guárdalo en la variable tpl”.
+//sirve para clonar el template y crear nuevas tarjetas.
 const tpl = document.getElementById("tpl-persona");
 
 //array caja misteriosa
@@ -14,26 +21,36 @@ const accionesSorpresa = [
   { texto: "Tus puntos se duplican", efecto: (valor) => valor * 2 },
   { texto: "Pierdes 3 puntos", efecto: (valor) => valor - 3 },
   { texto: "Ganas 5 puntos", efecto: (valor) => valor + 5 },
-  { texto: "Pierdes la mitad", efecto: (v) => Math.floor(v / 2) },
-  { texto: "¡Estás a salvo! No pasa nada, menudo FAIL", efecto: (v) => v } // no cambia nada
+  { texto: "Pierdes la mitad", efecto: (valor) => Math.floor(valor / 2) },
+  { texto: "¡Estás a salvo! No pasa nada, menudo FAIL", efecto: (valor) => valor } // no cambia nada
 ];
 
 
 // --------- Utilidades ---------
 function normalizaNombre(s) {
-  //devuelve los nobres sin acentos, para asi poder ordenarlos bien.
+  //devuelve los nobres sin acentos, para asi poder ordenarlos bien:
+  //s.normalize("NFD") descompone los caracteres con acentos en dos partes: la letra base y el acento.
+  //.replace(/\p{Diacritic}/gu, "") elina los acentos, tildes, dieresis
+  //.trim() elimina espacios al principio y final
   return s.normalize("NFD").replace(/\p{Diacritic}/gu, "").trim();
 }
 
 //Crea la tarjeta de una persona
-// Copia el HTML del template, Pone el nombre, valor del contador, devuelve el elemento listo para insertarlo en la página.
 function renderPersona(nombre, valor = 10) {
+  //accede al contenido del template y clona el primer elemento hijo (la tarjeta)
   const node = tpl.content.firstElementChild.cloneNode(true);
+  //crea un atributo data-nombre en la tarjeta para identificarla y poner el nombre y valor en los sitios correspondientes.
+  //asi luego puedo buscar la tarjeta por su nombre.
   node.dataset.nombre = nombre;
+ // Busca dentro del clon el elemento con clase .nombre.
   node.querySelector(".nombre").textContent = nombre;
+  // Busca dentro de span con clase contador,
   const span = node.querySelector(".contador");
+  //y le pone ccomo texto el valor de la nota. 
   span.textContent = valor;
+  //lo guarda en data-valor como texto (string) para poder leerlo rápido después.
   span.dataset.valor = String(valor);
+  //devuelve el resultado para insertarlo en el DOM.
   return node;
 }
 //animación corta cuando cambia el número.
@@ -114,12 +131,13 @@ lista.addEventListener("click", (ev) => {
   if (!card) return;
 
   const nombre = card.dataset.nombre;
+  //comprueba que la tarjeta exista.
   if (!estado.has(nombre)) return;
 
-    // detectamos todos los seleccionados
+  // Busca dentro de lista todos los checkbox que tengan la clase .check-seleccion y que estén marcados (:checked).
   const seleccionados = lista.querySelectorAll(".check-seleccion:checked");
 
-  // si hay más de uno, trabajamos con todos; si no, solo con la tarjeta clicada
+  // si hay más de un checkbox marcado, creamos un array con todas las tarjetas que tiene el checkbox marcado.
   let cardsObjetivo;
   if (seleccionados.length > 1) {
     cardsObjetivo = [];

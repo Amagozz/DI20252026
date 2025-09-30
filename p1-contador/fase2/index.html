@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>Contadores por Persona</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <title>Contador de Clase</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="topbar">
-    <h1>Contadores de Clase</h1>
+  <header class="titulo">
+    <h1>Contador de Clase</h1>
+  </header>
+
+  <nav class="menu">
+  <ul>
     <div class="acciones">
       <button id="btn-cargar-nombres">Cargar nombres (nombres.txt)</button>
       <label class="file-label">
@@ -18,26 +22,31 @@
       <button id="btn-seleccionar-todos">Seleccionar todos</button>
       <button id="btn-deseleccionar-todos">Deseleccionar todos</button
     </div>
-  </header>
+  </ul>
+</nav>
+
 
   <main>
     <section id="estado" aria-live="polite"></section>
     <section id="lista" class="grid"></section>
   </main>
   <template id="tpl-persona">
-    <article class="card persona" data-nombre="">
+    <article class="card persona tarjeta" data-nombre="">
       <header class="card-head">
-        <h2 class="nombre"></h2>
-      </header>
-      <div class="contador-wrap">
-        <span class="contador" data-valor="10" aria-live="polite">10</span>
-        <input type="checkbox" class="check-seleccion" aria-label="Seleccionar">
+        <div class="">
+          <input type="checkbox" class="check-seleccion" aria-label="Seleccionar">
+          <h2 class="nombre"></h2>
         </div>
-      <div class="contador-botones-suma-resta"></div>
+        
+      </header>
+      <div class="contador-wrap botones">
+        <span class="contador" data-valor="10" aria-live="polite">10</span>
+      </div>
+      <div class="contador-botones-suma-resta">
         <button class="btn redondeado btn-decimal-menos" arial-label="Restar 0,1">-0,1</button>
         <button class="btn redondeado btn-menos" aria-label="Restar uno">−1</button>
         <button class="btn redondeado btn-mas" aria-label="Sumar uno">+1</button>
-        <button class="btn redondeado btn-decimal-mas" arial-label="Sumar 0,1">+0,1</button>
+        <button class="btn redondeado btn-decimal-mas" aria-label="Sumar 0,1">+0,1</button>
       </div>
       <div class="botones-acciones">
         <button class="btn redondeado btn-reset" aria-label="Reset"><img src="reset.png"></button>
@@ -48,6 +57,7 @@
     </article>
   </template>
 
-  <script src="script.js" type="module"></script>
+
+  <script src="script.js"></script>
 </body>
 </html>
