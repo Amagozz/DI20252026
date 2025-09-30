@@ -1,0 +1,132 @@
+@import url('https://fonts.googleapis.com/css2?family=Gluten:wght@100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap');
+
+body{
+    margin: auto;
+    background: url('tabla-anuncios-superficie-corcho-natural-marron-textura-corcho-alta-resolucion_632498-26381.jpg') fixed;
+    background-size: contain;
+}
+
+#estado{
+    font-family: "Righteous", sans-serif;
+    text-align: center;
+    color: white;
+    text-shadow: black 2px 0 5px;
+    padding: 10px;
+
+}
+
+#lista{
+    max-width: 1000px;
+    margin: auto;
+}
+
+.tarjeta{
+    margin: auto;
+    height: 340px;
+    width: 310px;
+    background: url('25-252179_png-post-it-note-image-royalty-free-library-removebg-preview.png') no-repeat;
+    background-size: contain;
+    float: left;
+    margin-right: 20px;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+h2{
+    width: 200px;
+    margin-top: 100px;
+    text-align: center;
+    font-size: 35px;
+    font-family: "Gluten", cursive;
+}
+
+input[type="checkbox"]{
+    float: left;
+    display: flex;
+    margin-left: 20px;
+    width: 30px;
+}
+
+.contador{
+    float: none;
+    font-family: "Gluten", cursive;
+    font-size: 50px;
+}
+
+
+button{
+    border-radius: 20px;
+    padding: 10px;
+    border: none;
+    background-color: green;
+    color: white;
+    margin-top: 20px;
+}
+
+button:hover{
+    background-color: lightgreen;
+    cursor: pointer;
+}
+
+h1{
+    text-align: center;
+    font-size: 50px;
+    padding: 18px;
+    font-family: "Permanent Marker", cursive;
+    background: linear-gradient(160deg, #f9d423, #F2DD72);
+    position:sticky;
+    margin-top: 0;
+    color: black;
+    text-shadow: white 4px 0 10px;
+    margin-bottom: 0;
+}
+
+.menu {
+  background-color: green;           /* Azul grisáceo elegante */
+  padding: 18px 0;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+  margin-bottom: 25px;
+}
+
+.menu ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  gap: 30px;                     /* Espacio entre enlaces */
+}
+
+.menu button, label {
+  color: #ecf0f1;                /* Gris muy claro */
+  text-decoration: none;
+  font-family: "Righteous", sans-serif;
+  font-size: 1.1rem;
+  padding: 8px 15px;
+  border-radius: 12px;
+  transition: background 0.3s, color 0.3s;
+}
+
+input[type="file"] {
+  display: none;                 /* Oculta el input de archivo */
+}
+
+.botones-acciones img {
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+}
+
+.botones-acciones{
+  margin-top: -10px;
+}
+
+.menu button:hover, label:hover {
+  background: #f7e45c;           /* Amarillo que combina con el título */
+  color: #2c3e50;                /* Texto oscuro para contraste */
+}
+

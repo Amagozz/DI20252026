@@ -6,14 +6,57 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>Contador de Clase</h1>
-  <div id="contador-container">
-    <span id="contador">10</span>
-    <div class="botones">
-      <button id="btn-menos">-1</button>
-      <button id="btn-mas">+1</button>
+  <header class="titulo">
+    <h1>Contador de Clase</h1>
+  </header>
+
+  <nav class="menu">
+  <ul>
+    <div class="acciones">
+      <button id="btn-cargar-nombres">Cargar nombres (nombres.txt)</button>
+      <label class="file-label">
+        <input type="file" id="input-archivo" accept=".txt,.json" />
+        Cargar archivo local
+      </label>
+      <button id="btn-reset">Reiniciar todos a 10</button>
+      <button id="btn-seleccionar-todos">Seleccionar todos</button>
+      <button id="btn-deseleccionar-todos">Deseleccionar todos</button
     </div>
-  </div>
+  </ul>
+</nav>
+
+
+  <main>
+    <section id="estado" aria-live="polite"></section>
+    <section id="lista" class="grid"></section>
+  </main>
+  <template id="tpl-persona">
+    <article class="card persona tarjeta" data-nombre="">
+      <header class="card-head">
+        <div class="">
+          <input type="checkbox" class="check-seleccion" aria-label="Seleccionar">
+          <h2 class="nombre"></h2>
+        </div>
+        
+      </header>
+      <div class="contador-wrap botones">
+        <span class="contador" data-valor="10" aria-live="polite">10</span>
+      </div>
+      <div class="contador-botones-suma-resta">
+        <button class="btn redondeado btn-decimal-menos" arial-label="Restar 0,1">-0,1</button>
+        <button class="btn redondeado btn-menos" aria-label="Restar uno">−1</button>
+        <button class="btn redondeado btn-mas" aria-label="Sumar uno">+1</button>
+        <button class="btn redondeado btn-decimal-mas" aria-label="Sumar 0,1">+0,1</button>
+      </div>
+      <div class="botones-acciones">
+        <button class="btn redondeado btn-reset" aria-label="Reset"><img src="reset.png"></button>
+        <button class="btn redondeado btn-muerte" aria-label="Muerte"><img src="death.png"></button>
+        <button class="btn redondeado btn-sorpresa" aria-label="Random"><img src="random.png"></button>
+      </div>
+      </div>
+    </article>
+  </template>
+
 
   <script src="script.js"></script>
 </body>
