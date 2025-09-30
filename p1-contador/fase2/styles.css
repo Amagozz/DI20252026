@@ -66,3 +66,217 @@ main{ padding:1rem; max-width:1100px; margin:0 auto; }
 .btn-menos{ border-color:#fec; }
 
 .persona{ user-select:none; }
+
+/* ------------------------------------------- */
+/* --- Estilos para el Control Deslizable (Slider) --- */
+/* ------------------------------------------- */
+
+.slider-wrap {
+    margin-top: 1rem; /* Espacio entre el contador y el slider */
+    padding: 0 0.5rem; /* Pequeño padding para no pegar en los bordes */
+}
+
+.contador-slider {
+    -webkit-appearance: none; /* Quitar estilos nativos de WebKit */
+    appearance: none;
+    width: 100%;
+    height: 6px; /* Altura de la barra */
+    background: var(--border);
+    outline: none;
+    opacity: 0.7;
+    transition: opacity .2s;
+    border-radius: 3px;
+}
+
+.contador-slider:hover {
+    opacity: 1;
+}
+
+/* Estilo del "pulgar" (thumb) en Chrome/Safari */
+.contador-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px; /* Tamaño del punto */
+    height: 18px;
+    border-radius: 50%; /* Forma circular */
+    background: var(--accent); /* Color principal */
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+/* Estilo del "pulgar" (thumb) en Firefox */
+.contador-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border: none;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+/* ------------------------------------------- */
+/* --- Estilos para indicar contadores altos/bajos (Color Dinámico) --- */
+/* ------------------------------------------- */
+
+/* Estilos de los contadores bajos (menos de 6) */
+.contador[data-valor^="0"], 
+.contador[data-valor^="1"], 
+.contador[data-valor^="2"], 
+.contador[data-valor^="3"], 
+.contador[data-valor^="4"], 
+.contador[data-valor^="5"] {
+    color: #cc3300; /* Rojo/Naranja para bajo */
+    font-weight: bold;
+}
+
+/* Estilos de los contadores altos (9 o más) */
+.contador[data-valor^="9"], 
+.contador[data-valor^="10"] {
+    color: #1c7430; /* Verde oscuro para alto */
+    font-weight: bold;
+}
+
+/* ------------------------------------------- */
+/* --- Estilos para el Control Deslizable (Slider) --- */
+/* ------------------------------------------- */
+
+.slider-wrap {
+    margin-top: 1rem; /* Espacio entre el contador y el slider */
+    padding: 0 0.5rem; /* Pequeño padding para no pegar en los bordes */
+}
+
+.contador-slider {
+    -webkit-appearance: none; /* Quitar estilos nativos de WebKit */
+    appearance: none;
+    width: 100%;
+    height: 6px; /* Altura de la barra */
+    background: var(--border);
+    outline: none;
+    opacity: 0.7;
+    transition: opacity .2s;
+    border-radius: 3px;
+}
+
+.contador-slider:hover {
+    opacity: 1;
+}
+
+/* Estilo del "pulgar" (thumb) en Chrome/Safari */
+.contador-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px; /* Tamaño del punto */
+    height: 18px;
+    border-radius: 50%; /* Forma circular */
+    background: var(--accent); /* Color principal */
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+/* Estilo del "pulgar" (thumb) en Firefox */
+.contador-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border: none;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+/* ------------------------------------------- */
+/* --- Estilos para el Control Deslizable (Slider) --- */
+/* ------------------------------------------- */
+
+.slider-wrap {
+    margin-top: 1rem; /* Espacio entre el contador y el slider */
+    padding: 0 0.5rem; /* Pequeño padding para no pegar en los bordes */
+}
+
+.contador-slider {
+    -webkit-appearance: none; /* Quitar estilos nativos de WebKit */
+    appearance: none;
+    width: 100%;
+    height: 6px; /* Altura de la barra */
+    background: var(--border);
+    outline: none;
+    opacity: 0.7;
+    transition: opacity .2s;
+    border-radius: 3px;
+}
+
+.contador-slider:hover {
+    opacity: 1;
+}
+
+/* Estilo del "pulgar" (thumb) en Chrome/Safari */
+.contador-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px; /* Tamaño del punto */
+    height: 18px;
+    border-radius: 50%; /* Forma circular */
+    background: var(--accent); /* Color principal */
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+/* Estilo del "pulgar" (thumb) en Firefox */
+.contador-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border: none;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+/* ------------------------------------------- */
+/* --- Estilos para la Lista de Clasificación --- */
+/* ------------------------------------------- */
+
+.ranking-section {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px dashed var(--border);
+}
+
+.ranking-section h2 {
+    font-size: 1.2rem;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+}
+
+#ranking-lista {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+#ranking-lista li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    font-weight: 500;
+}
+
+#ranking-lista li span.ranking-valor {
+    font-weight: bold;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+}
+
+/* Destacar el primer lugar (opcional) */
+#ranking-lista li:first-child {
+    background: var(--accent-weak);
+    border-color: var(--accent);
+    font-size: 1.1rem;
+}
