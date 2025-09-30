@@ -66,3 +66,7 @@ main{ padding:1rem; max-width:1100px; margin:0 auto; }
 .btn-menos{ border-color:#fec; }
 
 .persona{ user-select:none; }
+.persona.seleccionada {
+  outline: 3px solid dodgerblue;
+  border-radius: 10px;
+}
