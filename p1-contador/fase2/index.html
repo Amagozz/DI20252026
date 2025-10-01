@@ -1,75 +1,41 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>Contadores por Persona</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8" />
+  <title>Contadores por Persona</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
-<section id="estado" aria-live="polite"></section>
-    <section id="lista" class="grid"></section>
-    
-    <section class="ranking-section">
-        <h2>Clasificación (Puntuación Máxima)</h2>
-        <ol id="ranking-lista"></ol>
 <body>
-
-  <!-- Barra superior con título y botones de acciones -->
   <header class="topbar">
     <h1>Contadores de Clase</h1>
     <div class="acciones">
-      <!-- Botón para cargar un archivot-->
       <button id="btn-cargar-nombres">Cargar nombres (nombres.txt)</button>
-      <!-- Input de tipo archivo para cargar datos desde el disco local -->
       <label class="file-label">
         <input type="file" id="input-archivo" accept=".txt,.json" />
         Cargar archivo local
       </label>
       <button id="btn-reset">Reiniciar todos a 10</button>
-      <div class="sumaPuntosEstudiantes">
-      <button id="btn-sumarPuntos">+1 a estudiantes</button>
-      <button id="btn-masMedioPunto">+.1 a estudiantes</button>
-      </div>
-      <div class="restaPuntosEstudiantes">
-      <button id="btn-restarPuntos">-1 a estudiantes</button>
-      <button id="btn-menosMedioPunto">-.1 a estudiantes</button>
-    </div>
     </div>
   </header>
 
   <main>
-    <!-- Sección de estado, se actualizará dinámicamente (ej. mensajes al usuario) -->
     <section id="estado" aria-live="polite"></section>
-    <!-- Aquí se insertarán las tarjetas de cada persona (contadores individuales) -->
     <section id="lista" class="grid"></section>
   </main>
 
-  <!-- Template para crear dinámicamente tarjetas de persona -->
   <template id="tpl-persona">
     <article class="card persona" data-nombre="">
       <header class="card-head">
-        <!-- Botón especial con icono de calavera -->
-        <button class="btn-muerte">💀</button>
-        <h2 class="nombre"></h2> 
-        <input type="checkbox" class="puntuacion">
-        <button class="btn-magico">✨</button>
+        <h2 class="nombre"></h2>
       </header>
-
-      <!-- Contador con botones para sumar/restar -->
       <div class="contador-wrap">
-        <div class="resta">
-        <button class="btn-redondeado-menos" aria-label="Restar uno">−.1</button>
-        <button class="btn-menos" aria-label="Restar uno">−1</button>
-      </div>
-        <!-- Valor del contador (inicia en 10) -->
+        <button class="btn redondeado btn-menos" aria-label="Restar uno">−1</button>
         <span class="contador" data-valor="10" aria-live="polite">10</span>
-        <div class="suma">
-        <button class="btn-redondeado-mas" aria-label="Sumar uno">+.1</button>
-        <button class="btn-mas" aria-label="Sumar uno">+1</button>
-      </div>
+        <button class="btn redondeado btn-mas" aria-label="Sumar uno">+1</button>
       </div>
     </article>
   </template>
 
-  <script src="script.js" type="module"></script>
+  <script src="script.js" type="module"></script>
 </body>
 </html>
