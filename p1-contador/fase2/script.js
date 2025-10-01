@@ -26,14 +26,6 @@ const tpl = document.getElementById("tpl-persona"); // Template HTML para clonar
 // ========================
 
 // Elimina acentos/diacríticos y espacios extras → usado para ordenar alfabéticamente
-=======
-const estado = new Map();
-const lista = document.getElementById("lista");
-const estadoUI = document.getElementById("estado");
-const btnCargar = document.getElementById("btn-cargar-nombres");
-const btnReset = document.getElementById("btn-reset");
-const inputArchivo = document.getElementById("input-archivo");
-const tpl = document.getElementById("tpl-persona");
 const STORAGE_KEY = 'contadores_clase_estado'; 
 const rankingListaUI = document.getElementById("ranking-lista"); // NUEVA CONSTANTE
 
@@ -211,12 +203,6 @@ async function cargarDesdeArchivoLocal(file) {
 // ========================
 
 // Delegación de eventos: un solo listener para todos los botones dentro de lista
-lista.addEventListener("click", (ev) => {
-  const btn = ev.target.closest("button");
-  if (!btn) return;
-  const card = btn.closest(".persona");
-  if (!card) return;
-
 // --------- Interacción (Maneja Clicks y Sliders) ---------
 function manejarInteraccion(ev) {
     const card = ev.target.closest(".persona");
@@ -225,68 +211,67 @@ function manejarInteraccion(ev) {
     const nombre = card.dataset.nombre;
     if (!estado.has(nombre)) return;
 
-
     const span = card.querySelector(".contador");
     let valor = Number(span.dataset.valor || "10");
     let nuevoValor = valor;
-    
+    let btn;
+
     // Lógica para botones (+1 / -1)
     if (ev.type === "click") {
-        const btn = ev.target.closest("button");
+        btn = ev.target.closest("button");
         if (!btn) return;
-        
-        if (btn.classList.contains("btn-mas")) {
-            nuevoValor = Math.min(10, valor + 0.1);
-        } else if (btn.classList.contains("btn-menos")) {
-            nuevoValor = valor - 0.1;
-        }
-        
-        // Redondea a un decimal
-        nuevoValor = Number(nuevoValor.toFixed(1));
-    
+
+        if (btn.classList.contains("btn-redondeado-mas")) valor += 0.1;
+        if (btn.classList.contains("btn-mas")) valor += 1;
+        if (btn.classList.contains("btn-redondeado-menos")) valor -= 0.1;
+        if (btn.classList.contains("btn-menos")) valor -= 1;
+
+        // Limitar rango [0,10]
+        if (valor > 10) valor = 10;
+        if (valor < 0) valor = 0;
+
+        // Botones especiales
+        if (btn.classList.contains("btn-muerte")) valor = 0; // Calavera → directo a 0
+        if (btn.classList.contains("btn-magico")) valor = Number((Math.random() * 10).toFixed(1)); // Aleatorio 0-10
+
+        nuevoValor = valor;
     // Lógica para el slider (input / change)
     } else if (ev.type === "input" || ev.type === "change") {
         const slider = ev.target.closest(".contador-slider");
         if (!slider) return;
-
         nuevoValor = Number(slider.value);
+        // Limitar rango [0,10]
+        if (nuevoValor > 10) nuevoValor = 10;
+        if (nuevoValor < 0) nuevoValor = 0;
     } else {
         return;
     }
 
+    // Actualiza estado y UI
+    estado.set(nombre, Number(nuevoValor.toFixed(1)));
+    span.dataset.valor = String(nuevoValor);
+    span.textContent = Number(nuevoValor.toFixed(1)); // Siempre con 1 decimal
+    bump(span);
 
-  // Ajustes según el botón pulsado
-  if (btn.classList.contains("btn-redondeado-mas")) valor += 0.1;
-  if (btn.classList.contains("btn-mas")) valor += 1;
-  if (btn.classList.contains("btn-redondeado-menos")) valor -= 0.1;
-  if (btn.classList.contains("btn-menos")) valor -= 1;
-  
-  // Limitar rango [0,10]
-  if (valor > 10) valor = 10;
-  if (valor < 0) valor = 0;
+    // Reaplica color dinámico según valor
+    span.classList.remove("verde", "verdeSuave","naranja", "rojo");
+    if (nuevoValor >= 9) {
+        span.classList.add("verde");
+    } else if(nuevoValor >= 7){
+        span.classList.add("verdeSuave");
+    } else if (nuevoValor >= 5) {
+        span.classList.add("naranja");
+    } else {
+        span.classList.add("rojo");
+    }
+    guardarEstado();
+    renderRanking();
+}
 
-  // Botones especiales
-  if (btn.classList.contains("btn-muerte")) valor = 0; // Calavera → directo a 0
-  if (btn.classList.contains("btn-magico")) valor = Number((Math.random() * 10).toFixed(1)); // Aleatorio 0-10
-
-  // Actualiza estado y UI
-  estado.set(nombre, valor);
-  span.dataset.valor = String(valor);
-  span.textContent = Number(valor.toFixed(1)); // Siempre con 1 decimal
-  bump(span);
-
-  // Reaplica color dinámico según valor
-  span.classList.remove("verde", "verdeSuave","naranja", "rojo");
-  if (valor >= 9) {
-    span.classList.add("verde");
-  } else if(valor >= 7){
-    span.classList.add("verdeSuave");
-  } else if (valor >= 5) {
-    span.classList.add("naranja");
-  } else {
-    span.classList.add("rojo");
-  }
-});
+// Delegación de eventos: un solo listener para todos los botones y sliders dentro de lista
+lista.addEventListener("click", manejarInteraccion);
+lista.addEventListener("input", manejarInteraccion);
+lista.addEventListener("change", manejarInteraccion);
 
 
 // ========================
