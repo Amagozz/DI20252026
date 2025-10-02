@@ -6,9 +6,12 @@ const btnCargar = document.getElementById("btn-cargar-nombres");
 const btnReset = document.getElementById("btn-reset");
 const inputArchivo = document.getElementById("input-archivo");
 const tpl = document.getElementById("tpl-persona");
+<<<<<<< HEAD
 const btnSubirSeleccionados = document.getElementById("btn-subir-seleccionados");
 const btnBajarSeleccionados = document.getElementById("btn-bajar-seleccionados");
 
+=======
+>>>>>>> 9c08cf45e0774f149536d15f91dee3875f081b07
 
 // --------- Utilidades ---------
 function normalizaNombre(s) {
@@ -103,6 +106,7 @@ lista.addEventListener("click", (ev) => {
 
   const nombre = card.dataset.nombre;
   if (!estado.has(nombre)) return;
+<<<<<<< HEAD
 
   const span = card.querySelector(".contador");
   let valor = Number(span.dataset.valor || "10");
@@ -172,7 +176,20 @@ function modificarSeleccionados(delta) {
 btnSubirSeleccionados.addEventListener("click", () => modificarSeleccionados(0.1));
 btnBajarSeleccionados.addEventListener("click", () => modificarSeleccionados(-0.1));
 
+=======
 
+  const span = card.querySelector(".contador");
+  let valor = Number(span.dataset.valor || "10");
+
+  if (btn.classList.contains("btn-mas")) valor += 1;
+  if (btn.classList.contains("btn-menos")) valor -= 1;
+>>>>>>> 9c08cf45e0774f149536d15f91dee3875f081b07
+
+  estado.set(nombre, valor);
+  span.dataset.valor = String(valor);
+  span.textContent = valor;
+  bump(span);
+});
 
 btnReset.addEventListener("click", () => {
   for (const n of estado.keys()) estado.set(n, 10);
@@ -198,6 +215,7 @@ inputArchivo.addEventListener("change", async (e) => {
     console.error(err);
     setEstado("No se pudo leer el archivo local.");
   } finally {
+<<<<<<< HEAD
 
     inputArchivo.value = "";
     }
@@ -226,3 +244,15 @@ inputArchivo.addEventListener("change", async (e) => {
         checkbox.dispatchEvent(new Event('change', { bubbles: true }));
       }
     });
+=======
+    inputArchivo.value = "";
+  }
+});
+
+// --------- Bootstrap ---------
+// Opción A (recomendada en local con live server): intenta cargar nombres.txt
+// Opción B: si falla, el usuario puede usar “Cargar archivo local”
+cargarNombresDesdeTxt("nombres.txt").catch(() => {
+  setEstado("Consejo: coloca un nombres.txt junto a esta página o usa 'Cargar archivo local'.");
+});
+>>>>>>> 9c08cf45e0774f149536d15f91dee3875f081b07
