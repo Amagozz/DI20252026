@@ -1,4 +1,12 @@
 :root {
+  --bg-dark: #1e1e2e; /* Fondo de la app */
+  --card-dark: #2b2b3c; /* Tarjetas / cards */
+  --text-dark: #f0f0f0; /* Texto principal */
+  --muted-dark: #aaaaaa; /* Texto secundario / estado */
+  --border-dark: #444; /* Bordes */
+}
+
+:root {
   --bg: #9b9bbd;
   --card: #ffffff;
   --text: #1b1b1f;
@@ -24,6 +32,7 @@
 #contador {
   font-size: 1.5rem;
 }
+
 .persona.seleccionado {
   border: 2px solid rgba(0, 0, 255, 0.298);
   background-color: #e0f0ff;
@@ -145,12 +154,174 @@ main {
   border-radius: 999px;
 }
 .btn-mas {
-  border-color: rgb(0, 255, 47);
+  border-color: rgb(167, 160, 160);
 }
 .btn-menos {
-  border-color: rgb(255, 0, 0);
+  border-color: rgb(140, 132, 132);
 }
-
 .persona {
   user-select: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+/* Hover: se levanta un poquito */
+.persona:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Seleccionada: efecto de resaltado */
+.persona.seleccionado {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 255, 0.3);
+  border-color: rgba(0, 0, 255, 0.6);
+}
+
+/* Para que las tarjetas también cambien en modo oscuro */
+/* ---------- Modo oscuro ---------- */
+body.dark {
+  background-color: var(--bg-dark);
+  color: var(--text-dark);
+}
+
+body.dark .persona,
+body.dark .card,
+body.dark .topbar,
+body.dark .footer-menu {
+  background-color: var(--card-dark);
+  border-color: var(--border-dark);
+}
+
+body.dark #estado,
+body.dark #input-nota,
+body.dark button,
+body.dark .file-label {
+  color: var(--text-dark);
+  border-color: var(--border-dark);
+  background-color: var(--card-dark);
+}
+/* ---------- Modo oscuro ---------- */
+body.dark {
+  background: #1e1e2e; /* fondo general oscuro */
+  color: #f0f0f0; /* texto principal */
+}
+
+body.dark .topbar {
+  background: #2b2b3c;
+  border-bottom: 1px solid #444;
+}
+
+body.dark .card,
+body.dark .persona {
+  background: #2b2b3c; /* tarjetas oscuras */
+  border: 1px solid #444;
+}
+
+body.dark #estado {
+  color: #aaaaaa; /* texto secundario */
+}
+
+body.dark #input-nota {
+  background-color: #3a3a4d;
+  color: #ffffff;
+  border: 1px solid #555;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+body.dark button,
+body.dark .file-label {
+  background: #3a3a4d;
+  color: #ffffff;
+  border: 1px solid #555;
+  transition: transform 0.06s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+body.dark button:hover,
+body.dark .file-label:hover {
+  background: #8484b1;
+}
+
+body.dark button:active,
+body.dark .file-label:active {
+  transform: translateY(1px);
+}
+
+body.dark .contador {
+  color: #9b7878;
+}
+
+body.dark .persona.seleccionado {
+  border: 2px solid rgba(106, 106, 255, 0.6);
+  background-color: #3c3c5a;
+}
+body.dark .btn-mas {
+  border-color: #fafafa; /* verde brillante para sumar */
+  color: #ffffff; /* opcional: texto del botón */
+  background-color: #747478; /* mismo fondo que la tarjeta */
+}
+
+body.dark .btn-menos {
+  border-color: #fafafa; /* rojo brillante para restar */
+  color: #fafafa; /* opcional: texto del botón */
+  background-color: #747478; /* mismo fondo que la tarjeta */
+}
+
+body.dark .btn-mas:hover {
+  background-color: #5e5189;
+}
+
+body.dark .btn-menos:hover {
+  background-color: #5e5189;
+}
+
+body.dark .persona:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+body.dark .persona.seleccionado {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(106, 106, 255, 0.6);
+  border-color: rgba(106, 106, 255, 0.6);
+}
+
+.btn-muerte {
+  border: 1px solid #332e2e;
+  background: #1a0909;
+  color: #fff;
+  border-radius: 0.65rem;
+  padding: 0.2rem 0.5rem;
+  cursor: pointer;
+  transition: transform 0.06s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-muerte:hover {
+  background: #ff1a1a;
+}
+
+.btn-muerte:active {
+  transform: translateY(1px);
+}
+
+/* Modo oscuro */
+body.dark .btn-muerte {
+  background: #151111;
+  border: 1px solid #635757;
+}
+
+body.dark .btn-muerte:hover {
+  background: #ff0000;
+}
+
+.contador {
+  background-color: #d7d4d4; /* tu color personalizado para modo claro */
+  color: #bb5151; /* texto visible */
+  padding: 0 4px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+/* Modo oscuro */
+body.dark .contador {
+  background-color: #ffffffc7; /* fondo oscuro para el número */
+  color: #ffffff; /* texto blanco */
 }

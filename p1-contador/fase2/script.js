@@ -1,4 +1,4 @@
-// Estado simple en memoria: { nombre: valor }
+// ---------- Estado simple en memoria: { nombre: valor } ----------
 const estado = new Map();
 const lista = document.getElementById("lista");
 const estadoUI = document.getElementById("estado");
@@ -10,13 +10,12 @@ const tpl = document.getElementById("tpl-persona");
 const inputNota = document.getElementById("input-nota");
 const btnAsignarNota = document.getElementById("btn-asignar-nota");
 
-// --------- Utilidades ---------
+// ---------- Utilidades ----------
 function efectoColor(span) {
   const valor = parseFloat(span.textContent);
-  if (valor > 8) span.style.color = "green";
-  else if (valor > 5) span.style.color = "orange";
-  else if (valor > 0) span.style.color = "red";
-  else span.style.color = "black";
+  if (valor >= 5) span.style.color = "green"; // aprobado
+  else if (valor > 0) span.style.color = "red"; // suspenso
+  else span.style.color = "black"; // sin nota
 }
 
 function normalizaNombre(s) {
@@ -35,7 +34,7 @@ function bump(el) {
   setTimeout(() => el.classList.remove("bump"), 160);
 }
 
-// --------- Render de personas ---------
+// ---------- Render de personas ----------
 function renderPersona(nombre, valor = 10) {
   const node = tpl.content.firstElementChild.cloneNode(true);
   node.dataset.nombre = nombre;
@@ -95,7 +94,7 @@ function setEstado(msg) {
   estadoUI.textContent = msg ?? "";
 }
 
-// --------- Carga de nombres ---------
+// ---------- Carga de nombres ----------
 async function cargarNombresDesdeTxt(url = "nombres.txt") {
   setEstado("Cargando nombres…");
   const res = await fetch(url);
@@ -144,7 +143,7 @@ async function cargarDesdeArchivoLocal(file) {
   setEstado(`Cargados ${nombres.length} nombres desde archivo local.`);
 }
 
-// --------- Botón Seleccionar todos ---------
+// ---------- Botón Seleccionar todos ----------
 const btnSeleccionarTodos = document.getElementById("btn-seleccionar-todos");
 
 btnSeleccionarTodos.addEventListener("click", () => {
@@ -154,20 +153,17 @@ btnSeleccionarTodos.addEventListener("click", () => {
   );
 
   if (todosSeleccionados) {
-    // 🔹 Si ya están todos seleccionados → deseleccionamos
     cards.forEach((card) => card.classList.remove("seleccionado"));
     setEstado("Todos los alumnos han sido deseleccionados.");
     btnSeleccionarTodos.textContent = "Seleccionar todos";
   } else {
-    // 🔹 Si no → seleccionamos todos
     cards.forEach((card) => card.classList.add("seleccionado"));
     setEstado("Todos los alumnos han sido seleccionados.");
     btnSeleccionarTodos.textContent = "Deseleccionar todos";
   }
 });
 
-// --------- Botones de interacción ---------
-
+// ---------- Botones de interacción ----------
 lista.addEventListener("click", (ev) => {
   const btn = ev.target.closest("button");
   if (!btn) return;
@@ -178,6 +174,19 @@ lista.addEventListener("click", (ev) => {
   const span = card.querySelector(".contador");
   let valor = parseFloat(span.dataset.valor || "10");
 
+  // --- Botón de la muerte ---
+  if (btn.classList.contains("btn-muerte")) {
+    valor = 0; // poner nota a 0
+    estado.set(nombre, valor);
+    span.dataset.valor = String(valor);
+    span.textContent = formatValor(valor);
+    efectoColor(span);
+    bump(span);
+    card.classList.remove("seleccionado");
+    return; // salir para que no se aplique + o -
+  }
+
+  // --- Botones + / - ---
   if (btn.classList.contains("btn-mas")) valor += 0.1;
   if (btn.classList.contains("btn-menos")) valor -= 0.1;
 
@@ -191,7 +200,7 @@ lista.addEventListener("click", (ev) => {
   bump(span);
 });
 
-// --------- Asignar nota a los seleccionados ---------
+// ---------- Asignar nota a los seleccionados ----------
 btnAsignarNota.addEventListener("click", () => {
   const nota = parseFloat(inputNota.value);
   if (isNaN(nota) || nota < 0 || nota > 10) {
@@ -219,7 +228,7 @@ btnAsignarNota.addEventListener("click", () => {
   inputNota.value = "";
 });
 
-// --------- Reset y carga ---------
+// ---------- Reset y carga ----------
 btnReset.addEventListener("click", () => {
   for (const n of estado.keys()) estado.set(n, 10);
   renderLista();
@@ -248,3 +257,23 @@ inputArchivo.addEventListener("change", async (e) => {
 cargarNombresDesdeTxt("nombres.txt").catch(() => {
   setEstado("Coloca nombres.txt o usa archivo local.");
 });
+
+// ---------- Toggle Modo Oscuro / Claro ----------
+const toggleModo = document.getElementById("toggle-modo");
+
+toggleModo.addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+  document.body.classList.toggle("light");
+
+  toggleModo.textContent = document.body.classList.contains("dark")
+    ? "Modo Claro"
+    : "Modo Oscuro";
+});
+
+// Inicializa modo claro si no tiene clase
+if (
+  !document.body.classList.contains("dark") &&
+  !document.body.classList.contains("light")
+) {
+  document.body.classList.add("light");
+}
