@@ -71,16 +71,3 @@ main{ padding:1rem; max-width:1100px; margin:0 auto; }
   border: 2px solid #f00;
   box-shadow: 0 0 10px rgba(255,0,0,0.5);
 }
-
-@keyframes vibrar {
-  0% { transform: translateX(0); }
-  20% { transform: translateX(-3px); }
-  40% { transform: translateX(3px); }
-  60% { transform: translateX(-3px); }
-  80% { transform: translateX(3px); }
-  100% { transform: translateX(0); }
-}
-
-.vibrar {
-  animation: vibrar 0.2s ease-in-out;
-}
