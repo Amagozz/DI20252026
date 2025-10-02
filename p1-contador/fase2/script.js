@@ -198,13 +198,31 @@ inputArchivo.addEventListener("change", async (e) => {
     console.error(err);
     setEstado("No se pudo leer el archivo local.");
   } finally {
-    inputArchivo.value = "";
-  }
-});
 
-// --------- Bootstrap ---------
-// Opción A (recomendada en local con live server): intenta cargar nombres.txt
-// Opción B: si falla, el usuario puede usar “Cargar archivo local”
-cargarNombresDesdeTxt("nombres.txt").catch(() => {
-  setEstado("Consejo: coloca un nombres.txt junto a esta página o usa 'Cargar archivo local'.");
-});
+    inputArchivo.value = "";
+    }
+    });
+
+    // --------- Bootstrap ---------
+    // Opción A (recomendada en local con live server): intenta cargar nombres.txt
+    // Opción B: si falla, el usuario puede usar “Cargar archivo local”
+    cargarNombresDesdeTxt("nombres.txt").catch(() => {
+      setEstado("Consejo: coloca un nombres.txt junto a esta página o usa 'Cargar archivo local'.");
+    });
+
+    // Permitir marcar el checkbox al hacer clic en la tarjeta
+    document.getElementById('lista').addEventListener('click', function (e) {
+      const card = e.target.closest('.persona');
+      if (!card || !this.contains(card)) return;
+      if (
+        e.target.matches('input.seleccion') ||
+        e.target.closest('button')
+      ) {
+        return;
+      }
+      const checkbox = card.querySelector('input.seleccion');
+      if (checkbox) {
+        checkbox.checked = !checkbox.checked;
+        checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    });
