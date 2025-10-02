@@ -6,6 +6,14 @@ const btnCargar = document.getElementById("btn-cargar-nombres");
 const btnReset = document.getElementById("btn-reset");
 const inputArchivo = document.getElementById("input-archivo");
 const tpl = document.getElementById("tpl-persona");
+const btnTema = document.getElementById("btn-tema");
+
+btnTema.addEventListener("click", () => {
+  document.body.classList.toggle("dark-mode");
+
+  const modo = document.body.classList.contains("dark-mode") ? "oscuro" : "claro";
+  setEstado(`Modo ${modo} activado.`);
+});
 
 
 // --------- Utilidades ---------
@@ -104,6 +112,20 @@ async function cargarDesdeArchivoLocal(file) {
 // Delegación: un solo listener para todos los botones
 
 lista.addEventListener("click", (ev) => {
+  const card = ev.target.closest(".persona");
+  if (!card) return;
+
+  // Evita interferencias con botones internos
+  const isBoton = ev.target.closest("button");
+  if (isBoton) return;
+
+  const checkbox = card.querySelector(".selector");
+  checkbox.checked = !checkbox.checked;
+  card.classList.toggle("seleccionada", checkbox.checked);
+});
+
+
+lista.addEventListener("click", (ev) => {
   
   const btn = ev.target.closest("button");
   if (!btn) return;
@@ -146,6 +168,7 @@ if (valor < 5) {
   bump(span);
  
  renderLista();
+
 });
 
 btnReset.addEventListener("click", () => {
