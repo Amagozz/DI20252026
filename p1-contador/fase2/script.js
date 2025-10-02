@@ -1,7 +1,3 @@
-// ========================
-// Estado en memoria
-// ========================
-
 // Estado simple en memoria: { nombre: valor }
 
 // Usamos un Map porque nos permite asociar cada nombre con su valor (contador)
@@ -61,102 +57,50 @@ function cargarEstado() {
 
 
 // --------- Utilidades ---------
-
 function normalizaNombre(s) {
-  return s.normalize("NFD").replace(/\p{Diacritic}/gu, "").trim();
+  return s.normalize("NFD").replace(/\p{Diacritic}/gu, "").trim();
 }
 
-// Crea un nodo HTML <.persona> a partir de un nombre y valor inicial
 function renderPersona(nombre, valor = 10) {
-
-  const node = tpl.content.firstElementChild.cloneNode(true);
-  node.dataset.nombre = nombre;
-  node.querySelector(".nombre").textContent = nombre;
-  const span = node.querySelector(".contador");
-  span.textContent = valor;
-  span.dataset.valor = String(valor);
-  
-    // Inicializar el valor del slider
-    const slider = node.querySelector(".contador-slider");
-    if (slider) {
-        slider.value = valor;
-    }
-
-  return node;
-
+  const node = tpl.content.firstElementChild.cloneNode(true);
+  node.dataset.nombre = nombre;
+  node.querySelector(".nombre").textContent = nombre;
+  const span = node.querySelector(".contador");
+  span.textContent = valor;
+  span.dataset.valor = String(valor);
+  return node;
 }
 
-// Pequeña animación "bump" (rebote visual en el número al cambiar)
 function bump(el) {
-  el.classList.add("bump");
-  setTimeout(() => el.classList.remove("bump"), 160);
+  el.classList.add("bump");
+  setTimeout(() => el.classList.remove("bump"), 160);
 }
 
-// Renderiza toda la lista de estudiantes desde el estado
-// Se ordena alfabéticamente con normalización (ignora acentos/espacios extras)
+// Render completo desde estado
 function renderLista() {
-  lista.innerHTML = "";
-  const nombres = Array.from(estado.keys()).sort((a, b) =>
-    normalizaNombre(a).localeCompare(normalizaNombre(b))
-  );
-  for (const n of nombres) {
-    const v = estado.get(n) ?? 10;
-    lista.appendChild(renderPersona(n, v));
-  }
-    // Llamar a la función de ranking después de renderizar la lista principal
-    renderRanking(); 
+  lista.innerHTML = "";
+  const nombres = Array.from(estado.keys()).sort((a, b) =>
+    normalizaNombre(a).localeCompare(normalizaNombre(b))
+  );
+  for (const n of nombres) {
+    const v = estado.get(n) ?? 10;
+    lista.appendChild(renderPersona(n, v));
+  }
 }
 
-// Función para calcular y renderizar el Ranking
-function renderRanking() {
-    if (estado.size === 0) {
-        rankingListaUI.innerHTML = '<li>No hay contadores cargados.</li>';
-        return;
-    }
-
-    // 1. Convertir el Map a un array de objetos [nombre, valor]
-    const rankingArray = Array.from(estado.entries())
-        .map(([nombre, valor]) => ({ nombre, valor }));
-        
-    // 2. Ordenar: de mayor valor a menor. Si los valores son iguales, ordenar por nombre.
-    rankingArray.sort((a, b) => {
-        // Ordenar por valor (descendente)
-        if (a.valor !== b.valor) {
-            return b.valor - a.valor;
-        }
-        // Si los valores son iguales, ordenar por nombre (alfabético)
-        return normalizaNombre(a.nombre).localeCompare(normalizaNombre(b.nombre));
-    });
-
-    // 3. Crear el HTML para la lista
-    const html = rankingArray.map(item => `
-        <li>
-            <span>${item.nombre}</span>
-            <span class="ranking-valor">${item.valor.toFixed(1)}</span>
-        </li>
-    `).join('');
-
-    rankingListaUI.innerHTML = html;
-}
-
-// Actualiza el mensaje de estado (para feedback accesible con aria-live)
+// Mensaje de estado accesible
 function setEstado(msg) {
-  estadoUI.textContent = msg ?? "";
+  estadoUI.textContent = msg ?? "";
 }
 
-// ========================
-// Carga de nombres desde archivos
-// ========================
-
-// Carga nombres desde un archivo del servidor (txt o json)
+// --------- Carga de nombres ---------
 async function cargarNombresDesdeTxt(url = "nombres.txt") {
-
   setEstado("Cargando nombres…");
   const res = await fetch(url);
   if (!res.ok) throw new Error(`No se pudo leer ${url}`);
   const text = await res.text();
 
-  // Permite leer archivos .txt (una línea = un nombre) o .json (array de strings)
+  // Permite .txt (una por línea) o .json (array de strings)
   let nombres;
   if (url.endsWith(".json")) {
     const arr = JSON.parse(text);
@@ -167,34 +111,32 @@ async function cargarNombresDesdeTxt(url = "nombres.txt") {
 
   if (nombres.length === 0) throw new Error("El archivo no contiene nombres.");
 
-  // Si un nombre no existía en el estado, se inicializa con valor 10
+  // Inicializa estado si no existían
   for (const n of nombres) {
     if (!estado.has(n)) estado.set(n, 10);
   }
   renderLista();
   setEstado(`Cargados ${nombres.length} nombres.`);
-
 }
 
-// Carga nombres desde un archivo local (seleccionado con <input type="file">)
+// Carga desde archivo local (input file)
 async function cargarDesdeArchivoLocal(file) {
-  const text = await file.text();
-  let nombres;
-  if (file.name.endsWith(".json")) {
-    const arr = JSON.parse(text);
-    nombres = Array.isArray(arr) ? arr : [];
-  } else {
-    nombres = text.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
-  }
+  const text = await file.text();
+  let nombres;
+  if (file.name.endsWith(".json")) {
+    const arr = JSON.parse(text);
+    nombres = Array.isArray(arr) ? arr : [];
+  } else {
+    nombres = text.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+  }
 
-  if (nombres.length === 0) throw new Error("El archivo no contiene nombres.");
+  if (nombres.length === 0) throw new Error("El archivo no contiene nombres.");
 
-  for (const n of nombres) {
-    if (!estado.has(n)) estado.set(n, 10);
-  }
-  renderLista();
-  guardarEstado(); 
-  setEstado(`Cargados ${nombres.length} nombres desde archivo local.`);
+  for (const n of nombres) {
+    if (!estado.has(n)) estado.set(n, 10);
+  }
+  renderLista();
+  setEstado(`Cargados ${nombres.length} nombres desde archivo local.`);
 }
 
 
@@ -280,102 +222,21 @@ lista.addEventListener("change", manejarInteraccion);
 
 // Reinicia todos los contadores a 10
 btnReset.addEventListener("click", () => {
-  for (const n of estado.keys()) estado.set(n, 10);
-  renderLista();
-  setEstado("Todos los contadores han sido reiniciados a 10.");
-  guardarEstado();
-  renderRanking(); // Actualizar el ranking después del reset
-});
-
-// Función auxiliar: devuelve lista de estudiantes seleccionados (checkbox marcado)
-function getSeleccionados() {
-  return Array.from(lista.querySelectorAll(".persona"))
-    .filter(card => card.querySelector(".puntuacion")?.checked)
-    .map(card => card.dataset.nombre);
-}
-
-// +0.1 a seleccionados
-btnMasMedioPunto.addEventListener("click", () => {
-  const seleccionados = getSeleccionados();
-  if (seleccionados.length === 0) {
-    setEstado("No hay estudiantes seleccionados.");
-    return;
-  }
-  for (const n of seleccionados) {
-    let nuevoValor = (estado.get(n) ?? 10) + 0.1;
-    if (nuevoValor > 10) nuevoValor = 10;
-    estado.set(n, Number(nuevoValor.toFixed(1)));
-  }
+  for (const n of estado.keys()) estado.set(n, 10);
   renderLista();
-  setEstado("Se ha sumado 0.1 puntos a los estudiantes seleccionados.");
+  setEstado("Todos los contadores han sido reiniciados a 10.");
 });
 
-// +1 a seleccionados
-btnSumarPuntos.addEventListener("click", () => {
- const seleccionados = getSeleccionados();
-  if (seleccionados.length === 0) {
-    setEstado("No hay estudiantes seleccionados.");
-    return;
-  }
-  for (const n of seleccionados) {
-    let nuevoValor = (estado.get(n) ?? 10) + 1;
-    if (nuevoValor > 10) nuevoValor = 10;
-    estado.set(n, Number(nuevoValor.toFixed(1)));
-  }
-  renderLista();
-  setEstado("Se ha sumado 1 punto a los estudiantes seleccionados.");
-});
-
-// -0.1 a seleccionados
-btnMenosMedioPunto.addEventListener("click", () => {
- const seleccionados = getSeleccionados();
-  if (seleccionados.length === 0) {
-    setEstado("No hay estudiantes seleccionados.");
-    return;
-  }
-  for (const n of seleccionados) {
-    let nuevoValor = (estado.get(n) ?? 10) - 0.1;
-    if (nuevoValor < 0) nuevoValor = 0;
-    estado.set(n, Number(nuevoValor.toFixed(1)));
-  }
-  renderLista();
-  setEstado("Se ha restado 0.1 puntos a los estudiantes seleccionados.");
-});
-
-// -1 a seleccionados
-btnRestarPuntos.addEventListener("click", () => {
- const seleccionados = getSeleccionados();
-  if (seleccionados.length === 0) {
-    setEstado("No hay estudiantes seleccionados.");
-    return;
-  }
-  for (const n of seleccionados) {
-    let nuevoValor = (estado.get(n) ?? 10) - 1;
-    if (nuevoValor < 0) nuevoValor = 0;
-    estado.set(n, Number(nuevoValor.toFixed(1)));
-  }
-  renderLista();
-  setEstado("Se ha restado 1 punto a los estudiantes seleccionados.");
-});
-
-// ========================
-// Carga inicial
-// ========================
-
-// Intenta cargar nombres.txt automáticamente
-// Si falla, muestra consejo al usuario para cargar un archivo local
 btnCargar.addEventListener("click", async () => {
-  try {
-    await cargarNombresDesdeTxt("nombres.txt");
-  } catch (err) {
-    console.error(err);
-    setEstado("No se pudo cargar nombres.txt. Puedes subir un archivo local.");
-  }
+  try {
+    await cargarNombresDesdeTxt("nombres.txt");
+  } catch (err) {
+    console.error(err);
+    setEstado("No se pudo cargar nombres.txt. Puedes subir un archivo local.");
+  }
 });
 
-// Input file: carga archivo de nombres desde disco local
 inputArchivo.addEventListener("change", async (e) => {
-
   const file = e.target.files?.[0];
   if (!file) return;
   try {
@@ -384,12 +245,13 @@ inputArchivo.addEventListener("change", async (e) => {
     console.error(err);
     setEstado("No se pudo leer el archivo local.");
   } finally {
-    inputArchivo.value = ""; // Limpia para permitir volver a cargar el mismo archivo
+    inputArchivo.value = "";
   }
 });
 
-// Bootstrap inicial: intenta cargar nombres.txt al abrir la página
+// --------- Bootstrap ---------
+// Opción A (recomendada en local con live server): intenta cargar nombres.txt
+// Opción B: si falla, el usuario puede usar “Cargar archivo local”
 cargarNombresDesdeTxt("nombres.txt").catch(() => {
   setEstado("Consejo: coloca un nombres.txt junto a esta página o usa 'Cargar archivo local'.");
 });
-

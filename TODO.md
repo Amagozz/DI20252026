@@ -2,27 +2,36 @@ TO DO
 1.-Selección múltiple → UIX
 2.-Colores en los números: aprobado-suspenso
 3.-Selección archivo (cuando más escalable, mejor)
-4.-Revisar bug números
-5.-Operativa
-6.-DM
-7.-Tono (divertido, profesional)
-8.-Paleta colores
-9.-Tipografía (debatir tono)
-10.-Selección checkbox (más cómodo pinchar la tarjeta que, un botón)
-11.- responsive
-1.- Modo oscuro / Modo claro (variable)
-2.- Diseño app
-3.-Hay gente que prefiere tiradores (range slicer) y otros los botones → debate
-.4-Layout botones (un botón de la muerte estaba abajo y no arriba) 
-5.-Botón muerte, pasos (pasarlo a 5 o directamente a 0)
-6.-Leyenda
-7.-Animación
-8.-Nota profesor
-9.-Pasos
-10.-:hoover
-11.-drop down con buscador de letras
-1.-Reconocer tarjetas (orden de a-z con animación)
+4.-Operativa - Menú inferior
+5.-Tono (divertido, profesional)
+6.-Paleta colores
+7.-Tipografía (debatir tono)
+8.-Selección checkbox (más cómodo pinchar la tarjeta que, un botón)
+9.- responsive
+10.- Modo oscuro / Modo claro (variable)
+ Diseño app
+11.-Hay gente que prefiere tiradores (range slicer) y otros los botones → debate
+1.-Layout botones (un botón de la muerte estaba abajo y no arriba) 
+2.-Botón muerte, pasos (pasarlo a 5 o directamente a 0)
+3.-Leyenda
+4.-Animación
+5.-Nota profesor
+6.-Pasos
+7.-:hoover
+8.-drop down con buscador de letras
+9.-Reconocer tarjetas (orden de a-z con animación)
 
 
 
 EQUIPOS: 
+1.- Laura y Andrea
+2.- Irene, Aldo, Aitana
+3.- Alejandro, gustavo
+4.- Carmen, Miriam, Manuel
+5.- Diego, Pelayo
+6.- Jose, Alberto
+7.- Jaime, Santiago
+8.-
+9.-
+10.- Ismael, Hugo
+11.- Adrian, Samuel, Jorge
