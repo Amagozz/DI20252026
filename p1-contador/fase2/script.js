@@ -141,6 +141,70 @@ inputArchivo.addEventListener("change", async (e) => {
   }
 });
 
+const btnAgregar = document.getElementById("btn-agregar-estudiante");
+btnAgregar.addEventListener("click", () => {
+  const nombre = prompt("Ingrese el nombre del nuevo estudiante:");
+  if (!nombre) return;
+  const nombreNormalizado = nombre.trim();
+  if (estado.has(nombreNormalizado)) {
+    setEstado(`El estudiante "${nombreNormalizado}" ya existe.`);
+    return;
+  }
+
+  estado.set(nombreNormalizado, 10);
+  renderLista();
+  setEstado(`Se agregó el estudiante "${nombreNormalizado}".`);
+});
+
+const seleccionados = new Set();
+
+lista.addEventListener("click", (ev) => {
+  const card = ev.target.closest(".persona");
+  if (!card) return;
+
+  if (ev.target.closest("button")) return;
+
+  const nombre = card.dataset.nombre;
+  if (seleccionados.has(nombre)) {
+    seleccionados.delete(nombre);
+    card.classList.remove("seleccionada");
+  } else {
+    seleccionados.add(nombre);
+    card.classList.add("seleccionada");
+  }
+});
+
+const btnRenombrar = document.getElementById("btn-renombrar-estudiante");
+
+btnRenombrar.addEventListener("click", () => {
+  if (seleccionados.size === 0) {
+    setEstado("No hay estudiantes seleccionados para renombrar.");
+    return;
+  }
+
+  const nombreActual = [...seleccionados][0];
+
+  const nuevoNombre = prompt("Ingrese el nuevo nombre:", nombreActual);
+  if (!nuevoNombre) return; 
+
+  const nombreNormalizado = nuevoNombre.trim();
+  if (estado.has(nombreNormalizado)) {
+    setEstado(`Ya existe un estudiante con el nombre "${nombreNormalizado}".`);
+    return;
+  }
+
+  const valor = estado.get(nombreActual);
+  estado.delete(nombreActual);
+  estado.set(nombreNormalizado, valor);
+
+  seleccionados.clear();
+
+  renderLista();
+  setEstado(`Se renombró "${nombreActual}" a "${nombreNormalizado}".`);
+});
+
+
+
 // --------- Bootstrap ---------
 // Opción A (recomendada en local con live server): intenta cargar nombres.txt
 // Opción B: si falla, el usuario puede usar “Cargar archivo local”
