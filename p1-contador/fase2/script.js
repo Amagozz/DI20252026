@@ -110,6 +110,14 @@ lista.addEventListener("click", (ev) => {
   estado.set(nombre, valor);
   span.dataset.valor = String(valor);
   span.textContent = valor;
+  // Actualiza fondo según valor: dorado para 10, rojo para menos de 5 y verde para los otros casos
+  if (valor === 10) {
+    card.style.backgroundColor = "gold";
+  } else if (valor < 5) {
+    card.style.backgroundColor = "red";
+  } else {
+    card.style.backgroundColor = "green";
+  }
   bump(span);
 });
 
