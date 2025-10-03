@@ -141,6 +141,41 @@ inputArchivo.addEventListener("change", async (e) => {
   }
 });
 
+const btnMuerte = document.getElementById("btn-muerte");
+let personaSeleccionada = null;
+
+lista.addEventListener("click", (any) => {
+  const card = any.target.closest(".persona");
+  if (!card) {return};
+personaSeleccionada = card.dataset.nombre;
+document.querySelectorAll(".persona").forEach(each => each.classList.remove("seleccionada"));
+card.classList.add("seleccionada");
+});
+
+btnMuerte.addEventListener("click", () => {
+  if (!personaSeleccionada) {
+    setEstado("Selecciona una persona para la Muerte.");
+    return;
+  } 
+  const valorMuerte = 0;
+  estado.set(personaSeleccionada, valorMuerte);
+  renderLista();
+  setEstado(`Muerte: ${personaSeleccionada} ha sido reducida a ${valorMuerte}.`);
+});
+
+const btnRandom = document.getElementById("btn-random");
+btnRandom.addEventListener("click", () => {
+  if (!personaSeleccionada) {
+    setEstado("Primero selecciona una persona para aplicar Random.");
+    return;
+  }
+  const valorRandom = Math.floor(Math.random() * 11);
+
+  estado.set(personaSeleccionada, valorRandom);
+  renderLista();
+  setEstado(`Random: ${personaSeleccionada} recibió un valor aleatorio de ${valorRandom}.`);
+});
+
 // --------- Bootstrap ---------
 // Opción A (recomendada en local con live server): intenta cargar nombres.txt
 // Opción B: si falla, el usuario puede usar “Cargar archivo local”

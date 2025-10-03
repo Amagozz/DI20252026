@@ -66,3 +66,8 @@ main{ padding:1rem; max-width:1100px; margin:0 auto; }
 .btn-menos{ border-color:#fec; }
 
 .persona{ user-select:none; }
+
+.persona.seleccionada {
+  border: 2px solid #f00;
+  box-shadow: 0 0 10px rgba(255,0,0,0.5);
+}
