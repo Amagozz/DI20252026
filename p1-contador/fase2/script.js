@@ -204,6 +204,8 @@ btnRenombrar.addEventListener("click", () => {
 });
 
 
+/* Hasta aquí va mi código */
+
 
 // --------- Bootstrap ---------
 // Opción A (recomendada en local con live server): intenta cargar nombres.txt
