@@ -35,7 +35,12 @@ function renderLista() {
   );
   for (const n of nombres) {
     const v = estado.get(n) ?? 10;
-    lista.appendChild(renderPersona(n, v));
+    const nodo = renderPersona(n, v);
+    lista.appendChild(nodo);
+    // Mis cambios: aplique la clase seleccionado si está seleccionado
+    if (seleccionados.has(n)) {
+      nodo.classList.add("seleccionado");
+    }
   }
 }
 
@@ -139,6 +144,75 @@ inputArchivo.addEventListener("change", async (e) => {
   } finally {
     inputArchivo.value = "";
   }
+});
+
+// Mis cambios Roberto
+
+// Set para alumnos seleccionados
+const seleccionados = new Set();
+
+// Función para actualizar clase visual selección
+function actualizarSeleccionUI() {
+  document.querySelectorAll(".persona").forEach(card => {
+    const nombre = card.dataset.nombre;
+    if (seleccionados.has(nombre)) card.classList.add("seleccionado");
+    else card.classList.remove("seleccionado");
+  });
+}
+
+// Toggle selección al hacer click en la persona, ignorando si el clic es en un botón
+lista.addEventListener("click", ev => {
+  if (ev.target.closest("button")) return; // Ignorar botones para no interferir con suma/resta
+  const card = ev.target.closest(".persona");
+  if (!card) return;
+  const nombre = card.dataset.nombre;
+  if (seleccionados.has(nombre)) seleccionados.delete(nombre);
+  else seleccionados.add(nombre);
+
+  actualizarSeleccionUI();
+});
+
+// Botones menú inferior
+const btnSumar = document.getElementById("btn-sumar-seleccionados");
+const btnRestar = document.getElementById("btn-restar-seleccionados");
+const btnEliminar = document.getElementById("btn-eliminar-seleccionados");
+
+btnSumar.addEventListener("click", () => {
+  seleccionados.forEach(nombre => {
+    let valor = estado.get(nombre) ?? 10;
+    valor = Math.min(10, valor + 1);
+    estado.set(nombre, valor);
+  });
+  renderLista();
+});
+
+btnRestar.addEventListener("click", () => {
+  seleccionados.forEach(nombre => {
+    let valor = estado.get(nombre) ?? 10;
+    valor = Math.max(0, valor - 1);
+    estado.set(nombre, valor);
+  });
+  renderLista();
+});
+
+// Eliminar seleccionados
+btnEliminar.addEventListener("click", () => {
+  seleccionados.forEach(nombre => {
+    estado.delete(nombre);
+  });
+  seleccionados.clear();
+  renderLista();
+  setEstado("Alumnos seleccionados eliminados.");
+});
+
+// Buscador por nombre
+const inputBuscar = document.getElementById("input-buscar");
+inputBuscar.addEventListener("input", () => {
+  const filtro = inputBuscar.value.toLowerCase();
+  document.querySelectorAll(".persona").forEach(card => {
+    const nombre = card.dataset.nombre.toLowerCase();
+    card.style.display = nombre.includes(filtro) ? "" : "none";
+  });
 });
 
 // --------- Bootstrap ---------

@@ -66,3 +66,75 @@ main{ padding:1rem; max-width:1100px; margin:0 auto; }
 .btn-menos{ border-color:#fec; }
 
 .persona{ user-select:none; }
+
+/* Mis cambios */
+
+/* Menú inferior minimalista, flotante */
+.menu-inferior {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 2rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  display: flex;
+  gap: 1rem;
+  padding: 0.5rem 1.25rem;
+  z-index: 10000;
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--accent-weak);
+}
+
+.menu-inferior button {
+  background: var(--accent);
+  color: white;
+  padding: 0.45rem 0.85rem;
+  border: none;
+  border-radius: 1.5rem;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+  box-shadow: 0 2px 5px rgba(47,111,237,0.3);
+}
+
+.menu-inferior button:hover {
+  background: #1f4ede;
+  box-shadow: 0 4px 10px rgba(31,78,222,0.4);
+}
+
+/* Buscador flotante, elegante */
+.busqueda-nombres {
+  position: fixed;
+  bottom: 6.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 400px;
+  z-index: 10000;
+}
+
+#input-buscar {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  font-size: 1.1rem;
+  border-radius: 2rem;
+  border: 1px solid var(--accent-weak);
+  box-shadow: 0 2px 10px rgba(47,111,237,0.1);
+  outline-offset: 2px;
+  transition: box-shadow 0.3s ease;
+}
+
+#input-buscar:focus {
+  box-shadow: 0 2px 12px rgba(47,111,237,0.4);
+  border-color: var(--accent);
+}
+
+/* selección de persona minimalista */
+.persona.seleccionado {
+  border-color: var(--accent);
+  box-shadow: 0 0 12px var(--accent);
+  background-color: #f0f7ff;
+  transition: background-color 0.25s ease, box-shadow 0.25s ease;
+}
