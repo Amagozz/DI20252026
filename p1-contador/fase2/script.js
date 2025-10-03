@@ -8,8 +8,35 @@ const btnReset = document.getElementById("btn-reset");
 const inputArchivo = document.getElementById("input-archivo");
 const tpl = document.getElementById("tpl-persona");
 const spanContador = document.getElementById("contador");
+const inputIncremento = document.getElementById("input-incremento");
 
 // --------- Utilidades ---------
+function obtenerIncremento() {
+  const valor = parseFloat(inputIncremento.value);
+  // Validar que sea un número válido entre 0.1 y 10
+  if (isNaN(valor) || valor < 0.1 || valor > 10) {
+    inputIncremento.value = "0.1"; // Resetear a valor por defecto
+    return 0.1;
+  }
+  return valor;
+}
+
+function actualizarEtiquetasBotones() {
+  const incremento = obtenerIncremento();
+  const botonesMas = document.querySelectorAll('.btn-mas');
+  const botonesMenos = document.querySelectorAll('.btn-menos');
+  
+  botonesMas.forEach(btn => {
+    btn.setAttribute('aria-label', `Sumar ${incremento}`);
+    btn.textContent = `+${incremento}`;
+  });
+  
+  botonesMenos.forEach(btn => {
+    btn.setAttribute('aria-label', `Restar ${incremento}`);
+    btn.textContent = `−${incremento}`;
+  });
+}
+
 function normalizaNombre(s) {
   return s.normalize("NFD").replace(/\p{Diacritic}/gu, "").trim();
 }
@@ -134,6 +161,9 @@ function renderLista() {
   // Foco en la primera caja al renderizar
   const firstCard = lista.querySelector('.persona');
   if (firstCard) firstCard.focus();
+  
+  // Actualizar etiquetas de botones con el incremento actual
+  actualizarEtiquetasBotones();
 
 // Accesibilidad con flechas y selección múltiple
 lista.addEventListener("keydown", (ev) => {
@@ -159,7 +189,8 @@ lista.addEventListener("keydown", (ev) => {
   if (seleccionados.length > 1) {
     // Si hay varios seleccionados, solo flechas arriba/abajo afectan a todos
     if (ev.key === 'ArrowUp' || ev.key === 'ArrowDown') {
-      const delta = ev.key === 'ArrowUp' ? 0.1 : -0.1;
+      const incremento = obtenerIncremento();
+      const delta = ev.key === 'ArrowUp' ? incremento : -incremento;
       seleccionados.forEach(checkbox => {
         const persona = checkbox.closest('.persona');
         const nombre = persona.dataset.nombre;
@@ -275,9 +306,10 @@ lista.addEventListener("click", (ev) => {
 
   const span = card.querySelector(".contador");
   let valor = Number(span.dataset.valor || "10");
+  const incremento = obtenerIncremento();
 
-  if (btn.classList.contains("btn-mas")) valor += 0.1;
-  if (btn.classList.contains("btn-menos")) valor -= 0.1;
+  if (btn.classList.contains("btn-mas")) valor += incremento;
+  if (btn.classList.contains("btn-menos")) valor -= incremento;
 
   if (valor > 10) valor = 10;
   if (valor < 0) valor = 0;
@@ -319,9 +351,18 @@ inputArchivo.addEventListener("change", async (e) => {
   }
 });
 
+// Event listeners para el input de incremento
+inputIncremento.addEventListener("input", () => {
+  actualizarEtiquetasBotones();
+});
 
+inputIncremento.addEventListener("change", () => {
+  actualizarEtiquetasBotones();
+});
 
 // --------- Bootstrap ---------
+// Inicializar etiquetas de botones al cargar
+actualizarEtiquetasBotones();
 // Opción A (recomendada en local con live server): intenta cargar nombres.txt
 // Opción B: si falla, el usuario puede usar “Cargar archivo local”
 cargarNombresDesdeTxt("nombres.txt").catch(() => {
