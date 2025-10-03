@@ -1,4 +1,7 @@
-/* Header fila única */
+
+
+
+
 .header-row {
   display: flex;
   flex-direction: row;
@@ -7,6 +10,7 @@
   flex-wrap: nowrap;
   width: 100%;
   min-width: 0;
+ 
 }
 .header-row h1 {
   margin: 10;
@@ -24,15 +28,15 @@
   min-width: 0;
   margin-left: 0.2rem;
 }
-/* --- ESTILOS ORIGINALES LIMPIOS Y FUNCIONALES --- */
+
 :root {
-  --bg: #f4f6fb;
+  --bg: #fff;
   --card: #fff;
   --text: #23272f;
   --muted: #7a7a8c;
-  --border: #e0e6ed;
-  --accent: #2563eb;
-  --accent-weak: #e8efff;
+  --border: #e0e6ed ;
+  --accent: #b41f3a ; 
+  --accent-weak: #fbeaec;
   --shadow: 0 4px 16px 0 rgba(60,72,88,0.10);
   --radius: 1.2rem;
   --btn-shadow: 0 2px 8px 0 rgba(60,72,88,0.10);
@@ -42,7 +46,7 @@
 html, body { height: 100%; }
 body {
   margin: 0;
-  font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+  font-family: 'Montserrat', 'Roboto', Arial, sans-serif;
   color: var(--text);
   background: var(--bg);
   min-height: 100vh;
@@ -54,7 +58,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 0.5rem 1rem;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 4px solid var(--accent);
   background: #fff;
   box-shadow: 0 2px 8px 0 rgba(60,72,88,0.06);
   flex-wrap: nowrap;
@@ -78,24 +82,7 @@ body {
   flex-wrap: nowrap;
   min-width: 0;
 }
-button, .file-label {
-  border: 1.5px solid var(--border);
-  background: var(--card);
-  color: var(--text);
-  padding: 0.3rem 0.7rem;
-  border-radius: 0.7rem;
-  cursor: pointer;
-  font-size: 0.95rem;
-  font-weight: 500;
-  box-shadow: var(--btn-shadow);
-  transition: transform .08s, background .22s, box-shadow .22s, color .18s;
-  min-width: 0;
-}
-button:hover, .file-label:hover {
-  background: var(--accent-weak);
-  color: var(--accent);
-  box-shadow: 0 4px 16px 0 rgba(37,99,235,0.13);
-}
+
 .file-label input[type="file"] {
   display: none;
 }
@@ -105,25 +92,7 @@ main {
   max-width: 1100px;
   margin: 0 auto;
 }
-#estado {
-  margin: .5rem 0 1.2rem;
-  color: var(--muted);
-  min-height: 1.25rem;
-  font-size: 1.1rem;
-}
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 1.5rem;
-}
-.card {
-  background: var(--card);
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 1.3rem 1.1rem 1.1rem 1.1rem;
-  transition: box-shadow .18s;
-}
+
 .card-head {
   display: flex;
   align-items: center;
@@ -133,8 +102,10 @@ main {
 .nombre {
   font-size: 1.18rem;
   margin: 0;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--accent);
+  font-family: 'Montserrat', 'Roboto', Arial, sans-serif;
+  letter-spacing: 0.02em;
 }
 .contador-wrap {
   display: flex;
@@ -152,8 +123,9 @@ main {
   transition: box-shadow .15s, transform .15s, color .15s;
   box-shadow: none;
   padding: 0.1em 0.3em;
-  background: #f8fafc;
-  border: 1.5px solid transparent;
+  background: #fff0f3;
+  border: 1.5px solid var(--accent-weak);
+  font-family: 'Montserrat', 'Roboto', Arial, sans-serif;
 }
 .contador:focus {
   border: 1.5px solid var(--accent);
@@ -272,8 +244,9 @@ body{
   font-weight:600;
   }
   button:hover, .file-label:hover{
-    background:var(--accent-weak);
-    color:var(--accent);
+  background: #fff ;
+  color: var(--accent) ;
+  border: 1.5px solid var(--accent) ;
     box-shadow: 0 4px 16px 0 rgba(37,99,235,0.13);
   letter-spacing:0.01em;
 }
@@ -512,9 +485,9 @@ main{
 }
 .contador:focus {
     button, .file-label {
-      border: 1.5px solid var(--border);
-      background: var(--card);
-      color: var(--text);
+  border: 1.5px solid var(--accent) !important;
+  background: var(--accent) !important;
+  color: #fff !important;
       padding: .7rem 1.2rem;
       border-radius: 1.2rem;
       cursor: pointer;
@@ -589,6 +562,8 @@ main{
   align-items: center;
   justify-content: space-between;
   margin-bottom: .85rem;
+  border-bottom: 1.5px solid var(--accent-weak);
+  padding-bottom: 0.5rem;
 }
 .btn-mas{
   border-color:#cfe;
