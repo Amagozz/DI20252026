@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Contadores por Persona</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+  <div class="topbar-row">
+    <img src="/web/contador_dangan/img/kindpng_1634714.png" alt="" class="logo-kindpng">
+    <h1>Contadores de Clase</h1>
+  </div>
+  <div class="acciones">
+      <label class="file-label">
+        <input type="file" id="input-archivo" accept=".txt" style="display:none;" />
+        <span class="btn-subir">Subir archivo de nombres</span>
+      </label>
+      <button id="btn-reset-todos">Resetear todos</button>
+      <input type="number" id="input-paso" class="personaliza-paso" min="1" max="10" step="1" value="1"/>
+    </div>
+  </header>
+
+  <main>
+    <section id="lista-contadores"></section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

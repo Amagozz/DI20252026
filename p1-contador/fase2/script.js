@@ -186,23 +186,9 @@ function actualizarContador(card, accion) {
   const span = card.querySelector(".contador");
   let valor = Number(span.dataset.valor || "10");
 
-  switch(accion) {
-    case 'mas':
-      valor = Math.min(10, valor + 0.1);
-      break;
-    case 'menos':
-      valor = Math.max(0, valor - 0.1);
-      break;
-    case 'cero':
-      valor = 0;
-      break;
-    case 'reset':
-      valor = 10;
-      break;
-  }
-  
-  // Redondea a un decimal
-  valor = Number(valor.toFixed(1));
+
+  if (btn.classList.contains("btn-mas")) valor += 1;
+  if (btn.classList.contains("btn-menos")) valor -= 1;
 
   estado.set(nombre, valor);
   span.dataset.valor = String(valor);
