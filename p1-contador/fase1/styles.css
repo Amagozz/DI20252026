@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 /* Fondo general */
 body {
   background: #f3f6fa;
@@ -173,7 +173,7 @@ input.personaliza-paso:focus {
 #contador.color-verde {
   background: #2cff24;
   box-shadow: 0 2px 8px rgba(33,145,80,0.13);
-=======
+
 body {
     text-align: center;
     font-family: sans-serif;
@@ -201,5 +201,4 @@ button {
 }
 #btn-mas {
     background-color: #0f0;
->>>>>>> 3145f5dc2788541f5efeb27ba54a9204943ae98a
 }
