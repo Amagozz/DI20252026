@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <title>Contadores por Persona</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
+
 <body>
   <header class="topbar">
     <h1>Contadores de Clase</h1>
@@ -23,6 +25,7 @@
     <section id="lista" class="grid"></section>
   </main>
 
+  <!-- Template de persona -->
   <template id="tpl-persona">
     <article class="card persona" data-nombre="">
       <header class="card-head">
@@ -36,13 +39,21 @@
     </article>
   </template>
 
-  <button id="btn-agregar-estudiante">➕ Agregar Estudiante</button>
-  <button id="btn-renombrar-estudiante">✏️ Renombrar Estudiante Seleccionado</button>
+  <!-- Menú Inferior Operativo - Flotante y minimalista -->
+  <div id="menu-inferior" class="menu-inferior">
+    <button id="btn-sumar-seleccionados" aria-label="Sumar 1 punto a seleccionados">+1</button>
+    <button id="btn-restar-seleccionados" aria-label="Restar 1 punto a seleccionados">-1</button>
+    <button id="btn-eliminar-seleccionados" aria-label="Eliminar seleccionados">Eliminar</button>
+    <button id="btn-agregar-estudiante">➕ Agregar Estudiante</button>
+    <button id="btn-renombrar-estudiante">✏️ Renombrar Estudiante Seleccionado</button>
+  </div>
 
-  <!-- Hasta aquí va mi código -->
-
-  
+  <!-- Filtro búsqueda flotante -->
+  <div id="busqueda-nombres" class="busqueda-nombres">
+    <input type="text" id="input-buscar" placeholder="Buscar alumno..." aria-label="Buscar alumno por nombre" />
+  </div>
 
   <script src="script.js" type="module"></script>
 </body>
+
 </html>

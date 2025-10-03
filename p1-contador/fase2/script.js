@@ -35,7 +35,12 @@ function renderLista() {
   );
   for (const n of nombres) {
     const v = estado.get(n) ?? 10;
-    lista.appendChild(renderPersona(n, v));
+    const nodo = renderPersona(n, v);
+    lista.appendChild(nodo);
+    // Mis cambios: aplique la clase seleccionado si está seleccionado
+    if (seleccionados.has(n)) {
+      nodo.classList.add("seleccionado");
+    }
   }
 }
 
@@ -141,6 +146,33 @@ inputArchivo.addEventListener("change", async (e) => {
   }
 });
 
+
+// Set para alumnos seleccionados
+const seleccionados = new Set();
+
+// Función para actualizar clase visual selección
+function actualizarSeleccionUI() {
+  document.querySelectorAll(".persona").forEach(card => {
+    const nombre = card.dataset.nombre;
+    if (seleccionados.has(nombre)) card.classList.add("seleccionado");
+    else card.classList.remove("seleccionado");
+  });
+}
+
+// Toggle selección al hacer click en la persona, ignorando si el clic es en un botón
+lista.addEventListener("click", ev => {
+  if (ev.target.closest("button")) return; // Ignorar botones para no interferir con suma/resta
+  const card = ev.target.closest(".persona");
+  if (!card) return;
+  const nombre = card.dataset.nombre;
+  if (seleccionados.has(nombre)) seleccionados.delete(nombre);
+  else seleccionados.add(nombre);
+
+  actualizarSeleccionUI();
+});
+
+// Mis cambios Jose: Agregar y renombrar estudiantes
+
 const btnAgregar = document.getElementById("btn-agregar-estudiante");
 btnAgregar.addEventListener("click", () => {
   const nombre = prompt("Ingrese el nombre del nuevo estudiante:");
@@ -156,24 +188,6 @@ btnAgregar.addEventListener("click", () => {
   setEstado(`Se agregó el estudiante "${nombreNormalizado}".`);
 });
 
-const seleccionados = new Set();
-
-lista.addEventListener("click", (ev) => {
-  const card = ev.target.closest(".persona");
-  if (!card) return;
-
-  if (ev.target.closest("button")) return;
-
-  const nombre = card.dataset.nombre;
-  if (seleccionados.has(nombre)) {
-    seleccionados.delete(nombre);
-    card.classList.remove("seleccionada");
-  } else {
-    seleccionados.add(nombre);
-    card.classList.add("seleccionada");
-  }
-});
-
 const btnRenombrar = document.getElementById("btn-renombrar-estudiante");
 
 btnRenombrar.addEventListener("click", () => {
@@ -185,7 +199,7 @@ btnRenombrar.addEventListener("click", () => {
   const nombreActual = [...seleccionados][0];
 
   const nuevoNombre = prompt("Ingrese el nuevo nombre:", nombreActual);
-  if (!nuevoNombre) return; 
+  if (!nuevoNombre) return;
 
   const nombreNormalizado = nuevoNombre.trim();
   if (estado.has(nombreNormalizado)) {
@@ -206,6 +220,55 @@ btnRenombrar.addEventListener("click", () => {
 
 /* Hasta aquí va mi código */
 
+// Mis cambios Roberto
+
+// Botones menú inferior
+const btnSumar = document.getElementById("btn-sumar-seleccionados");
+const btnRestar = document.getElementById("btn-restar-seleccionados");
+const btnEliminar = document.getElementById("btn-eliminar-seleccionados");
+
+btnSumar.addEventListener("click", () => {
+  seleccionados.forEach(nombre => {
+    let valor = estado.get(nombre) ?? 10;
+    valor = Math.min(10, valor + 1);
+    estado.set(nombre, valor);
+  });
+  renderLista();
+});
+
+btnRestar.addEventListener("click", () => {
+  seleccionados.forEach(nombre => {
+    let valor = estado.get(nombre) ?? 10;
+    valor = Math.max(0, valor - 1);
+    estado.set(nombre, valor);
+  });
+  renderLista();
+});
+
+// Eliminar seleccionados
+btnEliminar.addEventListener("click", () => {
+  if (seleccionados.size === 0) {
+    setEstado("No hay estudiantes seleccionados para eliminar.");
+    return;
+  }
+
+  seleccionados.forEach(nombre => {
+    estado.delete(nombre);
+  });
+  seleccionados.clear();
+  renderLista();
+  setEstado("Alumnos seleccionados eliminados.");
+});
+
+// Buscador por nombre
+const inputBuscar = document.getElementById("input-buscar");
+inputBuscar.addEventListener("input", () => {
+  const filtro = inputBuscar.value.toLowerCase();
+  document.querySelectorAll(".persona").forEach(card => {
+    const nombre = card.dataset.nombre.toLowerCase();
+    card.style.display = nombre.includes(filtro) ? "" : "none";
+  });
+});
 
 // --------- Bootstrap ---------
 // Opción A (recomendada en local con live server): intenta cargar nombres.txt
