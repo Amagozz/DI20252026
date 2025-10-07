@@ -66,3 +66,27 @@ main{ padding:1rem; max-width:1100px; margin:0 auto; }
 .btn-menos{ border-color:#fec; }
 
 .persona{ user-select:none; }
+
+/* Añade esto a tu styles.css */
+.selector-archivos {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background: rgb(186, 186, 186);
+  border-radius: 16px;
+}
+
+.selector-archivos label {
+  font-weight: bold;
+}
+
+#select-archivo {
+  padding: 5px 10px;
+  border-radius: 4px;
+  min-width: 200px;
+}
+
+#info-archivos {
+  font-size: 12px;
+}
