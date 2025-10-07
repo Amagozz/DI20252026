@@ -11,6 +11,9 @@ const estadoUI = document.getElementById("estado");
 const btnCargar = document.getElementById("btn-cargar-nombres");
 const btnReset = document.getElementById("btn-reset");
 const inputArchivo = document.getElementById("input-archivo");
+const btnSeleccionarTodos = document.getElementById("btn-seleccionar-todos");
+const btnDeseleccionarTodos = document.getElementById("btn-deseleccionar-todos");
+//tpl es la referencia al template del HTML
 
 //significa: “busca en el HTML el elemento que tiene id="tpl-persona" y guárdalo en la variable tpl”.
 //sirve para clonar el template y crear nuevas tarjetas.
