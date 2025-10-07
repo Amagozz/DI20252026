@@ -4,6 +4,17 @@ const spanContador = document.getElementById("contador");
 const btnMas = document.getElementById("btn-mas");
 const btnMenos = document.getElementById("btn-menos");
 <<<<<<< HEAD
+const mensajeDelEvento = document.getElementById("mensajeDelEvento")
+
+function actualizarContador() {
+<<<<<<< HEAD
+  spanContador.textContent = Number.isInteger(contador) ? contador : contador.toFixed(1);
+;
+=======
+  spanContador.textContent = parseFloat(contador).toFixed(1);
+>>>>>>> origin
+=======
+<<<<<<< HEAD
 const btnMasdec = document.getElementById("btn-masdec");
 const btnMenosdec = document.getElementById("btn-menosdec");
 const btnReset = document.getElementById("btn-reset");
@@ -19,6 +30,7 @@ const btnRedondeadoMenos = document.getElementById("btn-redondeado-menos");
 const btnRedondeadoMas = document.getElementById("btn-redondeado-mas");
 const btnMuerte = document.getElementById("btn-muerte");
 const btnMagico = document.getElementById("btn-magico");
+>>>>>>> 9c08cf45e0774f149536d15f91dee3875f081b07
 
 function actualizarContador() {
 
@@ -64,6 +76,19 @@ function actualizarContador() {
 
 // Redondear a un decimal después de cada suma/resta
 btnMas.addEventListener("click", () => {
+<<<<<<< HEAD
+<<<<<<< HEAD
+  if (contador < 10) {
+      contador+=0.1;
+      mensajeDelEvento.textContent = "";
+  } else {
+    mensajeDelEvento.textContent = "La nota máxima es 10, no puedes pasarte";
+  }
+=======
+  if(contador > 9.9) return;
+  contador += 0.1;
+>>>>>>> origin
+=======
   contador = +(contador + paso).toFixed(1);
   if (contador > 10) {
     contador = 10;
@@ -90,11 +115,25 @@ btnRedondeadoMenos.addEventListener("click", () => {
   if(contador<0) contador=0;
 
 >>>>>>> 3145f5dc2788541f5efeb27ba54a9204943ae98a
+>>>>>>> 9c08cf45e0774f149536d15f91dee3875f081b07
   actualizarContador();
 });
 
 btnMenos.addEventListener("click", () => {
 <<<<<<< HEAD
+<<<<<<< HEAD
+  if (contador >=0) {
+    contador-=0.1;
+    mensajeDelEvento.textContent = "";
+  } else {
+    mensajeDelEvento.textContent = "La nota minima es 0, no puedes quitarle más";
+  }
+  
+=======
+  if(contador < 0.1) return;
+  contador -= 0.1;
+>>>>>>> origin
+=======
   contador = +(contador - paso).toFixed(1);
   if (contador < 0) {
     contador = 0;
@@ -103,6 +142,7 @@ btnMenos.addEventListener("click", () => {
 
   contador-=1;
   if(contador<0) contador=0;
+>>>>>>> 9c08cf45e0774f149536d15f91dee3875f081b07
   actualizarContador();
 });
 
