@@ -139,6 +139,7 @@ main {
   border-radius: 999px;
 }
 
+<<<<<<< HEAD
 .btn-mas {
   border-color: #cfe;
 }
@@ -188,3 +189,82 @@ main {
   transform: scale(1.2);
   transition: transform 0.2s ease;
 }
+=======
+.persona{ user-select:none; }
+
+#btn-reset-5 { border-color: #fca; }
+#btn-reset-0 { border-color: #f99; }
+#btn-reset { border-color: #65f665; }
+
+.persona.seleccionada {
+  outline: 3px solid #2f6fed; /* borde azul para las seleccionadas */
+  background-color: #e8f0ff;   /* fondo clarito */
+}
+
+button:disabled,
+button.deshabilitado {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+body.dark {
+  --bg: #121212;        /* fondo general */
+  --card: #1e1e1e;      /* tarjetas */
+  --text: #f5f5f5;      /* texto principal */
+  --muted: #aaa;        /* texto secundario */
+  --border: #333;       /* bordes */
+  --accent: #6daafd;    /* azul para acentos */
+  --accent-weak: #2b3a55; /* azul débil para hover */
+}
+
+/* Asegurar contraste en botones en oscuro */
+body.dark button,
+body.dark .file-label {
+  background: #2a2a2a;
+  color: #f5f5f5;
+  border-color: #444;
+}
+
+body.dark button:hover,
+body.dark .file-label:hover {
+  background: #3a3a3a;
+}
+
+body.dark .persona.seleccionada {
+  outline: 3px solid var(--accent);
+  background-color: #2b3a55;
+}
+
+/* Tema oscuro general */
+body.dark {
+  --bg: #121212;
+  --card: #1e1e1e;
+  --text: #f5f5f5;
+  --muted: #aaa;
+  --border: #333;
+  --accent: #6daafd;
+  --accent-weak: #2b3a55;
+}
+
+/* Ajustes específicos para topbar, título y botones */
+body.dark .topbar {
+  background: #1a1a1a;
+  border-bottom: 1px solid #333;
+}
+
+body.dark .topbar h1 {
+  color: #f5f5f5;
+}
+
+body.dark .topbar button,
+body.dark .topbar .file-label {
+  background: #2a2a2a;
+  color: #f5f5f5;
+  border-color: #444;
+}
+body.dark .topbar button:hover,
+body.dark .topbar .file-label:hover {
+  background: #3a3a3a;
+}
+
+>>>>>>> 8a21012cec9c661e503a3da65b9e1269fafb6366
