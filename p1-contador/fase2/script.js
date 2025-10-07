@@ -17,20 +17,31 @@ const btnMenosMedioPunto = document.getElementById("btn-menosMedioPunto"); // Bo
 const inputArchivo = document.getElementById("input-archivo"); // Input file para subir un archivo local
 const tpl = document.getElementById("tpl-persona"); // Template HTML para clonar una persona
 
+// NUEVAS referencias DOM para selector de archivos
+const selectArchivo = document.getElementById('select-archivo');
+const selectorArchivos = document.getElementById('selector-archivos');
+const infoArchivos = document.getElementById('info-archivos');
+
 // ========================
 // Utilidades
 // ========================
 
 // Elimina acentos/diacríticos y espacios extras → usado para ordenar alfabéticamente
-const STORAGE_KEY = 'contadores_clase_estado'; 
+const STORAGE_KEY = 'contadores_clase_archivos_multiples'; 
 const rankingListaUI = document.getElementById("ranking-lista"); // NUEVA CONSTANTE
 
 // --------- Funciones de Guardar/Cargar Estado (localStorage) ---------
 
 function guardarEstado() {
     try {
-        const estadoArray = Array.from(estado.entries());
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(estadoArray));
+        const todosArchivos = {};
+        archivosGestionados.forEach((estadoMap, nombreArchivo) => {
+            todosArchivos[nombreArchivo] = Array.from(estadoMap.entries());
+        });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            archivos: todosArchivos,
+            activo: archivoActivo
+        }));
     } catch (e) {
         console.error("Error al guardar estado en localStorage:", e);
     }
@@ -40,13 +51,24 @@ function cargarEstado() {
     try {
         const stored = localStorage.getItem(STORAGE_KEY);
         if (stored) {
-            const estadoArray = JSON.parse(stored);
-            estado.clear();
-            for (const [nombre, valor] of estadoArray) {
-                estado.set(nombre, Number(valor)); 
+            const { archivos, activo } = JSON.parse(stored);
+            archivosGestionados.clear();
+            
+            for (const [nombreArchivo, estadoArray] of Object.entries(archivos)) {
+                const estadoMap = new Map();
+                for (const [nombre, valor] of estadoArray) {
+                    estadoMap.set(nombre, Number(valor));
+                }
+                archivosGestionados.set(nombreArchivo, estadoMap);
             }
-            setEstado(`Cargados ${estado.size} contadores guardados.`);
-            return true;
+            
+            if (activo && archivosGestionados.has(activo)) {
+                archivoActivo = activo;
+                actualizarSelector();
+                mostrarArchivo(archivoActivo);
+                setEstado(`Cargados ${archivosGestionados.size} archivo(s) guardado(s).`);
+                return true;
+            }
         }
         return false; // No hay estado guardado
     } catch (e) {
@@ -66,8 +88,21 @@ function renderPersona(nombre, valor = 10) {
   node.dataset.nombre = nombre;
   node.querySelector(".nombre").textContent = nombre;
   const span = node.querySelector(".contador");
-  span.textContent = valor;
+  span.textContent = Number(valor.toFixed(1));
   span.dataset.valor = String(valor);
+  
+  // Aplicar color según valor
+  span.classList.remove("verde", "verdeSuave","naranja", "rojo");
+  if (valor >= 9) {
+    span.classList.add("verde");
+  } else if(valor >= 7){
+    span.classList.add("verdeSuave");
+  } else if (valor >= 5) {
+    span.classList.add("naranja");
+  } else {
+    span.classList.add("rojo");
+  }
+  
   return node;
 }
 
@@ -76,7 +111,88 @@ function bump(el) {
   setTimeout(() => el.classList.remove("bump"), 160);
 }
 
-// Render completo desde estado
+function setEstado(msg) {
+  estadoUI.textContent = msg ?? "";
+}
+
+// ========================
+// NUEVO: Gestión de múltiples archivos
+// ========================
+const archivosGestionados = new Map(); // Almacena { nombreArchivo: Map(nombre -> valor) }
+let archivoActivo = null; // Nombre del archivo actualmente visible
+
+// Procesar y almacenar un archivo
+function procesarArchivo(nombreArchivo, nombres) {
+  const estadoMap = new Map();
+  
+  for (const nombre of nombres) {
+    if (nombre.trim()) {
+      estadoMap.set(nombre.trim(), 10);
+    }
+  }
+  
+  archivosGestionados.set(nombreArchivo, estadoMap);
+  return estadoMap;
+}
+
+// Actualizar el selector de archivos
+function actualizarSelector() {
+  selectArchivo.innerHTML = '';
+  
+  archivosGestionados.forEach((estadoMap, nombreArchivo) => {
+    const option = document.createElement('option');
+    option.value = nombreArchivo;
+    option.textContent = `${nombreArchivo} (${estadoMap.size} personas)`;
+    selectArchivo.appendChild(option);
+  });
+  
+  if (archivosGestionados.size > 0) {
+    selectorArchivos.style.display = 'flex';
+    infoArchivos.textContent = `${archivosGestionados.size} archivo(s) disponible(s)`;
+    
+    // Seleccionar el archivo activo en el dropdown
+    if (archivoActivo) {
+      selectArchivo.value = archivoActivo;
+    }
+  } else {
+    selectorArchivos.style.display = 'none';
+  }
+}
+
+// Mostrar archivo seleccionado
+function mostrarArchivo(nombreArchivo) {
+  const estadoMap = archivosGestionados.get(nombreArchivo);
+  
+  if (!estadoMap) return;
+  
+  // Copiar al estado global para compatibilidad con código existente
+  estado.clear();
+  estadoMap.forEach((valor, nombre) => {
+    estado.set(nombre, valor);
+  });
+  
+  renderLista();
+  setEstado(`Mostrando: ${nombreArchivo} (${estadoMap.size} personas)`);
+}
+
+// Sincronizar cambios del estado global al archivo activo
+function sincronizarEstadoActual() {
+  if (!archivoActivo) return;
+  
+  const estadoMap = archivosGestionados.get(archivoActivo);
+  if (!estadoMap) return;
+  
+  // Copiar todos los valores actuales al mapa del archivo
+  estado.forEach((valor, nombre) => {
+    estadoMap.set(nombre, valor);
+  });
+  
+  guardarEstado();
+}
+
+// ========================
+// Render de lista (modificado)
+// ========================
 function renderLista() {
   lista.innerHTML = "";
   const nombres = Array.from(estado.keys()).sort((a, b) =>
@@ -88,19 +204,15 @@ function renderLista() {
   }
 }
 
-// Mensaje de estado accesible
-function setEstado(msg) {
-  estadoUI.textContent = msg ?? "";
-}
-
-// --------- Carga de nombres ---------
+// ========================
+// Carga de nombres (modificado)
+// ========================
 async function cargarNombresDesdeTxt(url = "nombres.txt") {
   setEstado("Cargando nombres…");
   const res = await fetch(url);
   if (!res.ok) throw new Error(`No se pudo leer ${url}`);
   const text = await res.text();
 
-  // Permite .txt (una por línea) o .json (array de strings)
   let nombres;
   if (url.endsWith(".json")) {
     const arr = JSON.parse(text);
@@ -111,119 +223,138 @@ async function cargarNombresDesdeTxt(url = "nombres.txt") {
 
   if (nombres.length === 0) throw new Error("El archivo no contiene nombres.");
 
-  // Inicializa estado si no existían
-  for (const n of nombres) {
-    if (!estado.has(n)) estado.set(n, 10);
-  }
-  renderLista();
-  setEstado(`Cargados ${nombres.length} nombres.`);
+  // Procesar y almacenar el archivo
+  const nombreArchivo = url.split('/').pop();
+  procesarArchivo(nombreArchivo, nombres);
+  
+  archivoActivo = nombreArchivo;
+  actualizarSelector();
+  mostrarArchivo(nombreArchivo);
+  
+  setEstado(`Cargados ${nombres.length} nombres desde ${nombreArchivo}.`);
 }
 
-// Carga desde archivo local (input file)
-async function cargarDesdeArchivoLocal(file) {
-  const text = await file.text();
-  let nombres;
-  if (file.name.endsWith(".json")) {
-    const arr = JSON.parse(text);
-    nombres = Array.isArray(arr) ? arr : [];
-  } else {
-    nombres = text.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
-  }
+// Carga desde archivos locales (MODIFICADO para soportar múltiples)
+inputArchivo.addEventListener("change", async (e) => {
+  const files = Array.from(e.target.files);
+  if (files.length === 0) return;
+  
+  try {
+    for (const file of files) {
+      const text = await file.text();
+      let nombres;
+      
+      if (file.name.endsWith(".json")) {
+        const arr = JSON.parse(text);
+        nombres = Array.isArray(arr) ? arr : [];
+      } else {
+        nombres = text.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+      }
 
-  if (nombres.length === 0) throw new Error("El archivo no contiene nombres.");
-
-  for (const n of nombres) {
-    if (!estado.has(n)) estado.set(n, 10);
-  }
-  renderLista();
-  setEstado(`Cargados ${nombres.length} nombres desde archivo local.`);
-}
-
-
-// ========================
-// Interacción con la UI (tarjetas individuales)
-// ========================
-
-// Delegación de eventos: un solo listener para todos los botones dentro de lista
-// --------- Interacción (Maneja Clicks y Sliders) ---------
-function manejarInteraccion(ev) {
-    const card = ev.target.closest(".persona");
-    if (!card) return;
+      if (nombres.length > 0) {
+        procesarArchivo(file.name, nombres);
+      }
+    }
     
-    const nombre = card.dataset.nombre;
-    if (!estado.has(nombre)) return;
-
-    const span = card.querySelector(".contador");
-    let valor = Number(span.dataset.valor || "10");
-    let nuevoValor = valor;
-    let btn;
-
-    // Lógica para botones (+1 / -1)
-    if (ev.type === "click") {
-        btn = ev.target.closest("button");
-        if (!btn) return;
-
-        if (btn.classList.contains("btn-redondeado-mas")) valor += 0.1;
-        if (btn.classList.contains("btn-mas")) valor += 1;
-        if (btn.classList.contains("btn-redondeado-menos")) valor -= 0.1;
-        if (btn.classList.contains("btn-menos")) valor -= 1;
-
-        // Limitar rango [0,10]
-        if (valor > 10) valor = 10;
-        if (valor < 0) valor = 0;
-
-        // Botones especiales
-        if (btn.classList.contains("btn-muerte")) valor = 0; // Calavera → directo a 0
-        if (btn.classList.contains("btn-magico")) valor = Number((Math.random() * 10).toFixed(1)); // Aleatorio 0-10
-
-        nuevoValor = valor;
-    // Lógica para el slider (input / change)
-    } else if (ev.type === "input" || ev.type === "change") {
-        const slider = ev.target.closest(".contador-slider");
-        if (!slider) return;
-        nuevoValor = Number(slider.value);
-        // Limitar rango [0,10]
-        if (nuevoValor > 10) nuevoValor = 10;
-        if (nuevoValor < 0) nuevoValor = 0;
-    } else {
-        return;
+    // Activar el último archivo cargado
+    if (files.length > 0) {
+      archivoActivo = files[files.length - 1].name;
     }
+    
+    actualizarSelector();
+    mostrarArchivo(archivoActivo);
+    setEstado(`Cargados ${files.length} archivo(s) local(es).`);
+    
+  } catch (err) {
+    console.error(err);
+    setEstado("Error al leer algún archivo local.");
+  } finally {
+    inputArchivo.value = "";
+  }
+});
 
-    // Actualiza estado y UI
-    estado.set(nombre, Number(nuevoValor.toFixed(1)));
-    span.dataset.valor = String(nuevoValor);
-    span.textContent = Number(nuevoValor.toFixed(1)); // Siempre con 1 decimal
-    bump(span);
+// ========================
+// Evento: cambiar archivo en el selector
+// ========================
+selectArchivo.addEventListener('change', (e) => {
+  archivoActivo = e.target.value;
+  mostrarArchivo(archivoActivo);
+});
 
-    // Reaplica color dinámico según valor
-    span.classList.remove("verde", "verdeSuave","naranja", "rojo");
-    if (nuevoValor >= 9) {
-        span.classList.add("verde");
-    } else if(nuevoValor >= 7){
-        span.classList.add("verdeSuave");
-    } else if (nuevoValor >= 5) {
-        span.classList.add("naranja");
-    } else {
-        span.classList.add("rojo");
-    }
-    guardarEstado();
-    renderRanking();
+// ========================
+// Interacción con tarjetas (modificado)
+// ========================
+function manejarInteraccion(ev) {
+  const card = ev.target.closest(".persona");
+  if (!card) return;
+  
+  const nombre = card.dataset.nombre;
+  if (!estado.has(nombre)) return;
+
+  const span = card.querySelector(".contador");
+  let valor = Number(span.dataset.valor || "10");
+  let nuevoValor = valor;
+  let btn;
+
+  if (ev.type === "click") {
+    btn = ev.target.closest("button");
+    if (!btn) return;
+
+    if (btn.classList.contains("btn-redondeado-mas")) valor += 0.1;
+    if (btn.classList.contains("btn-mas")) valor += 1;
+    if (btn.classList.contains("btn-redondeado-menos")) valor -= 0.1;
+    if (btn.classList.contains("btn-menos")) valor -= 1;
+
+    if (valor > 10) valor = 10;
+    if (valor < 0) valor = 0;
+
+    if (btn.classList.contains("btn-muerte")) valor = 0;
+    if (btn.classList.contains("btn-magico")) valor = Number((Math.random() * 10).toFixed(1));
+
+    nuevoValor = valor;
+  } else if (ev.type === "input" || ev.type === "change") {
+    const slider = ev.target.closest(".contador-slider");
+    if (!slider) return;
+    nuevoValor = Number(slider.value);
+    if (nuevoValor > 10) nuevoValor = 10;
+    if (nuevoValor < 0) nuevoValor = 0;
+  } else {
+    return;
+  }
+
+  // Actualizar estado
+  estado.set(nombre, Number(nuevoValor.toFixed(1)));
+  span.dataset.valor = String(nuevoValor);
+  span.textContent = Number(nuevoValor.toFixed(1));
+  bump(span);
+
+  // Aplicar colores
+  span.classList.remove("verde", "verdeSuave","naranja", "rojo");
+  if (nuevoValor >= 9) {
+    span.classList.add("verde");
+  } else if(nuevoValor >= 7){
+    span.classList.add("verdeSuave");
+  } else if (nuevoValor >= 5) {
+    span.classList.add("naranja");
+  } else {
+    span.classList.add("rojo");
+  }
+  
+  // IMPORTANTE: Sincronizar con archivo activo
+  sincronizarEstadoActual();
 }
 
-// Delegación de eventos: un solo listener para todos los botones y sliders dentro de lista
 lista.addEventListener("click", manejarInteraccion);
 lista.addEventListener("input", manejarInteraccion);
 lista.addEventListener("change", manejarInteraccion);
 
-
 // ========================
-// Botones globales
+// Botones globales (modificados)
 // ========================
-
-// Reinicia todos los contadores a 10
 btnReset.addEventListener("click", () => {
   for (const n of estado.keys()) estado.set(n, 10);
   renderLista();
+  sincronizarEstadoActual();
   setEstado("Todos los contadores han sido reiniciados a 10.");
 });
 
@@ -236,22 +367,12 @@ btnCargar.addEventListener("click", async () => {
   }
 });
 
-inputArchivo.addEventListener("change", async (e) => {
-  const file = e.target.files?.[0];
-  if (!file) return;
-  try {
-    await cargarDesdeArchivoLocal(file);
-  } catch (err) {
-    console.error(err);
-    setEstado("No se pudo leer el archivo local.");
-  } finally {
-    inputArchivo.value = "";
-  }
-});
-
-// --------- Bootstrap ---------
-// Opción A (recomendada en local con live server): intenta cargar nombres.txt
-// Opción B: si falla, el usuario puede usar “Cargar archivo local”
-cargarNombresDesdeTxt("nombres.txt").catch(() => {
-  setEstado("Consejo: coloca un nombres.txt junto a esta página o usa 'Cargar archivo local'.");
-});
+// ========================
+// Bootstrap
+// ========================
+// Intentar cargar estado guardado, si no existe cargar nombres.txt
+if (!cargarEstado()) {
+  cargarNombresDesdeTxt("nombres.txt").catch(() => {
+    setEstado("Consejo: coloca un nombres.txt junto a esta página o usa 'Cargar archivo local'.");
+  });
+}
