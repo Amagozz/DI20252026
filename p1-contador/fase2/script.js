@@ -6,15 +6,21 @@ const btnCargar = document.getElementById("btn-cargar-nombres");
 const btnReset = document.getElementById("btn-reset");
 const inputArchivo = document.getElementById("input-archivo");
 const tpl = document.getElementById("tpl-persona");
-const btnReset5 = document.getElementById("btn-reset-5");
-const btnReset0 = document.getElementById("btn-reset-0");
-const btnMas = document.getElementById("btn-mas-global");
-const btnMenos = document.getElementById("btn-menos-global");
+const btnTema = document.getElementById("btn-tema");
 
+// --------- Botón de tema con retraso ---------
+btnTema.addEventListener("click", () => {
+  setTimeout(() => {
+    document.body.classList.toggle("dark-mode");
+  }, 500); // 500 ms = medio segundo
+});
 
 // --------- Utilidades ---------
 function normalizaNombre(s) {
-  return s.normalize("NFD").replace(/\p{Diacritic}/gu, "").trim();
+  return s
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .trim();
 }
 
 function renderPersona(nombre, valor = 10) {
@@ -56,18 +62,19 @@ async function cargarNombresDesdeTxt(url = "nombres.txt") {
   if (!res.ok) throw new Error(`No se pudo leer ${url}`);
   const text = await res.text();
 
-  // Permite .txt (una por línea) o .json (array de strings)
   let nombres;
   if (url.endsWith(".json")) {
     const arr = JSON.parse(text);
     nombres = Array.isArray(arr) ? arr : [];
   } else {
-    nombres = text.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+    nombres = text
+      .split(/\r?\n/)
+      .map((s) => s.trim())
+      .filter(Boolean);
   }
 
   if (nombres.length === 0) throw new Error("El archivo no contiene nombres.");
 
-  // Inicializa estado si no existían
   for (const n of nombres) {
     if (!estado.has(n)) estado.set(n, 10);
   }
@@ -75,7 +82,7 @@ async function cargarNombresDesdeTxt(url = "nombres.txt") {
   setEstado(`Cargados ${nombres.length} nombres.`);
 }
 
-// Carga desde archivo local (input file)
+// Carga desde archivo local
 async function cargarDesdeArchivoLocal(file) {
   const text = await file.text();
   let nombres;
@@ -83,7 +90,10 @@ async function cargarDesdeArchivoLocal(file) {
     const arr = JSON.parse(text);
     nombres = Array.isArray(arr) ? arr : [];
   } else {
-    nombres = text.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+    nombres = text
+      .split(/\r?\n/)
+      .map((s) => s.trim())
+      .filter(Boolean);
   }
 
   if (nombres.length === 0) throw new Error("El archivo no contiene nombres.");
@@ -96,62 +106,31 @@ async function cargarDesdeArchivoLocal(file) {
 }
 
 // --------- Interacción ---------
-// Delegación: un solo listener para todos los botones
 lista.addEventListener("click", (ev) => {
   const btn = ev.target.closest("button");
-  const card = ev.target.closest(".persona");
+  if (!btn) return;
+  const card = btn.closest(".persona");
+  if (!card) return;
 
+  const nombre = card.dataset.nombre;
+  if (!estado.has(nombre)) return;
 
-  // Si es un botón (+/-/reset individual)
-  if (btn && card) {
-    const nombre = card.dataset.nombre;
-    if (!estado.has(nombre)) return;
-    const span = card.querySelector(".contador");
-    let valor = Number(span.dataset.valor || "10");
+  const span = card.querySelector(".contador");
+  let valor = Number(span.dataset.valor || "10");
 
-    if (btn.classList.contains("btn-mas")) valor += 0.1;
-    if (btn.classList.contains("btn-menos")) valor -= 0.1;
-    if (btn.classList.contains("btn-reset-individual")) valor = 10;
+  if (btn.classList.contains("btn-mas")) valor += 1;
+  if (btn.classList.contains("btn-menos")) valor -= 1;
 
-    valor = Math.min(10, Math.max(0, parseFloat(valor.toFixed(1))));
-
-    estado.set(nombre, valor);
-    span.dataset.valor = String(valor);
-    span.textContent = valor.toFixed(1);
-    actualizarColor(span, valor);
-    bump(span);
-    return; // ya procesado, no sigue al siguiente bloque
-  }
-
-  // Si no es un botón, manejamos la selección
-  if (card) {
-    if (ev.ctrlKey || ev.metaKey) {
-      card.classList.toggle("seleccionada");
-    } else {
-      document.querySelectorAll(".persona.seleccionada").forEach(c => c.classList.remove("seleccionada"));
-      card.classList.add("seleccionada");
-    }
-    actualizarBotonesSeleccion();
-  }
+  estado.set(nombre, valor);
+  span.dataset.valor = String(valor);
+  span.textContent = valor;
+  bump(span);
 });
-
 
 btnReset.addEventListener("click", () => {
   for (const n of estado.keys()) estado.set(n, 10);
   renderLista();
   setEstado("Todos los contadores han sido reiniciados a 10.");
-});
-
-btnReset5.addEventListener("click", () => {
-  for (const n of estado.keys()) estado.set(n, 5);
-  renderLista();
-  setEstado("Todos los contadores han sido reiniciados a 5.");
-});
-
-btnReset0.addEventListener("click", () => {
-  for (const n of estado.keys()) estado.set(n, 0);
-  renderLista();
-  setEstado("Todos los contadores han sido reiniciados a 0.");
 });
 
 btnCargar.addEventListener("click", async () => {
@@ -177,101 +156,8 @@ inputArchivo.addEventListener("change", async (e) => {
 });
 
 // --------- Bootstrap ---------
-// Opción A (recomendada en local con live server): intenta cargar nombres.txt
-// Opción B: si falla, el usuario puede usar “Cargar archivo local”
 cargarNombresDesdeTxt("nombres.txt").catch(() => {
-  setEstado("Consejo: coloca un nombres.txt junto a esta página o usa 'Cargar archivo local'.");
-});
-
-function actualizarColor(span, valor) {
-  if (valor <= 5) {
-    span.style.color = "red";
-  } else if (valor <= 7) {
-    span.style.color = "orange";
-  } else {
-    span.style.color = "green";
-  }
-}
-
-function modificarSeleccionadas(cambio) {
-  const seleccionadas = document.querySelectorAll(".persona.seleccionada");
-  seleccionadas.forEach(card => {
-    const nombre = card.dataset.nombre;
-    const span = card.querySelector(".contador");
-    let valor = Number(span.dataset.valor || "10");
-
-    valor += cambio;              // +0.1 o -0.1
-    valor = Math.min(10, Math.max(0, parseFloat(valor.toFixed(1))));
-
-    estado.set(nombre, valor);
-    span.dataset.valor = String(valor);
-    span.textContent = valor.toFixed(1);
-    actualizarColor(span, valor);
-    bump(span);
-  });
-}
-
-document.addEventListener("keydown", (e) => {
-  if (e.key === "ArrowUp") modificarSeleccionadas(0.1);
-  if (e.key === "ArrowDown") modificarSeleccionadas(-0.1);
-});
-
-function resetSeleccionadas(valor) {
-  const seleccionadas = document.querySelectorAll(".persona.seleccionada");
-  seleccionadas.forEach(card => {
-    const nombre = card.dataset.nombre;
-    const span = card.querySelector(".contador");
-    estado.set(nombre, valor);
-    span.dataset.valor = String(valor);
-    span.textContent = valor.toFixed(1);
-    actualizarColor(span, valor);
-    bump(span);
-  });
-}
-
-function actualizarBotonesSeleccion() {
-  const seleccionadas = document.querySelectorAll(".persona.seleccionada");
-
-  // Si hay más de una seleccionada => bloquear los botones individuales
-  const deshabilitar = seleccionadas.length > 1;
-
-  document.querySelectorAll(".persona").forEach(card => {
-    const btnMas = card.querySelector(".btn-mas");
-    const btnMenos = card.querySelector(".btn-menos");
-
-    if (deshabilitar) {
-      btnMas.disabled = true;
-      btnMenos.disabled = true;
-      btnMas.classList.add("deshabilitado");
-      btnMenos.classList.add("deshabilitado");
-    } else {
-      btnMas.disabled = false;
-      btnMenos.disabled = false;
-      btnMas.classList.remove("deshabilitado");
-      btnMenos.classList.remove("deshabilitado");
-    }
-  });
-}
-
-btnMas.addEventListener("click", () => modificarSeleccionadas(0.1));
-btnMenos.addEventListener("click", () => modificarSeleccionadas(-0.1));
-
-const btnTema = document.getElementById("btn-tema");
-
-// Cargar preferencia guardada
-if (localStorage.getItem("tema") === "oscuro") {
-  document.body.classList.add("dark");
-  btnTema.textContent = "Modo claro";
-}
-
-btnTema.addEventListener("click", () => {
-  document.body.classList.toggle("dark");
-
-   if (document.body.classList.contains("dark")) {
-    btnTema.textContent = "Modo claro";
-    localStorage.setItem("tema", "oscuro");
-  } else {
-    btnTema.textContent = "Modo oscuro";
-    localStorage.setItem("tema", "claro");
-  }
+  setEstado(
+    "Consejo: coloca un nombres.txt junto a esta página o usa 'Cargar archivo local'."
+  );
 });
