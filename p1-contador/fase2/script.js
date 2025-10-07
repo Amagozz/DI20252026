@@ -358,6 +358,18 @@ btnReset.addEventListener("click", () => {
   setEstado("Todos los contadores han sido reiniciados a 10.");
 });
 
+btnReset5.addEventListener("click", () => {
+  for (const n of estado.keys()) estado.set(n, 5);
+  renderLista();
+  setEstado("Todos los contadores han sido reiniciados a 5.");
+});
+
+btnReset0.addEventListener("click", () => {
+  for (const n of estado.keys()) estado.set(n, 0);
+  renderLista();
+  setEstado("Todos los contadores han sido reiniciados a 0.");
+});
+
 btnCargar.addEventListener("click", async () => {
   try {
     await cargarNombresDesdeTxt("nombres.txt");
