@@ -12,19 +12,34 @@ function normalizaNombre(s) {
   return s.normalize("NFD").replace(/\p{Diacritic}/gu, "").trim();
 }
 
+function bump(el) {
+  el.classList.add("bump");
+  setTimeout(() => el.classList.remove("bump"), 160);
+}
+
+// Render de una persona
 function renderPersona(nombre, valor = 10) {
   const node = tpl.content.firstElementChild.cloneNode(true);
   node.dataset.nombre = nombre;
   node.querySelector(".nombre").textContent = nombre;
-  const span = node.querySelector(".contador");
-  span.textContent = valor;
-  span.dataset.valor = String(valor);
-  return node;
-}
 
-function bump(el) {
-  el.classList.add("bump");
-  setTimeout(() => el.classList.remove("bump"), 160);
+  const span = node.querySelector(".contador");
+  span.textContent = valor.toFixed(1);
+  span.dataset.valor = String(valor);
+
+  const slider = node.querySelector(".slider");
+  slider.value = valor.toFixed(1);
+
+  // Escuchar cambios en el slider
+  slider.addEventListener("input", (e) => {
+    const v = parseFloat(e.target.value);
+    estado.set(nombre, v);
+    span.textContent = v.toFixed(1);
+    span.dataset.valor = String(v);
+    bump(span);
+  });
+
+  return node;
 }
 
 // Render completo desde estado
@@ -51,7 +66,6 @@ async function cargarNombresDesdeTxt(url = "nombres.txt") {
   if (!res.ok) throw new Error(`No se pudo leer ${url}`);
   const text = await res.text();
 
-  // Permite .txt (una por línea) o .json (array de strings)
   let nombres;
   if (url.endsWith(".json")) {
     const arr = JSON.parse(text);
@@ -62,7 +76,6 @@ async function cargarNombresDesdeTxt(url = "nombres.txt") {
 
   if (nombres.length === 0) throw new Error("El archivo no contiene nombres.");
 
-  // Inicializa estado si no existían
   for (const n of nombres) {
     if (!estado.has(n)) estado.set(n, 10);
   }
@@ -70,7 +83,7 @@ async function cargarNombresDesdeTxt(url = "nombres.txt") {
   setEstado(`Cargados ${nombres.length} nombres.`);
 }
 
-// Carga desde archivo local (input file)
+// Carga desde archivo local
 async function cargarDesdeArchivoLocal(file) {
   const text = await file.text();
   let nombres;
@@ -91,36 +104,62 @@ async function cargarDesdeArchivoLocal(file) {
 }
 
 // --------- Interacción ---------
-// Delegación: un solo listener para todos los botones
-lista.addEventListener("click", (ev) => {
-  const btn = ev.target.closest("button");
-  if (!btn) return;
-  const card = btn.closest(".persona");
-  if (!card) return;
+const tarjetasSeleccionadas = new Set();
 
+function actualizarContador(card, delta) {
   const nombre = card.dataset.nombre;
   if (!estado.has(nombre)) return;
 
   const span = card.querySelector(".contador");
+  const slider = card.querySelector(".slider");
+
   let valor = Number(span.dataset.valor || "10");
-
-  //Botón Muerte
-  if (btn.classList.contains("btn-muerte")) valor -= 5;
-
+  valor += delta;
   valor = Math.max(0, Math.min(10, valor));
 
   estado.set(nombre, valor);
   span.dataset.valor = String(valor);
   span.textContent = valor.toFixed(1);
+
+  if (slider) slider.value = valor.toFixed(1);
+
   bump(span);
+}
+
+// Delegación de clicks
+lista.addEventListener("click", (ev) => {
+  const card = ev.target.closest(".persona");
+  if (!card) return;
+
+  const nombre = card.dataset.nombre;
+  if (!estado.has(nombre)) return;
+
+  // Selección
+  if (ev.target.classList.contains("btn-select")) {
+    if (tarjetasSeleccionadas.has(card)) {
+      tarjetasSeleccionadas.delete(card);
+      card.classList.remove("seleccionada");
+    } else {
+      tarjetasSeleccionadas.add(card);
+      card.classList.add("seleccionada");
+    }
+    return;
+  }
+
+  // Botones sumar/restar
+  if (ev.target.classList.contains("btn-mas")) actualizarContador(card, +0.1);
+  if (ev.target.classList.contains("btn-menos")) actualizarContador(card, -0.1);
+  if (ev.target.classList.contains("btn-muerte")) actualizarContador(card, -5);
 });
 
+// Reset
 btnReset.addEventListener("click", () => {
   for (const n of estado.keys()) estado.set(n, 10);
   renderLista();
   setEstado("Todos los contadores han sido reiniciados a 10.");
 });
 
+// Cargar nombres
 btnCargar.addEventListener("click", async () => {
   try {
     await cargarNombresDesdeTxt("nombres.txt");
@@ -143,53 +182,7 @@ inputArchivo.addEventListener("change", async (e) => {
   }
 });
 
-// teclas del ordenador //
-const tarjetasSeleccionadas = new Set();
-
-// --- Actualizar valor con límites ---
-function actualizarContador(card, delta) {
-  const nombre = card.dataset.nombre;
-  if (!estado.has(nombre)) return;
-
-  const span = card.querySelector(".contador");
-  let valor = Number(span.dataset.valor || "10");
-
-  valor += delta;
-  valor = Math.max(0, Math.min(10, valor)); // límite [0,10]
-
-  estado.set(nombre, valor);
-  span.dataset.valor = String(valor);
-  span.textContent = valor.toFixed(1);
-  bump(span);
-}
-
-// --- Delegación de clicks ---
-lista.addEventListener("click", (ev) => {
-  const card = ev.target.closest(".persona");
-  if (!card) return;
-
-  //  Selección con botón
-  if (ev.target.classList.contains("btn-select")) {
-    if (tarjetasSeleccionadas.has(card)) {
-      tarjetasSeleccionadas.delete(card);
-      card.classList.remove("seleccionada");
-    } else {
-      tarjetasSeleccionadas.add(card);
-      card.classList.add("seleccionada");
-    }
-    return; // no seguimos
-  }
-
-  //  Botones de sumar/restar
-  if (ev.target.classList.contains("btn-mas")) {
-    actualizarContador(card, +0.1);
-  }
-  if (ev.target.classList.contains("btn-menos")) {
-    actualizarContador(card, -0.1);
-  }
-});
-
-// --- Teclado ---
+// Teclado
 document.addEventListener("keydown", (e) => {
   if (tarjetasSeleccionadas.size === 0) return;
 
@@ -203,13 +196,7 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-
-
-
-// --------- Bootstrap ---------
-// Opción A (recomendada en local con live server): intenta cargar nombres.txt
-// Opción B: si falla, el usuario puede usar “Cargar archivo local”
+// Intento de bootstrap inicial
 cargarNombresDesdeTxt("nombres.txt").catch(() => {
   setEstado("Consejo: coloca un nombres.txt junto a esta página o usa 'Cargar archivo local'.");
 });
-

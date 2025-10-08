@@ -70,3 +70,19 @@ main{ padding:1rem; max-width:1100px; margin:0 auto; }
   outline: 3px solid dodgerblue;
   border-radius: 10px;
 }
+/* Slider ocupa todo el ancho de la tarjeta */
+.card .slider {
+  width: 100%;
+  margin-top: 0.5rem; /* un pequeño espacio arriba */
+  -webkit-appearance: none; /* para quitar estilo por defecto en Webkit */
+  height: 8px;
+  border-radius: 4px;
+  background: #ddd;
+  outline: none;
+  transition: background 0.2s;
+}
+
+.card .slider:hover {
+  background: #ccc
+
+}

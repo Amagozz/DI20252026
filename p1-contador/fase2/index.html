@@ -24,24 +24,26 @@
   </main>
 
   <template id="tpl-persona">
-  <article class="card persona" data-nombre="">
-    <header class="card-head">
-      <h2 class="nombre"></h2>
-      <div class="acciones-card">
-        <button class="btn-select" aria-label="Seleccionar">🔘</button>
-        <button class="btn-muerte" aria-label="restar cinco">💀</button>
+    <article class="card persona" data-nombre="">
+      <header class="card-head">
+        <h2 class="nombre"></h2>
+        <div class="acciones-card">
+          <button class="btn-select" aria-label="Seleccionar">🔘</button>
+          <button class="btn-muerte" aria-label="restar cinco">💀</button>
+        </div>
+      </header>
+      <div class="contador-wrap">
+        <button class="btn redondeado btn-menos" aria-label="Restar uno">−0.1</button>
+        <span class="contador" data-valor="10" aria-live="polite">10</span>
+        <button class="btn redondeado btn-mas" aria-label="Sumar uno">+0.1</button>
       </div>
-    </header>
-    <div class="contador-wrap">
-      <button class="btn redondeado btn-menos" aria-label="Restar uno">−0.1</button>
-      <span class="contador" data-valor="10" aria-live="polite">10</span>
-      <button class="btn redondeado btn-mas" aria-label="Sumar uno">+0.1</button>
-    </div>
-  </article>
-</template>
-
+      <!-- RANGE SLIDER -->
+      <input class="slider" type="range" min="0" max="10" step="0.1" value="10" />
+    </article>
+  </template>
 
   <script src="script.js" type="module"></script>
 </body>
 </html>
+
 
