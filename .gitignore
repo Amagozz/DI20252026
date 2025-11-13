@@ -1,5 +1,7 @@
 # Ignorar dependencias y builds
 node_modules/
+
+**/node_modules/
 dist/
 build/
 .vite/
@@ -21,3 +23,15 @@ Thumbs.db
 .idea/
 .vscode/
 
+# Asegurar que estos proyectos Svelte SÍ se suben
+!svelte-express-dashboard/
+!svelte-express-dashboard/**
+!svelte-tailwind-counters/
+!svelte-tailwind-counters/**
+!svelte-tailwind-crm/
+!svelte-tailwind-crm/** 
+
+
+svelte-express-dashboard/node_modules
+svelte-tailwind-counters/node_modules
+svelte-tailwind-crm/node_modules
