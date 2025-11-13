@@ -1,7 +1,6 @@
 # Ignorar dependencias y builds
 node_modules/
 
-**/node_modules/
 dist/
 build/
 .vite/
@@ -35,3 +34,6 @@ Thumbs.db
 svelte-express-dashboard/node_modules
 svelte-tailwind-counters/node_modules
 svelte-tailwind-crm/node_modules
+
+
+**/node_modules/
