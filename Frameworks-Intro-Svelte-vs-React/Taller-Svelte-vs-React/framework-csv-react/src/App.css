@@ -1,0 +1,53 @@
+.layout {
+  display: grid;
+  gap: 1rem;
+  max-width: 920px;
+  width: 100%;
+}
+
+@media (min-width: 800px) {
+  .layout {
+    grid-template-columns: 1fr 1.2fr;
+  }
+}
+
+.panel {
+  padding: 1.2rem;
+  border-radius: 1rem;
+  background: rgba(15, 23, 42, 0.9);
+  color: #e5e7eb;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.5);
+}
+
+.app--light .panel {
+  background: white;
+  color: #0f172a;
+}
+
+.panel__controls {
+  margin: 0.5rem 0 0.8rem;
+}
+
+.panel__controls input {
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid #94a3b8;
+  font-size: 0.9rem;
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.tabla th,
+.tabla td {
+  padding: 0.35rem 0.5rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+.tabla tbody tr:hover {
+  background: rgba(148, 163, 184, 0.15);
+}

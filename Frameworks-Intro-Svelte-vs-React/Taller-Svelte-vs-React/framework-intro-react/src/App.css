@@ -1,0 +1,136 @@
+/* src/App.css */
+:root {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+body {
+  margin: 0;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.app--dark {
+  background: radial-gradient(circle at top, #0f172a, #020617);
+  color: #e5e7eb;
+}
+
+.app--light {
+  background: radial-gradient(circle at top, #e0f2fe, #f9fafb);
+  color: #0f172a;
+}
+
+.card {
+  max-width: 420px;
+  width: 100%;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  background: rgba(15, 23, 42, 0.9);
+  color: #e5e7eb;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(10px);
+}
+
+.app--light .card {
+  background: white;
+  color: #0f172a;
+}
+
+.card__header {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.card__avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 999px;
+  object-fit: cover;
+  border: 3px solid #38bdf8;
+}
+
+.card__title {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.card__subtitle {
+  margin: 0.2rem 0 0;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.card__body {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin-bottom: 1rem;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.8rem;
+}
+
+.tag {
+  border: none;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  background: rgba(148, 163, 184, 0.25);
+  color: inherit;
+}
+
+.tag--active {
+  background: #38bdf8;
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.tag-info {
+  margin-top: 0.6rem;
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+.card__footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.btn {
+  flex: 1;
+  border: none;
+  border-radius: 999px;
+  padding: 0.5rem 0.7rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: #22c55e;
+  color: #052e16;
+  box-shadow: 0 8px 18px rgba(22, 163, 74, 0.5);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(22, 163, 74, 0.6);
+}
+
+.btn--ghost {
+  background: transparent;
+  border: 1px solid currentColor;
+  box-shadow: none;
+}

@@ -1,0 +1,15 @@
+{
+  "name": "node-intro-starter",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Paso 1: Introducción a Node.js con CLI y API HTTP nativa usando JSON como almacenamiento.",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js",
+    "hello": "node index.js Gamer123"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}

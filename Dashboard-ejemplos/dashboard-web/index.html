@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ascensor Social — Mini Dashboard</title>
+  <link rel="stylesheet" href="./style.css" />
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Ascensor Social — Mini Dashboard</h1>
+    <p>Fuente: dataset sintético educativo. Carga el CSV local y genera gráficos.</p>
+  </header>
+  <main>
+    <section>
+      <h2>Movilidad social media por perfil</h2>
+      <canvas id="barChart" width="600" height="350"></canvas>
+    </section>
+    <section>
+      <h2>Ingresos familiares vs Ingreso actual</h2>
+      <canvas id="scatterChart" width="600" height="350"></canvas>
+    </section>
+  </main>
+  <footer>
+    <small>Hecho para DAM · Chart.js + JS vanilla</small>
+  </footer>
+  <script src="./script.js"></script>
+</body>
+</html>
